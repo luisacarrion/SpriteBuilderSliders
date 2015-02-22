@@ -24,8 +24,8 @@
 
 -(void) tempGeneratePaths:(NSInteger)amount {
     self.intersectionPoint = [self getRandomOrigin];
-    NSMutableArray *pathAngles = [NSMutableArray array];
-    NSMutableArray *oppositPathAngles = [NSMutableArray array];
+    self.heroPositions = [NSMutableArray array];
+    self.enemyPositions = [NSMutableArray array];
     
     NSLog(@"randomOrigin: %@ *****************************", NSStringFromCGPoint(self.intersectionPoint));
     
