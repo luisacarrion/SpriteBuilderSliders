@@ -175,6 +175,7 @@
     exit(0);
 }
 
+
 -(BOOL)ccPhysicsCollisionBegin:(CCPhysicsCollisionPair*)pair hero:(CCSprite*)hero1 hero:(CCNode*)hero2 {
     // Ignore hero collisions, they can pass through each other
     return NO;
