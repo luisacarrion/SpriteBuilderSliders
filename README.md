@@ -13,3 +13,9 @@ Preview
 -------
 
 ![image](slidersFirstDemo.gif)
+
+More Info
+---------
+
+For more info, read the wiki:
+https://github.com/marilu597/SpriteBuilderSliders/wiki
