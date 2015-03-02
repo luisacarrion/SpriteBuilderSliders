@@ -6,9 +6,7 @@
 //  Copyright (c) 2015 Apportable. All rights reserved.
 //
 
-#import "Character.h"
-
-@interface Enemy : Character
+@interface Enemy : CCSprite
 
 @property (nonatomic, assign) NSInteger hitLimit;
 

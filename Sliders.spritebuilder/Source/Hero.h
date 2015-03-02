@@ -6,8 +6,7 @@
 //  Copyright (c) 2015 Apportable. All rights reserved.
 //
 
-#import "Character.h"
 
-@interface Hero : Character
+@interface Hero : CCSprite
 
 @end

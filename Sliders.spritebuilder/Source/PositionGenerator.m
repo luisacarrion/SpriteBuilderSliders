@@ -6,15 +6,14 @@
 //  Copyright (c) 2015 Apportable. All rights reserved.
 //
 
-#import "IntersectedPathGenerator.h"
+#import "PositionGenerator.h"
 
-@implementation IntersectedPathGenerator {
+@implementation PositionGenerator {
     
 }
 
 
 -(instancetype) init {
-    NSLog(@"Inizializandoooooooooo--------------------------------------------------");
     self.heroPositions = [NSMutableArray array];
     self.enemyPositions = [NSMutableArray array];
     
@@ -23,23 +22,33 @@
 }
 
 -(void) tempGeneratePaths:(NSInteger)amount {
-    self.intersectionPoint = [self getRandomOrigin];
+    // Remove old positions to generate new ones
     self.heroPositions = [NSMutableArray array];
     self.enemyPositions = [NSMutableArray array];
     
-    NSLog(@"randomOrigin: %@ *****************************", NSStringFromCGPoint(self.intersectionPoint));
-    
+    // Create new positions for heros and enemies
     for (int i = 0; i < amount; i++) {
-        
-        
-        [self.heroPositions addObject:[NSValue valueWithCGPoint:[self getRandomOrigin]]];
-        [self.enemyPositions addObject:[NSValue valueWithCGPoint:[self getRandomOrigin]]];
+        [self.heroPositions addObject:[NSValue valueWithCGPoint:[self getRandomPosition]]];
+        [self.enemyPositions addObject:[NSValue valueWithCGPoint:[self getRandomPosition]]];
         
     }
 }
 
+-(CGPoint) getRandomPosition {
+    NSInteger x = arc4random() % (self.screenWidth - self.characterWidth*2);
+    NSInteger y = arc4random() % (self.screenHeight - self.characterHeight*2);
+    // We don't want the characters to be completely in the border of the screen
+    x += self.characterWidth;
+    y += self.characterHeight;
+    
+    return ccp(x, y);
+}
+
+/*
+ Method not being used for now
+ */
 -(void) generatePaths:(NSInteger)amount {
-    self.intersectionPoint = [self getRandomOrigin];
+    self.intersectionPoint = [self getRandomPosition];
     NSMutableArray *pathAngles = [NSMutableArray array];
     NSMutableArray *oppositPathAngles = [NSMutableArray array];
     
@@ -150,16 +159,9 @@
     
 }
 
--(CGPoint) getRandomOrigin {
-    NSInteger x = arc4random() % (self.screenWidth - self.characterWidth*2);
-    NSInteger y = arc4random() % (self.screenHeight - self.characterHeight*2);
-    // We don't want the characters to be completely in the border of the screen
-    x += self.characterWidth;
-    y += self.characterHeight;
-    
-    return ccp(x, y);
-}
-
+/*
+ Method not being used for now
+ */
 -(NSInteger) getRandomPathAngle {
     // Angle has to be between -90 and 90 to be above or below origin
     NSInteger rndAngle = (arc4random() % 180) + 1;

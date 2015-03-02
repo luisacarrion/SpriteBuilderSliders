@@ -13,7 +13,10 @@
 
 
 - (void) didLoadFromCCB {
+    // Set physics properties
     self.physicsBody.collisionType = @"hero";
+    
+    // Set drawing order
     self.zOrder = DrawingOrderHero;
 }
 

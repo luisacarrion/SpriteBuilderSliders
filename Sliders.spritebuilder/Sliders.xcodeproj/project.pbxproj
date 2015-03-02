@@ -7,11 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0D6E91371A98A8D200E350D1 /* IntersectedPathGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D6E91361A98A8D200E350D1 /* IntersectedPathGenerator.m */; };
+		0D6E91371A98A8D200E350D1 /* PositionGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D6E91361A98A8D200E350D1 /* PositionGenerator.m */; };
 		0DE8D28D1A9986CC00614CBF /* LevelConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DE8D28C1A9986CC00614CBF /* LevelConfiguration.m */; };
 		0DFE3CCD1A988112008E66D9 /* Hero.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DFE3CCC1A988112008E66D9 /* Hero.m */; };
 		0DFE3CD71A9881CD008E66D9 /* Enemy.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DFE3CD61A9881CD008E66D9 /* Enemy.m */; };
-		0DFE3CDA1A9883AB008E66D9 /* Character.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DFE3CD91A9883AB008E66D9 /* Character.m */; };
 		5B121030197484FA004C1E1D /* SlidersActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B12102F197484FA004C1E1D /* SlidersActivity.m */; };
 		5B121038197487F2004C1E1D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B737893E1807617C0076A88C /* AppDelegate.m */; };
 		7A046D8C19E8A20E004C4763 /* MainScene.m in Sources */ = {isa = PBXBuildFile; fileRef = B7378993180767190076A88C /* MainScene.m */; };
@@ -147,16 +146,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0D6E91351A98A8D200E350D1 /* IntersectedPathGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IntersectedPathGenerator.h; path = Source/IntersectedPathGenerator.h; sourceTree = "<group>"; };
-		0D6E91361A98A8D200E350D1 /* IntersectedPathGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IntersectedPathGenerator.m; path = Source/IntersectedPathGenerator.m; sourceTree = "<group>"; };
+		0D6E91351A98A8D200E350D1 /* PositionGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PositionGenerator.h; path = Source/PositionGenerator.h; sourceTree = "<group>"; };
+		0D6E91361A98A8D200E350D1 /* PositionGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PositionGenerator.m; path = Source/PositionGenerator.m; sourceTree = "<group>"; };
 		0DE8D28B1A9986CC00614CBF /* LevelConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LevelConfiguration.h; path = Source/LevelConfiguration.h; sourceTree = "<group>"; };
 		0DE8D28C1A9986CC00614CBF /* LevelConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LevelConfiguration.m; path = Source/LevelConfiguration.m; sourceTree = "<group>"; };
 		0DFE3CCB1A988112008E66D9 /* Hero.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Hero.h; path = Source/Hero.h; sourceTree = "<group>"; };
 		0DFE3CCC1A988112008E66D9 /* Hero.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Hero.m; path = Source/Hero.m; sourceTree = "<group>"; };
 		0DFE3CD51A9881CD008E66D9 /* Enemy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Enemy.h; path = Source/Enemy.h; sourceTree = "<group>"; };
 		0DFE3CD61A9881CD008E66D9 /* Enemy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Enemy.m; path = Source/Enemy.m; sourceTree = "<group>"; };
-		0DFE3CD81A9883AB008E66D9 /* Character.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Character.h; path = Source/Character.h; sourceTree = "<group>"; };
-		0DFE3CD91A9883AB008E66D9 /* Character.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Character.m; path = Source/Character.m; sourceTree = "<group>"; };
 		5B12100919748273004C1E1D /* libEGL.so */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libEGL.so; path = /usr/lib/armv7a/libEGL.so; sourceTree = SDKROOT; };
 		5B12100F197483EE004C1E1D /* ic_launcher.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_launcher.png; sourceTree = "<group>"; };
 		5B121011197483EE004C1E1D /* ic_launcher.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_launcher.png; sourceTree = "<group>"; };
@@ -445,14 +442,12 @@
 			children = (
 				0DFE3CD51A9881CD008E66D9 /* Enemy.h */,
 				0DFE3CD61A9881CD008E66D9 /* Enemy.m */,
-				0DFE3CD81A9883AB008E66D9 /* Character.h */,
-				0DFE3CD91A9883AB008E66D9 /* Character.m */,
 				B7378992180767190076A88C /* MainScene.h */,
 				B7378993180767190076A88C /* MainScene.m */,
 				0DE8D28B1A9986CC00614CBF /* LevelConfiguration.h */,
 				0DE8D28C1A9986CC00614CBF /* LevelConfiguration.m */,
-				0D6E91351A98A8D200E350D1 /* IntersectedPathGenerator.h */,
-				0D6E91361A98A8D200E350D1 /* IntersectedPathGenerator.m */,
+				0D6E91351A98A8D200E350D1 /* PositionGenerator.h */,
+				0D6E91361A98A8D200E350D1 /* PositionGenerator.m */,
 				0DFE3CCB1A988112008E66D9 /* Hero.h */,
 				0DFE3CCC1A988112008E66D9 /* Hero.m */,
 				7A40362019DDEF0D007B6E8F /* Platforms */,
@@ -829,10 +824,9 @@
 				B73789871807631A0076A88C /* main.m in Sources */,
 				0DFE3CD71A9881CD008E66D9 /* Enemy.m in Sources */,
 				7A046D8C19E8A20E004C4763 /* MainScene.m in Sources */,
-				0D6E91371A98A8D200E350D1 /* IntersectedPathGenerator.m in Sources */,
+				0D6E91371A98A8D200E350D1 /* PositionGenerator.m in Sources */,
 				5B121038197487F2004C1E1D /* AppDelegate.m in Sources */,
 				0DFE3CCD1A988112008E66D9 /* Hero.m in Sources */,
-				0DFE3CDA1A9883AB008E66D9 /* Character.m in Sources */,
 				0DE8D28D1A9986CC00614CBF /* LevelConfiguration.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -10,8 +10,7 @@
 
 extern NSString * const KEY_HEROES_SPAWNED_AT_LOAD;
 extern NSString * const KEY_TOTAL_ENEMIES;
-extern NSString * const KEY_ENEMIES_SPAWNED_PER_STEP;
-extern NSString * const KEY_ENEMY_TYPE1;
+extern NSString * const KEY_BASIC_ENEMIES_SPAWNED_PER_STEP;
 
 @interface LevelConfiguration : NSObject
 

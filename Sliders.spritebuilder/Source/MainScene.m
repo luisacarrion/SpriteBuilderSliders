@@ -1,125 +1,146 @@
 #import "Enemy.h"
 #import "Hero.h"
-#import "IntersectedPathGenerator.h"
+#import "PositionGenerator.h"
 #import "LevelConfiguration.h"
 #import "MainScene.h"
 
+// Game constants
+static const NSInteger CHARACTER_WIDTH = 100;
+static const NSInteger CHARACTER_HEIGHT = 100;
 
-@implementation MainScene {    
-    IntersectedPathGenerator *_pathGenerator;
+@implementation MainScene {
     
-    // Holds configurations of all the levels
-    LevelConfiguration *_levelConfig;
-    NSInteger _currentLevel;
-    
-    CCNode *_contentNode;
+    // CCNodes - code connections with SpriteBuilder
     CCPhysicsNode *_physicsNode;
-    NSMutableArray *_heroes;
-    NSMutableArray *_enemies;
-    // Set to avoid adding the same enemy when 2 heroes collide with it
-    NSMutableSet *_enemiesEliminated;
-    NSInteger _levelEnemiesEliminatedCounter;
-    NSInteger _totalEnemiesEliminatedCounter;
+    
+    // Game variables
+    NSInteger _currentLevel;
+    NSMutableArray *_heroes;  // Holds all the heroes in the level
+    NSMutableArray *_enemies;  // Holds all the enemies in the level
+    NSMutableSet *_enemiesKilled;  // Set to avoid adding the same enemy when 2 heroes collide with it
+    NSInteger _numberOfKillsInLevel;  // Amount of enemies eliminated in the current level
+    NSInteger _numberOfKillsInTotal;  // Amount of enemies eliminated in total (in all the levels)
+    
+    // Helper objects
+    PositionGenerator *_pathGenerator;  // Generates positions for new enemies and power ups
+    LevelConfiguration *_levelConfig;  // Holds configurations of all the levels
+    
 }
 
 - (void) didLoadFromCCB {
+    // Initialize game variables
+    _currentLevel = [self getCurrentLevel];
+    _heroes = [NSMutableArray array];
+    _enemies = [NSMutableArray array];
+    _enemiesKilled = [NSMutableSet set];
+
+    // Initialize helper objects
+    _levelConfig = [[LevelConfiguration alloc] init];
+    _pathGenerator = [[PositionGenerator alloc] init];
+    _pathGenerator.screenWidth = [CCDirector sharedDirector].viewSize.width;
+    _pathGenerator.screenHeight = [CCDirector sharedDirector].viewSize.height;
+    _pathGenerator.characterWidth = CHARACTER_WIDTH;
+    _pathGenerator.characterHeight = CHARACTER_HEIGHT;
+    
+    // Load the first level
+    [self loadLevel:_currentLevel];
+    
     // Enable user interaction
     self.userInteractionEnabled = TRUE;
     // Set collisions delegate
     _physicsNode.collisionDelegate = self;
-    
-    // Initialize variables
-    _heroes = [NSMutableArray array];
-    _enemies = [NSMutableArray array];
-    _enemiesEliminated = [NSMutableSet set];
-    _levelConfig = [[LevelConfiguration alloc] init];
-    _currentLevel = [self getCurrentLevel];
-    
-    // Initialize path generator object
-    _pathGenerator = [[IntersectedPathGenerator alloc] init];
-    _pathGenerator.screenWidth = [CCDirector sharedDirector].viewSize.width;
-    _pathGenerator.screenHeight = [CCDirector sharedDirector].viewSize.height;
-    _pathGenerator.characterWidth = 100;
-    _pathGenerator.characterHeight = 100;
-    
-    // Load the first level
-    [self loadLevel:_currentLevel];
     
     //_physicsNode.debugDraw = true;
     
 }
 
 -(void) touchBegan:(CCTouch *)touch withEvent:(CCTouchEvent *)event {
-    CGPoint touchLocation = [touch locationInNode:_contentNode];
+    CGPoint touchLocation = [touch locationInNode: self];
     
     [self impulseHeroesToPoint:touchLocation];
 }
 
 -(void) update:(CCTime)delta {
+    [self removeKilledEnemies];
     
-    // Remove killed enemies
-    for (Enemy *enemyEliminated in _enemiesEliminated) {
-        [self eliminateEnemy:enemyEliminated];
-    }
-    _enemiesEliminated = [NSMutableSet set];
-    
-    // Check if ready for next level
-    NSInteger totalLevelEnemies = [[_levelConfig get:KEY_TOTAL_ENEMIES forLevel:_currentLevel]
-                                   integerValue];
-    //NSLog(@"totalLevelEnemies: %ld", totalLevelEnemies);
-    //NSLog(@"_levelEnemiesEliminatedCounter: %ld", _levelEnemiesEliminatedCounter);
-    
-    if (_levelEnemiesEliminatedCounter >= totalLevelEnemies) {
-        _currentLevel++;
-        
-        NSInteger levelsCount = [_levelConfig getLevelsCount];
-        if (_currentLevel <= levelsCount) {
-            [self loadLevel:_currentLevel];
-        } else {
-            [self gameCompleted];
+    if ([self isLevelCompleted]) {
+        // Load next level
+        if (![self loadNextLevel]) {
+            // If the next level couldn't be loaded (because there were no more levels), end the game
+            [self endGame];
         }
-        
     } else {
-        // Still enemies to kill in this level
-        // If the current ones have been eliminated, spaw the next enemies
+        // If level is not completed but there are not more enemies to kill, load the next step of the level
         if ([_enemies count] == 0) {
-            [self nextStepOfLevel:_currentLevel isFirstStep:NO];
+            // The next step of the level will spawn new enemies
+            [self loadNextStepOfLevel:_currentLevel isFirstStep:NO];
         }
     }
     
 }
 
-- (void) loadLevel:(NSInteger)level {
-    NSLog(@"Loading level: %ld", level);
-    
-    _levelEnemiesEliminatedCounter = 0;
-    
-    [self nextStepOfLevel:level isFirstStep:YES];
+-(void) removeKilledEnemies {
+    for (Enemy *enemy in _enemiesKilled) {
+        [enemy removeFromParent];
+        [_enemies removeObject:enemy];
+        
+        _numberOfKillsInLevel++;
+        _numberOfKillsInTotal++;
+    }
+    _enemiesKilled = [NSMutableSet set];
 }
 
-// Each step of the level is executed when the user kills all the current enemies
--(void) nextStepOfLevel:(NSInteger)level isFirstStep:(BOOL)isFirstStep {
+-(BOOL) isLevelCompleted {
+    BOOL levelCompleted = false;
+    
+    NSInteger enemiesForNextLevel =
+            [[_levelConfig get:KEY_TOTAL_ENEMIES forLevel:_currentLevel] integerValue];
+    
+    if (_numberOfKillsInLevel >= enemiesForNextLevel) {
+        levelCompleted = true;
+    }
+    
+    return levelCompleted;
+}
+
+-(BOOL) loadNextLevel {
+    BOOL nextLevelLoaded = false;
+    _currentLevel++;
+    if (_currentLevel <= [_levelConfig getLevelsCount]) {
+        // If there are more levels, load next level
+        [self loadLevel:_currentLevel];
+        nextLevelLoaded = true;
+    }
+    return nextLevelLoaded;
+}
+
+/* Load the level passed as argument. Loading the level implies: spawning the enemies, spawning power ups and spawning other objects defined in the LevelConfiguration.m file */
+- (void) loadLevel:(NSInteger)level {
+
+    // Reset the number of enemies killed per level
+    _numberOfKillsInLevel = 0;
+    
+    // Load the first step of the level
+    [self loadNextStepOfLevel:level isFirstStep:YES];
+}
+
+// A new step of the level is loaded when the user kills all the enemies in the current step
+-(void) loadNextStepOfLevel:(NSInteger)level isFirstStep:(BOOL)isFirstStep {
     NSLog(@"nextStepOfLevel: %ld, isFirstStepL %d", level, isFirstStep);
     
-    NSInteger enemiesToSpawn = [[_levelConfig get:KEY_ENEMIES_SPAWNED_PER_STEP forLevel:_currentLevel] integerValue];
-    NSString *enemyType1 = [_levelConfig get:KEY_ENEMY_TYPE1 forLevel:_currentLevel];
-    
-    
-    // There should always be more enemies than heroes, so we use the enemies value to generate paths
-    [_pathGenerator tempGeneratePaths:enemiesToSpawn];
-    NSLog(@"enemiesToSpawn: %ld", enemiesToSpawn);
-    
-    // Heroes are spawned only at the beginning of each level
+    // Spawn heroes
     if (isFirstStep) {
+        // Heroes are spawned only at the beginning of each level (in the first step)
         NSInteger heroesToSpawn = [[_levelConfig get:KEY_HEROES_SPAWNED_AT_LOAD forLevel:_currentLevel] integerValue];
         for (int i = 0; i < heroesToSpawn; i++) {
-            [self spawnHero:i];
+            [self spawnHero];
         }
     }
 
-    
-    for (int i = 0; i < enemiesToSpawn; i++) {
-        [self spawnEnemy:i ofType:enemyType1];
+    // Spawn enemies
+    NSInteger basicEnemiesToSpawn = [[_levelConfig get:KEY_BASIC_ENEMIES_SPAWNED_PER_STEP forLevel:_currentLevel] integerValue];
+    for (int i = 0; i < basicEnemiesToSpawn; i++) {
+        [self spawnEnemyOfType:@"EnemyBasic"];
     }
 
 }
@@ -133,36 +154,31 @@
     }
 }
 
--(void) spawnHero:(int)counter {
+-(void) spawnHero {
     Hero *hero = (Hero *) [CCBReader load:@"Hero"];
     [_heroes addObject:hero];
     [_physicsNode addChild:hero];
     
-    NSLog(@"hero position 1: %@", NSStringFromCGPoint(hero.position));
-    // Arreglar el hardcoded 0, y la posicion en el didLoad
-    hero.position = [_pathGenerator.heroPositions[counter] CGPointValue];
-    
-    NSLog(@"hero position inside: %@", _pathGenerator.heroPositions[counter]);
-    NSLog(@"hero position 2: %@", NSStringFromCGPoint(hero.position));
+    hero.position = [_pathGenerator getRandomPosition];
 }
 
--(void) spawnEnemy:(int)counter ofType:(NSString*)enemyType {
+-(void) spawnEnemyOfType:(NSString*)enemyType {
     Enemy *enemy = (Enemy *) [CCBReader load:enemyType];
     [_enemies addObject:enemy];
     [_physicsNode addChild:enemy];
     
-    NSLog(@"spawnEnemy counter: %d", counter);
-    enemy.position = [_pathGenerator.enemyPositions[counter] CGPointValue];
+    enemy.position = [_pathGenerator getRandomPosition];
 }
 
--(void) eliminateEnemy:(Enemy*)enemy {
-    [enemy removeFromParent];
-    [_enemies removeObject:enemy];
-    
-    _levelEnemiesEliminatedCounter++;
-    _totalEnemiesEliminatedCounter++;
-    NSLog(@"_levelEnemiesEliminatedCounter: %ld", _levelEnemiesEliminatedCounter);
-    
+-(BOOL)ccPhysicsCollisionBegin:(CCPhysicsCollisionPair*)pair hero:(CCSprite*)hero1 hero:(CCNode*)hero2 {
+    // Ignore hero collisions so that they can pass through each other
+    return NO;
+}
+
+-(BOOL)ccPhysicsCollisionSeparate:(CCPhysicsCollisionPair*)pair hero:(CCSprite*)hero enemy:(CCNode*)enemy {
+    // If an enemy is killed, add it to the _enemiesKilled set
+    [_enemiesKilled addObject:enemy];
+    return YES;
 }
 
 - (NSInteger) getCurrentLevel {
@@ -170,38 +186,10 @@
     return 1;
 }
 
--(void) gameCompleted {
+-(void) endGame {
     NSLog(@"Game Completed =)");
     exit(0);
 }
-
-
--(BOOL)ccPhysicsCollisionBegin:(CCPhysicsCollisionPair*)pair hero:(CCSprite*)hero1 hero:(CCNode*)hero2 {
-    // Ignore hero collisions, they can pass through each other
-    return NO;
-}
-
--(BOOL)ccPhysicsCollisionSeparate:(CCPhysicsCollisionPair*)pair hero:(CCSprite*)hero enemy:(CCNode*)enemy {
-    
-    [_enemiesEliminated addObject:enemy];
-    
-    return YES;
-}
-
-
-/*
--(BOOL)ccPhysicsCollisionBegin:(CCPhysicsCollisionPair*)pair character:(CCSprite*)character level:(CCNode*)level {
-    [self gameOver];
-    return TRUE;
-}
-
--(BOOL)ccPhysicsCollisionBegin:(CCPhysicsCollisionPair *)pair character:(CCNode *)character goal:(CCNode *)goal {
-    [goal removeFromParent];
-    points++;
-    _scoreLabel.string = [NSString stringWithFormat:@"%d", points];
-    return TRUE;
-}*/
-
 
 @end
 

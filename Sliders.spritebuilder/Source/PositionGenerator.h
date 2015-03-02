@@ -8,7 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
-@interface IntersectedPathGenerator : NSObject
+/*
+ The position generator generates positions for all objects that should be placed in the map: soldiers, enemies, power ups, obstacles
+ */
+@interface PositionGenerator : NSObject
 
 @property (nonatomic, assign) NSInteger screenWidth;
 @property (nonatomic, assign) NSInteger screenHeight;
@@ -22,5 +25,6 @@
 
 // Temporary while the other method is developed
 -(void) tempGeneratePaths:(NSInteger)amount;
+-(CGPoint) getRandomPosition;
 
 @end

@@ -14,12 +14,12 @@
 }
 
 - (void) didLoadFromCCB {
-    
-    NSLog(@"hitLimit: %ld", self.hitLimit);
+    // Set physics properties
     self.physicsBody.collisionType = @"enemy";
     self.physicsBody.sensor = YES;
+    
+    // Set drawing order
     self.zOrder = DrawingOrderEnemy;
-
 }
 
 
