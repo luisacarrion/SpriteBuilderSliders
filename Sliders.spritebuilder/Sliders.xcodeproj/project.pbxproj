@@ -148,6 +148,7 @@
 /* Begin PBXFileReference section */
 		0D6E91351A98A8D200E350D1 /* PositionGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PositionGenerator.h; path = Source/PositionGenerator.h; sourceTree = "<group>"; };
 		0D6E91361A98A8D200E350D1 /* PositionGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PositionGenerator.m; path = Source/PositionGenerator.m; sourceTree = "<group>"; };
+		0DB557CE1AA716DA000337E3 /* HandleEnemy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HandleEnemy.h; path = Source/HandleEnemy.h; sourceTree = "<group>"; };
 		0DE8D28B1A9986CC00614CBF /* LevelConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LevelConfiguration.h; path = Source/LevelConfiguration.h; sourceTree = "<group>"; };
 		0DE8D28C1A9986CC00614CBF /* LevelConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LevelConfiguration.m; path = Source/LevelConfiguration.m; sourceTree = "<group>"; };
 		0DFE3CCB1A988112008E66D9 /* Hero.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Hero.h; path = Source/Hero.h; sourceTree = "<group>"; };
@@ -442,6 +443,7 @@
 			children = (
 				0DFE3CD51A9881CD008E66D9 /* Enemy.h */,
 				0DFE3CD61A9881CD008E66D9 /* Enemy.m */,
+				0DB557CE1AA716DA000337E3 /* HandleEnemy.h */,
 				B7378992180767190076A88C /* MainScene.h */,
 				B7378993180767190076A88C /* MainScene.m */,
 				0DE8D28B1A9986CC00614CBF /* LevelConfiguration.h */,

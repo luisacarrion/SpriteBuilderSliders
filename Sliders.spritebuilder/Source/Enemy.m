@@ -10,7 +10,6 @@
 #import "MainScene.h"
 
 @implementation Enemy {
-
 }
 
 - (void) didLoadFromCCB {
@@ -22,6 +21,16 @@
     self.zOrder = DrawingOrderEnemy;
 }
 
+-(void) applyDamage:(NSInteger)damage {
+    self.damageReceived += damage;
+    if (self.damageReceived >= self.damageLimit) {
+        [self die];
+    }
+}
+
+-(void) die {
+    [self.handleEnemyDelegate removeEnemy:self];
+}
 
 @end
 

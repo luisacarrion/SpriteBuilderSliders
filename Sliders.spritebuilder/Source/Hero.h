@@ -9,4 +9,6 @@
 
 @interface Hero : CCSprite
 
+@property (nonatomic, assign) NSInteger damage;
+
 @end

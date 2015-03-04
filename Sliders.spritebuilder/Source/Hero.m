@@ -9,6 +9,8 @@
 #import "Hero.h"
 #import "MainScene.h"
 
+static const NSInteger INITIAL_DAMAGE = 1;
+
 @implementation Hero
 
 
@@ -18,6 +20,9 @@
     
     // Set drawing order
     self.zOrder = DrawingOrderHero;
+    
+    // Set initial damage
+    self.damage = INITIAL_DAMAGE;
 }
 
 

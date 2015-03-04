@@ -156,33 +156,40 @@ static const NSInteger CHARACTER_HEIGHT = 100;
     [_physicsNode addChild:enemy];
     
     enemy.position = [_pathGenerator getRandomPosition];
+    enemy.handleEnemyDelegate = self;
 }
 
--(void) incrementScore {
-    _score += 1;
-    _lblScore.string = [NSString stringWithFormat:@"%ld", _score];
-}
+#pragma mark Collision Delegate
 
 -(BOOL)ccPhysicsCollisionBegin:(CCPhysicsCollisionPair*)pair hero:(CCSprite*)hero1 hero:(CCNode*)hero2 {
     // Ignore hero collisions so that they can pass through each other
     return NO;
 }
 
+#pragma mark Collision Delegate
+
 -(BOOL)ccPhysicsCollisionSeparate:(CCPhysicsCollisionPair*)pair hero:(CCSprite*)hero enemy:(CCNode*)enemy {
     // After the physics engine step ends, remove the enemy and increment the score
     [[_physicsNode space] addPostStepBlock:^{
-        [self killEnemy:(Enemy*)enemy];
-        [self incrementScore];
+        [(Enemy*)enemy applyDamage:((Hero*)hero).damage];
     }key:enemy];
     return YES;
 }
 
--(void) killEnemy:(Enemy*)enemy {
-        [enemy removeFromParent];
-        [_enemies removeObject:enemy];
-        
-        _numberOfKillsInLevel++;
-        _numberOfKillsInTotal++;
+#pragma mark HandleEnemy Delegate
+
+-(void) removeEnemy:(Enemy *)enemy {
+    [enemy removeFromParent];
+    [_enemies removeObject:enemy];
+    
+    _numberOfKillsInLevel++;
+    _numberOfKillsInTotal++;
+    [self incrementScore];
+}
+
+-(void) incrementScore {
+    _score += 1;
+    _lblScore.string = [NSString stringWithFormat:@"%ld", _score];
 }
 
 - (NSInteger) getCurrentLevel {
