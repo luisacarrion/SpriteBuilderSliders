@@ -21,6 +21,7 @@ static const NSInteger CHARACTER_HEIGHT = 100;
     NSMutableArray *_enemies;  // Holds all the enemies in the level
     NSInteger _numberOfKillsInLevel;  // Amount of enemies eliminated in the current level
     NSInteger _numberOfKillsInTotal;  // Amount of enemies eliminated in total (in all the levels)
+    NSInteger _numberOfKillsInTouch;  // Amount of enemies eliminated with a single touch
     NSInteger _score;
     
     // Helper objects
@@ -57,7 +58,7 @@ static const NSInteger CHARACTER_HEIGHT = 100;
 
 -(void) touchBegan:(CCTouch *)touch withEvent:(CCTouchEvent *)event {
     CGPoint touchLocation = [touch locationInNode: self];
-    
+    _numberOfKillsInTouch = 0;
     [self impulseHeroesToPoint:touchLocation];
 }
 
@@ -182,13 +183,37 @@ static const NSInteger CHARACTER_HEIGHT = 100;
     [enemy removeFromParent];
     [_enemies removeObject:enemy];
     
+    // Increment enemies killed counters
+    _numberOfKillsInTouch++;
     _numberOfKillsInLevel++;
     _numberOfKillsInTotal++;
-    [self incrementScore];
+    
+    // Calculate obtained score for killing this enemy
+    NSInteger scoreObtained = enemy.damageLimit * _numberOfKillsInTouch;
+    
+    [self show:scoreObtained forEnemyWithPosition:enemy.position];
+    
+    [self incrementScoreBy:scoreObtained];
 }
 
--(void) incrementScore {
-    _score += 1;
+-(void) show:(NSInteger)scoreObtained forEnemyWithPosition:(CGPoint)position {
+    CCLabelTTF *lblScoreObtained = [CCLabelTTF labelWithString:[NSString stringWithFormat:@"+%ld", scoreObtained] fontName:@"Helvetica" fontSize:16];
+    
+    lblScoreObtained.position = position;
+    [self addChild:lblScoreObtained];
+    
+    CCActionFadeOut *fadeAction = [CCActionFadeOut actionWithDuration:0.75];
+    CCActionMoveBy *moveUpAction = [CCActionMoveBy actionWithDuration:0.75 position:ccp(0, 10)];
+    CCActionRemove *removeAction = [CCActionRemove action];
+    
+    CCActionSpawn *spawnAction = [CCActionSpawn actionWithArray:@[fadeAction, moveUpAction]];
+    CCActionSequence *sequenceAction = [CCActionSequence actionWithArray:@[spawnAction, removeAction]];
+    
+    [lblScoreObtained runAction:sequenceAction];
+}
+
+-(void) incrementScoreBy:(NSInteger)amount {
+    _score += amount;
     _lblScore.string = [NSString stringWithFormat:@"%ld", _score];
 }
 
