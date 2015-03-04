@@ -2,6 +2,7 @@
 #import "Hero.h"
 #import "PositionGenerator.h"
 #import "LevelConfiguration.h"
+#import "CCPhysics+ObjectiveChipmunk.h"
 #import "MainScene.h"
 
 // Game constants
@@ -12,14 +13,15 @@ static const NSInteger CHARACTER_HEIGHT = 100;
     
     // CCNodes - code connections with SpriteBuilder
     CCPhysicsNode *_physicsNode;
+    CCLabelTTF *_lblScore;
     
     // Game variables
     NSInteger _currentLevel;
     NSMutableArray *_heroes;  // Holds all the heroes in the level
     NSMutableArray *_enemies;  // Holds all the enemies in the level
-    NSMutableSet *_enemiesKilled;  // Set to avoid adding the same enemy when 2 heroes collide with it
     NSInteger _numberOfKillsInLevel;  // Amount of enemies eliminated in the current level
     NSInteger _numberOfKillsInTotal;  // Amount of enemies eliminated in total (in all the levels)
+    NSInteger _score;
     
     // Helper objects
     PositionGenerator *_pathGenerator;  // Generates positions for new enemies and power ups
@@ -32,7 +34,6 @@ static const NSInteger CHARACTER_HEIGHT = 100;
     _currentLevel = [self getCurrentLevel];
     _heroes = [NSMutableArray array];
     _enemies = [NSMutableArray array];
-    _enemiesKilled = [NSMutableSet set];
 
     // Initialize helper objects
     _levelConfig = [[LevelConfiguration alloc] init];
@@ -61,8 +62,6 @@ static const NSInteger CHARACTER_HEIGHT = 100;
 }
 
 -(void) update:(CCTime)delta {
-    [self removeKilledEnemies];
-    
     if ([self isLevelCompleted]) {
         // Load next level
         if (![self loadNextLevel]) {
@@ -77,17 +76,6 @@ static const NSInteger CHARACTER_HEIGHT = 100;
         }
     }
     
-}
-
--(void) removeKilledEnemies {
-    for (Enemy *enemy in _enemiesKilled) {
-        [enemy removeFromParent];
-        [_enemies removeObject:enemy];
-        
-        _numberOfKillsInLevel++;
-        _numberOfKillsInTotal++;
-    }
-    _enemiesKilled = [NSMutableSet set];
 }
 
 -(BOOL) isLevelCompleted {
@@ -170,15 +158,31 @@ static const NSInteger CHARACTER_HEIGHT = 100;
     enemy.position = [_pathGenerator getRandomPosition];
 }
 
+-(void) incrementScore {
+    _score += 1;
+    _lblScore.string = [NSString stringWithFormat:@"%ld", _score];
+}
+
 -(BOOL)ccPhysicsCollisionBegin:(CCPhysicsCollisionPair*)pair hero:(CCSprite*)hero1 hero:(CCNode*)hero2 {
     // Ignore hero collisions so that they can pass through each other
     return NO;
 }
 
 -(BOOL)ccPhysicsCollisionSeparate:(CCPhysicsCollisionPair*)pair hero:(CCSprite*)hero enemy:(CCNode*)enemy {
-    // If an enemy is killed, add it to the _enemiesKilled set
-    [_enemiesKilled addObject:enemy];
+    // After the physics engine step ends, remove the enemy and increment the score
+    [[_physicsNode space] addPostStepBlock:^{
+        [self killEnemy:(Enemy*)enemy];
+        [self incrementScore];
+    }key:enemy];
     return YES;
+}
+
+-(void) killEnemy:(Enemy*)enemy {
+        [enemy removeFromParent];
+        [_enemies removeObject:enemy];
+        
+        _numberOfKillsInLevel++;
+        _numberOfKillsInTotal++;
 }
 
 - (NSInteger) getCurrentLevel {
