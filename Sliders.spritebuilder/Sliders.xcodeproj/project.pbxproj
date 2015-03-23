@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0D30549E1ABF756B0049FF1D /* LevelConfiguration.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0D30549D1ABF756B0049FF1D /* LevelConfiguration.plist */; };
 		0D6E91371A98A8D200E350D1 /* PositionGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D6E91361A98A8D200E350D1 /* PositionGenerator.m */; };
 		0DE8D28D1A9986CC00614CBF /* LevelConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DE8D28C1A9986CC00614CBF /* LevelConfiguration.m */; };
 		0DFE3CCD1A988112008E66D9 /* Hero.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DFE3CCC1A988112008E66D9 /* Hero.m */; };
@@ -146,6 +147,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0D30549D1ABF756B0049FF1D /* LevelConfiguration.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = LevelConfiguration.plist; sourceTree = "<group>"; };
 		0D6E91351A98A8D200E350D1 /* PositionGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PositionGenerator.h; path = Source/PositionGenerator.h; sourceTree = "<group>"; };
 		0D6E91361A98A8D200E350D1 /* PositionGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PositionGenerator.m; path = Source/PositionGenerator.m; sourceTree = "<group>"; };
 		0DB557CE1AA716DA000337E3 /* HandleEnemy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HandleEnemy.h; path = Source/HandleEnemy.h; sourceTree = "<group>"; };
@@ -537,6 +539,7 @@
 				B73789911807667A0076A88C /* Icons */,
 				B737893A180761570076A88C /* Published-iOS */,
 				B78A0B0F198AF87200C63841 /* Published-Android */,
+				0D30549D1ABF756B0049FF1D /* LevelConfiguration.plist */,
 			);
 			name = Resources;
 			path = Source/Resources;
@@ -736,6 +739,7 @@
 			files = (
 				B71F5919188484E7003F4D28 /* Settings.png in Resources */,
 				B7378978180762440076A88C /* Default@2x.png in Resources */,
+				0D30549E1ABF756B0049FF1D /* LevelConfiguration.plist in Resources */,
 				B71F5914188484E7003F4D28 /* iPad@2x.png in Resources */,
 				B71F5913188484E7003F4D28 /* iPad.png in Resources */,
 				B71F5912188484E7003F4D28 /* iPad-old@2x.png in Resources */,

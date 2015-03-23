@@ -8,9 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-extern NSString * const KEY_HEROES_SPAWNED_AT_LOAD;
+extern NSString * const KEY_START_HEROES_SPAWNED;
 extern NSString * const KEY_TOTAL_ENEMIES;
-extern NSString * const KEY_BASIC_ENEMIES_SPAWNED_PER_STEP;
+extern NSString * const KEY_STEP_BASIC_ENEMIES_SPAWNED;
 
 @interface LevelConfiguration : NSObject
 

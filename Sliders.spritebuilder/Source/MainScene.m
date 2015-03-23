@@ -115,19 +115,19 @@ static const NSInteger CHARACTER_HEIGHT = 100;
 
 // A new step of the level is loaded when the user kills all the enemies in the current step
 -(void) loadNextStepOfLevel:(NSInteger)level isFirstStep:(BOOL)isFirstStep {
-    NSLog(@"nextStepOfLevel: %ld, isFirstStepL %d", level, isFirstStep);
+    NSLog(@"nextStepOfLevel: %ld, isFirstStep %d", level, isFirstStep);
     
     // Spawn heroes
     if (isFirstStep) {
         // Heroes are spawned only at the beginning of each level (in the first step)
-        NSInteger heroesToSpawn = [[_levelConfig get:KEY_HEROES_SPAWNED_AT_LOAD forLevel:_currentLevel] integerValue];
+        NSInteger heroesToSpawn = [[_levelConfig get:KEY_START_HEROES_SPAWNED forLevel:_currentLevel] integerValue];
         for (int i = 0; i < heroesToSpawn; i++) {
             [self spawnHero];
         }
     }
 
     // Spawn enemies
-    NSInteger basicEnemiesToSpawn = [[_levelConfig get:KEY_BASIC_ENEMIES_SPAWNED_PER_STEP forLevel:_currentLevel] integerValue];
+    NSInteger basicEnemiesToSpawn = [[_levelConfig get:KEY_STEP_BASIC_ENEMIES_SPAWNED forLevel:_currentLevel] integerValue];
     for (int i = 0; i < basicEnemiesToSpawn; i++) {
         [self spawnEnemyOfType:@"EnemyBasic"];
     }

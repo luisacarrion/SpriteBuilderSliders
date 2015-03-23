@@ -8,9 +8,9 @@
 
 #import "LevelConfiguration.h"
 
-NSString * const KEY_TOTAL_ENEMIES = @"KeyTotalEnemies";
-NSString * const KEY_BASIC_ENEMIES_SPAWNED_PER_STEP = @"KeyBasicEnemiesSpawnedPerStep";
-NSString * const KEY_HEROES_SPAWNED_AT_LOAD = @"KeyHeroesSpawnedAtLoad";
+NSString * const KEY_TOTAL_ENEMIES = @"total_Enemies";
+NSString * const KEY_STEP_BASIC_ENEMIES_SPAWNED = @"step_BasicEnemiesSpawned";
+NSString * const KEY_START_HEROES_SPAWNED = @"start_HeroesSpawned";
 
 @implementation LevelConfiguration {
     NSArray *_levelConfigurations;
@@ -38,24 +38,14 @@ NSString * const KEY_HEROES_SPAWNED_AT_LOAD = @"KeyHeroesSpawnedAtLoad";
     /* Levels have steps. Which means, one level has various stages.
         For example, if in level 1 you have to kill 6 enemies to pass to level 2, then those 6 enemies won't appear in the map at once;They will apper 2 enemies per step.
      This means that level 1 would have 3 steps: every step spawns 2 enemies. A new step is loaded evey time the user kills all the enemies in the current step.*/
-    NSLog(@"KeyTotalEnemies: %@", KEY_TOTAL_ENEMIES);
-    NSLog(@"KeyTotalEnemies: %@", KEY_BASIC_ENEMIES_SPAWNED_PER_STEP);
-    return [NSArray arrayWithObjects:
-            // Level 1
-            [NSDictionary dictionaryWithObjectsAndKeys:
-             @"2", KEY_HEROES_SPAWNED_AT_LOAD,
-             @"4", KEY_TOTAL_ENEMIES,
-             @"2", KEY_BASIC_ENEMIES_SPAWNED_PER_STEP,
-             nil
-             ],
-            // Level 2
-            [NSDictionary dictionaryWithObjectsAndKeys:
-             @"0", KEY_HEROES_SPAWNED_AT_LOAD,
-             @"6", KEY_TOTAL_ENEMIES,
-             @"3", KEY_BASIC_ENEMIES_SPAWNED_PER_STEP,
-             nil
-             ],
-            nil];
+    
+    NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"LevelConfiguration" ofType:@"plist"];
+    
+    NSArray *arrayOfLevels = [NSArray arrayWithContentsOfFile:plistPath];
+    
+    NSLog(@"plist[0] %@", arrayOfLevels[0]);
+    
+    return arrayOfLevels;
 }
 
 
