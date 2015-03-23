@@ -10,19 +10,26 @@
 typedef NS_ENUM(NSInteger, GameState) {
     GameNotStarted,
     GameRunning,
-    GamePaused
+    GamePaused,
+    GameOver,
+    GameRunningAgain
 };
 
 
 // Game constants
 static const NSInteger CHARACTER_WIDTH = 100;
 static const NSInteger CHARACTER_HEIGHT = 100;
+static const NSString *KEY_GAME_STATE = @"keyGameState";
+static const NSString *KEY_TOP_SCORES = @"keyTopScores";
 
 @implementation MainScene {
     
     // CCNodes - code connections with SpriteBuilder
     CCPhysicsNode *_physicsNode;
     CCLabelTTF *_lblScore;
+    // CCNodes of the Score ccb file
+    CCLabelTTF *_lblYourFinalScore;
+    CCLabelTTF *_lblTopScores;
     
     // Game variables
     GameState _gameState;
@@ -44,7 +51,7 @@ static const NSInteger CHARACTER_HEIGHT = 100;
 
 - (void) didLoadFromCCB {
     // Initialize game variables
-    _gameState = [self getGameState];
+    _gameState = [self getGameStateFromUserDefaults];
     _currentLevel = [self getCurrentLevel];
     _heroes = [NSMutableArray array];
     _enemies = [NSMutableArray array];
@@ -61,8 +68,11 @@ static const NSInteger CHARACTER_HEIGHT = 100;
     _physicsNode.collisionDelegate = self;
     
     // Load appropriate overlay screen depending on game state
+    NSLog(@"gameState: @%ld", _gameState);
     if (_gameState == GameNotStarted) {
         [self loadOverlay:@"Title"];
+    } else if (_gameState == GameRunningAgain || _gameState == GameRunning) {
+        [self startGame];
     }
     
     
@@ -215,10 +225,13 @@ static const NSInteger CHARACTER_HEIGHT = 100;
 }
 
 -(BOOL)ccPhysicsCollisionSeparate:(CCPhysicsCollisionPair*)pair hero:(CCSprite*)hero enemy:(CCNode*)enemy {
-    // After the physics engine step ends, remove the enemy and increment the score
-    [[_physicsNode space] addPostStepBlock:^{
-        [(Enemy*)enemy applyDamage:((Hero*)hero).damage];
-    }key:enemy];
+    if (_gameState == GameRunning) {
+        // After the physics engine step ends, remove the enemy and increment the score
+        [[_physicsNode space] addPostStepBlock:^{
+            [(Enemy*)enemy applyDamage:((Hero*)hero).damage];
+        }key:enemy];
+        
+    }
     return YES;
 }
 
@@ -245,6 +258,11 @@ static const NSInteger CHARACTER_HEIGHT = 100;
     _lblScore.string = [NSString stringWithFormat:@"%ld", _score];
 }
 
+-(NSArray*) getTopScores {
+    NSArray *topScores =  [[NSUserDefaults standardUserDefaults] objectForKey:KEY_TOP_SCORES];
+    return topScores;
+}
+
 #pragma mark Overlays Handling
 
 -(CCNode*) loadOverlay:(NSString*)ccbFile {
@@ -258,6 +276,37 @@ static const NSInteger CHARACTER_HEIGHT = 100;
 
 // Method called from the Title.ccb file
 -(void) play {
+    [self startGame];
+    
+    [self removeChildByName:@"Title"];
+}
+
+-(void) playAgain {
+    [self setGameState:GameRunningAgain];
+    // Reload the game
+    [[CCDirector sharedDirector] replaceScene: [CCBReader loadAsScene:@"MainScene"]];
+}
+
+-(void) home {
+    [self setGameState:GameNotStarted];
+    // Reload the game
+    [[CCDirector sharedDirector] replaceScene: [CCBReader loadAsScene:@"MainScene"]];
+}
+
+#pragma mark Game State Handling
+
+-(GameState) getGameStateFromUserDefaults {
+    GameState state = [[NSUserDefaults standardUserDefaults] integerForKey:KEY_GAME_STATE];
+    return state;
+}
+
+-(void) setGameState:(GameState)state {
+    _gameState = state;
+    NSLog(@"gameState: @%ld", _gameState);
+    [[NSUserDefaults standardUserDefaults] setInteger:_gameState forKey:KEY_GAME_STATE];
+}
+
+-(void) startGame {
     // Load the first level
     [self loadLevel:_currentLevel];
     _lblScore.visible = TRUE;
@@ -265,21 +314,55 @@ static const NSInteger CHARACTER_HEIGHT = 100;
     // Enable user interaction
     self.userInteractionEnabled = TRUE;
     
-    _gameState = GameRunning;
-    
-    [self removeChildByName:@"Title"];
-}
-
-#pragma mark Game State Handling
-
--(GameState) getGameState {
-    // TODO: Add logic to check from the NSUserDefaults if there is a different game state saved
-    return GameNotStarted;
+    [self setGameState:GameRunning];
 }
 
 -(void) endGame {
-    NSLog(@"Game Completed =)");
-    exit(0);
+    [self setGameState:GameNotStarted];
+    self.userInteractionEnabled = FALSE;
+    
+    [self stopAllActions];
+    
+    // Determine top scores
+    NSArray *topScores = [self getTopScores];
+    NSMutableArray *newTopScores = [NSMutableArray arrayWithArray:topScores];
+    
+    if ([newTopScores count] == 0) {
+        // Add the score if we don't have previous top score
+        newTopScores[0] = [NSNumber numberWithInteger:_score];
+    } else {
+        BOOL scoreAdded = FALSE;
+        // If the _score is greater than a previously saved top score, we add it
+        for (int i = 0; i < 5; i++) {
+            if (_score >= [(NSNumber*)newTopScores[i] integerValue]) {
+                [newTopScores insertObject:[NSNumber numberWithInteger:_score] atIndex:i];
+                scoreAdded = TRUE;
+                break;
+            }
+        }
+        // If the score is not greater, but we still don't have 5 top scores saved, we add it
+        if (!scoreAdded && [newTopScores count] < 5) {
+            [newTopScores addObject:[NSNumber numberWithInteger:_score]];
+        }
+    }
+
+    while ([newTopScores count] > 5) {
+        [newTopScores removeLastObject];
+    }
+    
+    // Save the new top scores
+    [[NSUserDefaults standardUserDefaults] setObject:newTopScores forKey:KEY_TOP_SCORES];
+    
+    [self loadOverlay:@"Score"];
+    
+    // Show the scores
+    _lblYourFinalScore.string = [NSString stringWithFormat:@"%ld", _score];
+    
+    NSMutableString *topScoresString = [NSMutableString stringWithString:@""];
+    for (int i = 0; i < [newTopScores count]; i++) {
+        [topScoresString appendString: [NSString stringWithFormat:@"%ld\n", [(NSNumber*)newTopScores[i] integerValue]]];
+    }
+    _lblTopScores.string = topScoresString;
 }
 
 @end
