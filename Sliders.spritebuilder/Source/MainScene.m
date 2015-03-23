@@ -5,6 +5,15 @@
 #import "CCPhysics+ObjectiveChipmunk.h"
 #import "MainScene.h"
 
+// Enum type = NSInteger
+// Enum name = GameState
+typedef NS_ENUM(NSInteger, GameState) {
+    GameNotStarted,
+    GameRunning,
+    GamePaused
+};
+
+
 // Game constants
 static const NSInteger CHARACTER_WIDTH = 100;
 static const NSInteger CHARACTER_HEIGHT = 100;
@@ -16,6 +25,7 @@ static const NSInteger CHARACTER_HEIGHT = 100;
     CCLabelTTF *_lblScore;
     
     // Game variables
+    GameState _gameState;
     NSInteger _currentLevel;
     NSMutableArray *_heroes;  // Holds all the heroes in the level
     NSMutableArray *_enemies;  // Holds all the enemies in the level
@@ -30,8 +40,11 @@ static const NSInteger CHARACTER_HEIGHT = 100;
     
 }
 
+#pragma mark Node Lifecycle
+
 - (void) didLoadFromCCB {
     // Initialize game variables
+    _gameState = [self getGameState];
     _currentLevel = [self getCurrentLevel];
     _heroes = [NSMutableArray array];
     _enemies = [NSMutableArray array];
@@ -44,33 +57,37 @@ static const NSInteger CHARACTER_HEIGHT = 100;
     _pathGenerator.characterWidth = CHARACTER_WIDTH;
     _pathGenerator.characterHeight = CHARACTER_HEIGHT;
     
-    // Load the first level
-    [self loadLevel:_currentLevel];
-    
-    // Enable user interaction
-    self.userInteractionEnabled = TRUE;
     // Set collisions delegate
     _physicsNode.collisionDelegate = self;
+    
+    // Load appropriate overlay screen depending on game state
+    if (_gameState == GameNotStarted) {
+        [self loadOverlay:@"Title"];
+    }
+    
     
     //_physicsNode.debugDraw = true;
     
 }
 
 -(void) update:(CCTime)delta {
-    if ([self isLevelCompleted]) {
-        // Load next level
-        if (![self loadNextLevel]) {
-            // If the next level couldn't be loaded (because there were no more levels), end the game
-            [self endGame];
+    if (_gameState == GameRunning) {
+        
+        if ([self isLevelCompleted]) {
+            // Load next level
+            if (![self loadNextLevel]) {
+                // If the next level couldn't be loaded (because there were no more levels), end the game
+                [self endGame];
+            }
+        } else {
+            // If level is not completed but there are not more enemies to kill, load the next step of the level
+            if ([_enemies count] == 0) {
+                // The next step of the level will spawn new enemies
+                [self loadNextStepOfLevel:_currentLevel isFirstStep:NO];
+            }
         }
-    } else {
-        // If level is not completed but there are not more enemies to kill, load the next step of the level
-        if ([_enemies count] == 0) {
-            // The next step of the level will spawn new enemies
-            [self loadNextStepOfLevel:_currentLevel isFirstStep:NO];
-        }
+        
     }
-    
 }
 
 #pragma mark User Input Events
@@ -228,7 +245,37 @@ static const NSInteger CHARACTER_HEIGHT = 100;
     _lblScore.string = [NSString stringWithFormat:@"%ld", _score];
 }
 
-#pragma mark End Game
+#pragma mark Overlays Handling
+
+-(CCNode*) loadOverlay:(NSString*)ccbFile {
+    CCNode *overlayScreen = [CCBReader load:ccbFile owner:self];
+    overlayScreen.positionType = CCPositionTypeNormalized;
+    overlayScreen.position = ccp(0.5, 0.5);
+    overlayScreen.anchorPoint = ccp(0.5, 0.5);
+    [self addChild:overlayScreen];
+    return overlayScreen;
+}
+
+// Method called from the Title.ccb file
+-(void) play {
+    // Load the first level
+    [self loadLevel:_currentLevel];
+    _lblScore.visible = TRUE;
+    
+    // Enable user interaction
+    self.userInteractionEnabled = TRUE;
+    
+    _gameState = GameRunning;
+    
+    [self removeChildByName:@"Title"];
+}
+
+#pragma mark Game State Handling
+
+-(GameState) getGameState {
+    // TODO: Add logic to check from the NSUserDefaults if there is a different game state saved
+    return GameNotStarted;
+}
 
 -(void) endGame {
     NSLog(@"Game Completed =)");
