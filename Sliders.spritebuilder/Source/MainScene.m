@@ -56,12 +56,6 @@ static const NSInteger CHARACTER_HEIGHT = 100;
     
 }
 
--(void) touchBegan:(CCTouch *)touch withEvent:(CCTouchEvent *)event {
-    CGPoint touchLocation = [touch locationInNode: self];
-    _numberOfKillsInTouch = 0;
-    [self impulseHeroesToPoint:touchLocation];
-}
-
 -(void) update:(CCTime)delta {
     if ([self isLevelCompleted]) {
         // Load next level
@@ -77,6 +71,21 @@ static const NSInteger CHARACTER_HEIGHT = 100;
         }
     }
     
+}
+
+#pragma mark User Input Events
+
+-(void) touchBegan:(CCTouch *)touch withEvent:(CCTouchEvent *)event {
+    CGPoint touchLocation = [touch locationInNode: self];
+    _numberOfKillsInTouch = 0;
+    [self impulseHeroesToPoint:touchLocation];
+}
+
+#pragma mark Level loading
+
+- (NSInteger) getCurrentLevel {
+    // TODO: Add logic to check from the NSUserDefaults if there is a level saved
+    return 1;
 }
 
 -(BOOL) isLevelCompleted {
@@ -134,14 +143,7 @@ static const NSInteger CHARACTER_HEIGHT = 100;
 
 }
 
--(void) impulseHeroesToPoint:(CGPoint)point {
-    for (Hero *hero in _heroes) {
-        double impulseX = point.x - hero.position.x;
-        double impulseY = point.y - hero.position.y;
-        
-        [hero.physicsBody  applyImpulse:ccp(impulseX, impulseY)];
-    }
-}
+#pragma mark Heroes and Enemies Handling
 
 -(void) spawnHero {
     Hero *hero = (Hero *) [CCBReader load:@"Hero"];
@@ -160,21 +162,13 @@ static const NSInteger CHARACTER_HEIGHT = 100;
     enemy.handleEnemyDelegate = self;
 }
 
-#pragma mark Collision Delegate
-
--(BOOL)ccPhysicsCollisionBegin:(CCPhysicsCollisionPair*)pair hero:(CCSprite*)hero1 hero:(CCNode*)hero2 {
-    // Ignore hero collisions so that they can pass through each other
-    return NO;
-}
-
-#pragma mark Collision Delegate
-
--(BOOL)ccPhysicsCollisionSeparate:(CCPhysicsCollisionPair*)pair hero:(CCSprite*)hero enemy:(CCNode*)enemy {
-    // After the physics engine step ends, remove the enemy and increment the score
-    [[_physicsNode space] addPostStepBlock:^{
-        [(Enemy*)enemy applyDamage:((Hero*)hero).damage];
-    }key:enemy];
-    return YES;
+-(void) impulseHeroesToPoint:(CGPoint)point {
+    for (Hero *hero in _heroes) {
+        double impulseX = point.x - hero.position.x;
+        double impulseY = point.y - hero.position.y;
+        
+        [hero.physicsBody  applyImpulse:ccp(impulseX, impulseY)];
+    }
 }
 
 #pragma mark HandleEnemy Delegate
@@ -191,12 +185,29 @@ static const NSInteger CHARACTER_HEIGHT = 100;
     // Calculate obtained score for killing this enemy
     NSInteger scoreObtained = enemy.damageLimit * _numberOfKillsInTouch;
     
-    [self show:scoreObtained forEnemyWithPosition:enemy.position];
+    [self showMessage:scoreObtained forEnemyWithPosition:enemy.position];
     
     [self incrementScoreBy:scoreObtained];
 }
 
--(void) show:(NSInteger)scoreObtained forEnemyWithPosition:(CGPoint)position {
+#pragma mark Collision Delegates
+
+-(BOOL)ccPhysicsCollisionBegin:(CCPhysicsCollisionPair*)pair hero:(CCSprite*)hero1 hero:(CCNode*)hero2 {
+    // Ignore hero collisions so that they can pass through each other
+    return NO;
+}
+
+-(BOOL)ccPhysicsCollisionSeparate:(CCPhysicsCollisionPair*)pair hero:(CCSprite*)hero enemy:(CCNode*)enemy {
+    // After the physics engine step ends, remove the enemy and increment the score
+    [[_physicsNode space] addPostStepBlock:^{
+        [(Enemy*)enemy applyDamage:((Hero*)hero).damage];
+    }key:enemy];
+    return YES;
+}
+
+#pragma mark Score Calculation and Presentation
+
+-(void) showMessage:(NSInteger)scoreObtained forEnemyWithPosition:(CGPoint)position {
     CCLabelTTF *lblScoreObtained = [CCLabelTTF labelWithString:[NSString stringWithFormat:@"+%ld", scoreObtained] fontName:@"Helvetica" fontSize:16];
     
     lblScoreObtained.position = position;
@@ -217,10 +228,7 @@ static const NSInteger CHARACTER_HEIGHT = 100;
     _lblScore.string = [NSString stringWithFormat:@"%ld", _score];
 }
 
-- (NSInteger) getCurrentLevel {
-    // TODO: Add logic to check from the NSUserDefaults if there is a level saved
-    return 1;
-}
+#pragma mark End Game
 
 -(void) endGame {
     NSLog(@"Game Completed =)");
