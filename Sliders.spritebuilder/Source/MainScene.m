@@ -258,10 +258,46 @@ static const NSString *KEY_TOP_SCORES = @"keyTopScores";
     _lblScore.string = [NSString stringWithFormat:@"%ld", _score];
 }
 
--(NSArray*) getTopScores {
+-(NSArray*) getUpdatedTopScores {
+    int MAX_TOP_SCORES = 5;
+    
+    // Get saved top scores
     NSArray *topScores =  [[NSUserDefaults standardUserDefaults] objectForKey:KEY_TOP_SCORES];
-    return topScores;
+    
+    // Insert the current _score as a top score, if applicable
+    NSMutableArray *newTopScores = [NSMutableArray arrayWithArray:topScores];
+    if ([newTopScores count] == 0) {
+        // Add the score if we don't have previous top score
+        newTopScores[0] = [NSNumber numberWithInteger:_score];
+    } else {
+        BOOL scoreAdded = FALSE;
+        
+        // If the _score is greater than a previously saved top score, we add it
+        for (int i = 0; i < MAX_TOP_SCORES; i++) {
+            if (_score >= [(NSNumber*)newTopScores[i] integerValue]) {
+                [newTopScores insertObject:[NSNumber numberWithInteger:_score] atIndex:i];
+                scoreAdded = TRUE;
+                break;
+            }
+        }
+        
+        // If we still don't have the MAX_TOP_SCORES amount, and the score wasn't added, we add it
+        if (!scoreAdded && [newTopScores count] < MAX_TOP_SCORES) {
+            [newTopScores addObject:[NSNumber numberWithInteger:_score]];
+        }
+    }
+    
+    // Keep the scores to the MAX_TOP_SCORES amount
+    while ([newTopScores count] > MAX_TOP_SCORES) {
+        [newTopScores removeLastObject];
+    }
+    
+    // Save the new top scores
+    [[NSUserDefaults standardUserDefaults] setObject:newTopScores forKey:KEY_TOP_SCORES];
+    
+    return newTopScores;
 }
+
 
 #pragma mark Overlays Handling
 
@@ -321,47 +357,17 @@ static const NSString *KEY_TOP_SCORES = @"keyTopScores";
     [self setGameState:GameNotStarted];
     self.userInteractionEnabled = FALSE;
     
-    [self stopAllActions];
-    
-    // Determine top scores
-    NSArray *topScores = [self getTopScores];
-    NSMutableArray *newTopScores = [NSMutableArray arrayWithArray:topScores];
-    
-    if ([newTopScores count] == 0) {
-        // Add the score if we don't have previous top score
-        newTopScores[0] = [NSNumber numberWithInteger:_score];
-    } else {
-        BOOL scoreAdded = FALSE;
-        // If the _score is greater than a previously saved top score, we add it
-        for (int i = 0; i < 5; i++) {
-            if (_score >= [(NSNumber*)newTopScores[i] integerValue]) {
-                [newTopScores insertObject:[NSNumber numberWithInteger:_score] atIndex:i];
-                scoreAdded = TRUE;
-                break;
-            }
-        }
-        // If the score is not greater, but we still don't have 5 top scores saved, we add it
-        if (!scoreAdded && [newTopScores count] < 5) {
-            [newTopScores addObject:[NSNumber numberWithInteger:_score]];
-        }
-    }
-
-    while ([newTopScores count] > 5) {
-        [newTopScores removeLastObject];
-    }
-    
-    // Save the new top scores
-    [[NSUserDefaults standardUserDefaults] setObject:newTopScores forKey:KEY_TOP_SCORES];
-    
     [self loadOverlay:@"Score"];
     
-    // Show the scores
+    // Show the player's score
     _lblYourFinalScore.string = [NSString stringWithFormat:@"%ld", _score];
     
+    // Show the top scores
+    NSArray *topScores = [self getUpdatedTopScores];
     NSMutableString *topScoresString = [NSMutableString stringWithString:@""];
-    for (int i = 0; i < [newTopScores count]; i++) {
-        [topScoresString appendString: [NSString stringWithFormat:@"%ld\n", [(NSNumber*)newTopScores[i] integerValue]]];
-    }
+    for (NSNumber *topScore in topScores) {
+        [topScoresString appendString: [NSString stringWithFormat:@"%ld\n", [topScore integerValue]]];
+    }    
     _lblTopScores.string = topScoresString;
 }
 
