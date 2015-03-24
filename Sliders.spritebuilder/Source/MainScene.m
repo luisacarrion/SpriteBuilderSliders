@@ -36,6 +36,7 @@ static const NSString *KEY_TOP_SCORES = @"keyTopScores";
     GameState _gameState;
     NSInteger _currentLevel;
     NSMutableArray *_heroes;  // Holds all the heroes in the level
+    BOOL _heroesAreMoving;
     NSMutableArray *_enemies;  // Holds all the enemies in the level
     NSInteger _numberOfKillsInLevel;  // Amount of enemies eliminated in the current level
     NSInteger _numberOfKillsInTotal;  // Amount of enemies eliminated in total (in all the levels)
@@ -87,20 +88,22 @@ static const NSString *KEY_TOP_SCORES = @"keyTopScores";
 
 -(void) update:(CCTime)delta {
     if (_gameState == GameRunning) {
-        if ([self isLevelCompleted]) {
-            // Load next level
-            if (![self loadNextLevel]) {
-                // If the next level couldn't be loaded (because there were no more levels), end the game
-                [self endGame];
-            }
-        } else {
-            // If level is not completed but there are not more enemies to kill, load the next step of the level
-            if ([_enemies count] == 0) {
-                // The next step of the level will spawn new enemies
-                [self loadNextStepOfLevel:_currentLevel isFirstStep:NO];
+        // Load next levels when heroes stop moving
+        if (!_heroesAreMoving) {
+            if ([self isLevelCompleted]) {
+                // Load next level
+                if (![self loadNextLevel]) {
+                    // If the next level couldn't be loaded (because there were no more levels), end the game
+                    [self endGame];
+                }
+            } else {
+                // If level is not completed but there are not more enemies to kill, load the next step of the level
+                if ([_enemies count] == 0) {
+                    // The next step of the level will spawn new enemies
+                    [self loadNextStepOfLevel:_currentLevel isFirstStep:NO];
+                }
             }
         }
-        
     }
 }
 
@@ -108,7 +111,12 @@ static const NSString *KEY_TOP_SCORES = @"keyTopScores";
     // Use fixed update to update the velocity, because fixedUpdate is updated with the physics engine
     if (_gameState == GameRunning) {
         // Slow heroes down (to simulate friction), otherwise they would keep moving for ever
-        [self reduceHeroesVelocityByAmount:1];
+        if ([_enemies count] == 0) {
+            // If all enemies have been killed, stop heroes faster, so the next level can be loaded sooner
+            [self reduceHeroesVelocityByAmount:10];
+        } else {
+            [self reduceHeroesVelocityByAmount:1];
+        }
     }
 }
 
@@ -223,9 +231,12 @@ static const NSString *KEY_TOP_SCORES = @"keyTopScores";
         
         [hero.physicsBody  applyImpulse:ccp(impulseX, impulseY)];
     }
+    _heroesAreMoving = TRUE;
 }
 
 -(void) reduceHeroesVelocityByAmount:(double)totalReductionInVelocity {
+    int stoppedHeroesCounter = 0;
+    
     // Reduce the velocity of each hero
     for (Hero *hero in _heroes) {
         // Get the x and y components of the reduction in velocity
@@ -250,8 +261,23 @@ static const NSString *KEY_TOP_SCORES = @"keyTopScores";
             || (normalizedVelocity.y < 0 && hero.physicsBody.velocity.y > 0)) {
             hero.physicsBody.velocity = ccp(hero.physicsBody.velocity.x, 0);
         }
+        
+        if (hero.physicsBody.velocity.x == 0 && hero.physicsBody.velocity.y == 0) {
+            stoppedHeroesCounter++;
+        }
+    }
+    
+    if (stoppedHeroesCounter == [_heroes count]) {
+        _heroesAreMoving = FALSE;
     }
 
+}
+
+-(void) stopAllHeroes {
+    for (Hero *hero in _heroes) {
+        hero.physicsBody.velocity = ccp(0, 0);
+    }
+    _heroesAreMoving = FALSE;
 }
 
 #pragma mark HandleEnemy Delegate
