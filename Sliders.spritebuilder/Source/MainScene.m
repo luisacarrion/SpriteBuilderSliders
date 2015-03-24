@@ -27,6 +27,7 @@ static const NSString *KEY_TOP_SCORES = @"keyTopScores";
     // CCNodes - code connections with SpriteBuilder
     CCPhysicsNode *_physicsNode;
     CCLabelTTF *_lblScore;
+    CCButton *_btnPause;
     // CCNodes of the Score ccb file
     CCLabelTTF *_lblYourFinalScore;
     CCLabelTTF *_lblTopScores;
@@ -71,8 +72,11 @@ static const NSString *KEY_TOP_SCORES = @"keyTopScores";
     NSLog(@"gameState: @%ld", _gameState);
     if (_gameState == GameNotStarted) {
         [self loadOverlay:@"Title"];
-    } else if (_gameState == GameRunningAgain || _gameState == GameRunning) {
+    } else if (_gameState == GameRunningAgain) {
         [self startGame];
+    } else if (_gameState == GamePaused || _gameState == GameRunning) {
+        [self startGame];
+        [self loadOverlay:@"Pause"];
     }
     
     
@@ -317,14 +321,51 @@ static const NSString *KEY_TOP_SCORES = @"keyTopScores";
     [self removeChildByName:@"Title"];
 }
 
+// Method called from the MainScene.ccb file
+-(void) pause {
+    [self setGameState:GamePaused];
+    
+    _btnPause.visible = FALSE;
+    
+    [self loadOverlay:@"Pause"];
+    
+    // Pause the game
+    [[CCDirector sharedDirector] pause];
+}
+
+// Method called from the Pause.ccb file
+-(void) resume {
+    [self setGameState:GameRunning];
+    [self removeChildByName:@"Pause"];
+    _btnPause.visible = TRUE;
+    // Resume the game
+    [[CCDirector sharedDirector] resume];
+}
+
+// Method called from the Score.ccb file
+// Method called from the Pause.ccb file
 -(void) playAgain {
     [self setGameState:GameRunningAgain];
+    
+    // This check is necessary because this method can be called from a paused state
+    if ([CCDirector sharedDirector].paused) {
+        [[CCDirector sharedDirector] resume];
+    }
+    
     // Reload the game
     [[CCDirector sharedDirector] replaceScene: [CCBReader loadAsScene:@"MainScene"]];
 }
 
+// Method called from the Score.ccb file
+// Method called from the Pause.ccb file
 -(void) home {
     [self setGameState:GameNotStarted];
+    
+    // This check is necessary because this method can be called from a paused state
+    if ([CCDirector sharedDirector].paused) {
+        [[CCDirector sharedDirector] resume];
+    }
+    
     // Reload the game
     [[CCDirector sharedDirector] replaceScene: [CCBReader loadAsScene:@"MainScene"]];
 }
@@ -346,6 +387,7 @@ static const NSString *KEY_TOP_SCORES = @"keyTopScores";
     // Load the first level
     [self loadLevel:_currentLevel];
     _lblScore.visible = TRUE;
+    _btnPause.visible = TRUE;
     
     // Enable user interaction
     self.userInteractionEnabled = TRUE;
@@ -367,7 +409,7 @@ static const NSString *KEY_TOP_SCORES = @"keyTopScores";
     NSMutableString *topScoresString = [NSMutableString stringWithString:@""];
     for (NSNumber *topScore in topScores) {
         [topScoresString appendString: [NSString stringWithFormat:@"%ld\n", [topScore integerValue]]];
-    }    
+    }
     _lblTopScores.string = topScoresString;
 }
 
