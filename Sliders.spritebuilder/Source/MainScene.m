@@ -76,6 +76,7 @@ static const NSString *KEY_TOP_SCORES = @"keyTopScores";
         [self startGame];
     } else if (_gameState == GamePaused || _gameState == GameRunning) {
         [self startGame];
+        [self setGameState:GamePaused];
         [self loadOverlay:@"Pause"];
     }
     
@@ -86,7 +87,6 @@ static const NSString *KEY_TOP_SCORES = @"keyTopScores";
 
 -(void) update:(CCTime)delta {
     if (_gameState == GameRunning) {
-        
         if ([self isLevelCompleted]) {
             // Load next level
             if (![self loadNextLevel]) {
@@ -104,12 +104,29 @@ static const NSString *KEY_TOP_SCORES = @"keyTopScores";
     }
 }
 
+-(void) fixedUpdate:(CCTime)delta {
+    // Use fixed update to update the velocity, because fixedUpdate is updated with the physics engine
+    if (_gameState == GameRunning) {
+        // Slow heroes down (to simulate friction), otherwise they would keep moving for ever
+        [self reduceHeroesVelocityByAmount:1];
+    }
+}
+
 #pragma mark User Input Events
 
 -(void) touchBegan:(CCTouch *)touch withEvent:(CCTouchEvent *)event {
-    CGPoint touchLocation = [touch locationInNode: self];
-    _numberOfKillsInTouch = 0;
-    [self impulseHeroesToPoint:touchLocation];
+    
+    if (_gameState == GameRunning) {
+        CGPoint touchLocation = [touch locationInNode: self];
+        _numberOfKillsInTouch = 0;
+
+        // Stop heroes that are moving, so they are moved in the new direction
+        for (Hero *hero in _heroes) {
+            hero.physicsBody.velocity = ccp(0, 0);
+        }
+    
+        [self impulseHeroesToPoint:touchLocation withImpulse:150];
+    }
 }
 
 #pragma mark Level loading
@@ -193,13 +210,48 @@ static const NSString *KEY_TOP_SCORES = @"keyTopScores";
     enemy.handleEnemyDelegate = self;
 }
 
--(void) impulseHeroesToPoint:(CGPoint)point {
+-(void) impulseHeroesToPoint:(CGPoint)point withImpulse:(double)impulse {
     for (Hero *hero in _heroes) {
+        // Determine direction of the impulse
         double impulseX = point.x - hero.position.x;
         double impulseY = point.y - hero.position.y;
         
+        // Get the x and y components of the impulse
+        CGPoint normalizedImpulse = ccpNormalize(ccp(impulseX, impulseY));
+        impulseX = normalizedImpulse.x * impulse;
+        impulseY = normalizedImpulse.y * impulse;
+        
         [hero.physicsBody  applyImpulse:ccp(impulseX, impulseY)];
     }
+}
+
+-(void) reduceHeroesVelocityByAmount:(double)totalReductionInVelocity {
+    // Reduce the velocity of each hero
+    for (Hero *hero in _heroes) {
+        // Get the x and y components of the reduction in velocity
+        CGPoint normalizedVelocity = ccpNormalize(hero.physicsBody.velocity);
+        double reductionInX = normalizedVelocity.x * totalReductionInVelocity;
+        double reducitonInY = normalizedVelocity.y * totalReductionInVelocity;
+        
+        // Keep reducing velocity until the hero stops (until velocity is 0)
+        if (hero.physicsBody.velocity.x != 0) {
+            hero.physicsBody.velocity = ccp(hero.physicsBody.velocity.x - reductionInX, hero.physicsBody.velocity.y);
+        }
+        if (hero.physicsBody.velocity.y != 0) {
+            hero.physicsBody.velocity = ccp(hero.physicsBody.velocity.x, hero.physicsBody.velocity.y - reducitonInY);
+        }
+        
+        // If the new velocity passed over 0, then we set the velocity at 0
+        if ( (normalizedVelocity.x > 0 && hero.physicsBody.velocity.x < 0)
+            || (normalizedVelocity.x < 0 && hero.physicsBody.velocity.x > 0) ) {
+            hero.physicsBody.velocity = ccp(0, hero.physicsBody.velocity.y);
+        }
+        if ((normalizedVelocity.y > 0 && hero.physicsBody.velocity.y < 0)
+            || (normalizedVelocity.y < 0 && hero.physicsBody.velocity.y > 0)) {
+            hero.physicsBody.velocity = ccp(hero.physicsBody.velocity.x, 0);
+        }
+    }
+
 }
 
 #pragma mark HandleEnemy Delegate
@@ -311,6 +363,7 @@ static const NSString *KEY_TOP_SCORES = @"keyTopScores";
     overlayScreen.position = ccp(0.5, 0.5);
     overlayScreen.anchorPoint = ccp(0.5, 0.5);
     [self addChild:overlayScreen];
+    
     return overlayScreen;
 }
 
@@ -325,8 +378,6 @@ static const NSString *KEY_TOP_SCORES = @"keyTopScores";
 -(void) pause {
     [self setGameState:GamePaused];
     
-    _btnPause.visible = FALSE;
-    
     [self loadOverlay:@"Pause"];
     
     // Pause the game
@@ -337,7 +388,6 @@ static const NSString *KEY_TOP_SCORES = @"keyTopScores";
 -(void) resume {
     [self setGameState:GameRunning];
     [self removeChildByName:@"Pause"];
-    _btnPause.visible = TRUE;
     // Resume the game
     [[CCDirector sharedDirector] resume];
 }
@@ -379,25 +429,33 @@ static const NSString *KEY_TOP_SCORES = @"keyTopScores";
 
 -(void) setGameState:(GameState)state {
     _gameState = state;
-    NSLog(@"gameState: @%ld", _gameState);
+    NSLog(@"setGameState() gameState: @%ld", _gameState);
+    
     [[NSUserDefaults standardUserDefaults] setInteger:_gameState forKey:KEY_GAME_STATE];
+    
+    // If the game state is different from GameRunning, we should disable some stuff
+    if (_gameState != GameRunning) {
+        self.userInteractionEnabled = FALSE;
+        _btnPause.visible = FALSE;
+        _lblScore.visible = FALSE;
+    } else {
+        self.userInteractionEnabled = TRUE;
+        _btnPause.visible = TRUE;
+        _lblScore.visible = TRUE;
+
+    }
+        
 }
 
 -(void) startGame {
     // Load the first level
     [self loadLevel:_currentLevel];
-    _lblScore.visible = TRUE;
-    _btnPause.visible = TRUE;
-    
-    // Enable user interaction
-    self.userInteractionEnabled = TRUE;
     
     [self setGameState:GameRunning];
 }
 
 -(void) endGame {
     [self setGameState:GameNotStarted];
-    self.userInteractionEnabled = FALSE;
     
     [self loadOverlay:@"Score"];
     
