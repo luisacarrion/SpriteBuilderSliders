@@ -21,6 +21,9 @@ static const NSInteger CHARACTER_WIDTH = 100;
 static const NSInteger CHARACTER_HEIGHT = 100;
 static const NSString *KEY_GAME_STATE = @"keyGameState";
 static const NSString *KEY_TOP_SCORES = @"keyTopScores";
+static const NSInteger HERO_IMPULSE = 180;
+static const NSInteger HERO_VEL_REDUCTION_WITH_ENEMIES = 1;
+static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
 
 @implementation MainScene {
     
@@ -113,9 +116,9 @@ static const NSString *KEY_TOP_SCORES = @"keyTopScores";
         // Slow heroes down (to simulate friction), otherwise they would keep moving for ever
         if ([_enemies count] == 0) {
             // If all enemies have been killed, stop heroes faster, so the next level can be loaded sooner
-            [self reduceHeroesVelocityByAmount:10];
+            [self reduceHeroesVelocityByAmount:HERO_VEL_REDUCTION_WITHOUT_ENEMIES];
         } else {
-            [self reduceHeroesVelocityByAmount:1];
+            [self reduceHeroesVelocityByAmount:HERO_VEL_REDUCTION_WITH_ENEMIES];
         }
     }
 }
@@ -133,7 +136,7 @@ static const NSString *KEY_TOP_SCORES = @"keyTopScores";
             hero.physicsBody.velocity = ccp(0, 0);
         }
     
-        [self impulseHeroesToPoint:touchLocation withImpulse:150];
+        [self impulseHeroesToPoint:touchLocation withImpulse:HERO_IMPULSE];
     }
 }
 
