@@ -12,6 +12,28 @@
 @implementation Enemy {
 }
 
+- (void) didLoadFromCCB {
+    // Set physics properties
+    self.physicsBody.collisionType = @"enemy";
+    self.physicsBody.sensor = YES;
+    
+    // Set drawing order
+    self.zOrder = DrawingOrderEnemy;
+}
+
+-(void) applyDamage:(NSInteger)damage {
+    self.damageReceived += damage;
+    if (self.damageReceived >= self.damageLimit) {
+        [self die];
+    }
+}
+
+-(void) die {
+    [self.handleEnemyDelegate removeEnemy:self];
+}
+
+#pragma mark NSCoding Delegates
+
 -(id)initWithCoder:(NSCoder *)decoder {
     self = [super init];
     if (!self) {
@@ -33,26 +55,6 @@
     // Variables from Enemy class
     [encoder encodeObject:self.ccbFileName forKey:@"ccbFileName"];
     [encoder encodeInteger:self.damageReceived forKey:@"damageReceived"];
-}
-
-- (void) didLoadFromCCB {
-    // Set physics properties
-    self.physicsBody.collisionType = @"enemy";
-    self.physicsBody.sensor = YES;
-    
-    // Set drawing order
-    self.zOrder = DrawingOrderEnemy;
-}
-
--(void) applyDamage:(NSInteger)damage {
-    self.damageReceived += damage;
-    if (self.damageReceived >= self.damageLimit) {
-        [self die];
-    }
-}
-
--(void) die {
-    [self.handleEnemyDelegate removeEnemy:self];
 }
 
 @end

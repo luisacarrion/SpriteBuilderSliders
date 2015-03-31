@@ -13,6 +13,19 @@ static const NSInteger INITIAL_DAMAGE = 1;
 
 @implementation Hero
 
+- (void) didLoadFromCCB {
+    // Set physics properties
+    self.physicsBody.collisionType = @"hero";
+    
+    // Set drawing order
+    self.zOrder = DrawingOrderHero;
+    
+    // Set initial damage
+    self.damage = INITIAL_DAMAGE;
+}
+
+#pragma mark NSCoding Delegates
+
 -(id)initWithCoder:(NSCoder *)decoder {
     self = [super init];
     if (!self) {
@@ -38,17 +51,5 @@ static const NSInteger INITIAL_DAMAGE = 1;
     [encoder encodeObject:self.ccbFileName forKey:@"ccbFileName"];
     [encoder encodeInteger:self.damage forKey:@"damage"];
 }
-
-- (void) didLoadFromCCB {
-    // Set physics properties
-    self.physicsBody.collisionType = @"hero";
-    
-    // Set drawing order
-    self.zOrder = DrawingOrderHero;
-    
-    // Set initial damage
-    self.damage = INITIAL_DAMAGE;
-}
-
 
 @end
