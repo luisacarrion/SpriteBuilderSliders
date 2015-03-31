@@ -1,19 +1,10 @@
+#import "GameState.h"
 #import "Enemy.h"
 #import "Hero.h"
 #import "PositionGenerator.h"
 #import "LevelConfiguration.h"
 #import "CCPhysics+ObjectiveChipmunk.h"
 #import "MainScene.h"
-
-// Enum type = NSInteger
-// Enum name = GameState
-typedef NS_ENUM(NSInteger, GameState) {
-    GameNotStarted,
-    GameRunning,
-    GamePaused,
-    GameOver,
-    GameRunningAgain
-};
 
 
 // Game constants
@@ -36,15 +27,7 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
     CCLabelTTF *_lblTopScores;
     
     // Game variables
-    GameState _gameState;
-    NSInteger _currentLevel;
-    NSMutableArray *_heroes;  // Holds all the heroes in the level
-    BOOL _heroesAreMoving;
-    NSMutableArray *_enemies;  // Holds all the enemies in the level
-    NSInteger _numberOfKillsInLevel;  // Amount of enemies eliminated in the current level
-    NSInteger _numberOfKillsInTotal;  // Amount of enemies eliminated in total (in all the levels)
-    NSInteger _numberOfKillsInTouch;  // Amount of enemies eliminated with a single touch
-    NSInteger _score;
+    GameState *g;
     
     // Helper objects
     PositionGenerator *_pathGenerator;  // Generates positions for new enemies and power ups
@@ -56,10 +39,12 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
 
 - (void) didLoadFromCCB {
     // Initialize game variables
-    _gameState = [self getGameStateFromUserDefaults];
-    _currentLevel = [self getCurrentLevel];
-    _heroes = [NSMutableArray array];
-    _enemies = [NSMutableArray array];
+    g = [GameState sharedInstance];
+    
+    g.gameState = [self getGameStateLabelFromUserDefaults];
+    g.currentLevel = [self getCurrentLevel];
+    g.heroes = [NSMutableArray array];
+    g.enemies = [NSMutableArray array];
 
     // Initialize helper objects
     _levelConfig = [[LevelConfiguration alloc] init];
@@ -73,14 +58,14 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
     _physicsNode.collisionDelegate = self;
     
     // Load appropriate overlay screen depending on game state
-    NSLog(@"gameState: @%ld", _gameState);
-    if (_gameState == GameNotStarted) {
+    NSLog(@"gameState: @%ld", g.gameState);
+    if (g.gameState == GameNotStarted) {
         [self loadOverlay:@"Title"];
-    } else if (_gameState == GameRunningAgain) {
+    } else if (g.gameState == GameRunningAgain) {
         [self startGame];
-    } else if (_gameState == GamePaused || _gameState == GameRunning) {
+    } else if (g.gameState == GamePaused || g.gameState == GameRunning) {
         [self startGame];
-        [self setGameState:GamePaused];
+        [self setGameStateLabel:GamePaused];
         [self loadOverlay:@"Pause"];
     }
     
@@ -90,9 +75,9 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
 }
 
 -(void) update:(CCTime)delta {
-    if (_gameState == GameRunning) {
+    if (g.gameState == GameRunning) {
         // Load next levels when heroes stop moving
-        if (!_heroesAreMoving) {
+        if (!g.heroesAreMoving) {
             if ([self isLevelCompleted]) {
                 // Load next level
                 if (![self loadNextLevel]) {
@@ -101,9 +86,9 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
                 }
             } else {
                 // If level is not completed but there are not more enemies to kill, load the next step of the level
-                if ([_enemies count] == 0) {
+                if ([g.enemies count] == 0) {
                     // The next step of the level will spawn new enemies
-                    [self loadNextStepOfLevel:_currentLevel isFirstStep:NO];
+                    [self loadNextStepOfLevel:g.currentLevel isFirstStep:NO];
                 }
             }
         }
@@ -112,9 +97,9 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
 
 -(void) fixedUpdate:(CCTime)delta {
     // Use fixed update to update the velocity, because fixedUpdate is updated with the physics engine
-    if (_gameState == GameRunning) {
+    if (g.gameState == GameRunning) {
         // Slow heroes down (to simulate friction), otherwise they would keep moving for ever
-        if ([_enemies count] == 0) {
+        if ([g.enemies count] == 0) {
             // If all enemies have been killed, stop heroes faster, so the next level can be loaded sooner
             [self reduceHeroesVelocityByAmount:HERO_VEL_REDUCTION_WITHOUT_ENEMIES];
         } else {
@@ -126,13 +111,12 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
 #pragma mark User Input Events
 
 -(void) touchBegan:(CCTouch *)touch withEvent:(CCTouchEvent *)event {
-    
-    if (_gameState == GameRunning) {
+    if (g.gameState == GameRunning) {
         CGPoint touchLocation = [touch locationInNode: self];
-        _numberOfKillsInTouch = 0;
+        g.numberOfKillsInTouch = 0;
 
         // Stop heroes that are moving, so they are moved in the new direction
-        for (Hero *hero in _heroes) {
+        for (Hero *hero in g.heroes) {
             hero.physicsBody.velocity = ccp(0, 0);
         }
     
@@ -151,9 +135,9 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
     BOOL levelCompleted = false;
     
     NSInteger enemiesForNextLevel =
-            [[_levelConfig get:KEY_TOTAL_ENEMIES forLevel:_currentLevel] integerValue];
+            [[_levelConfig get:KEY_TOTAL_ENEMIES forLevel:g.currentLevel] integerValue];
     
-    if (_numberOfKillsInLevel >= enemiesForNextLevel) {
+    if (g.numberOfKillsInLevel >= enemiesForNextLevel) {
         levelCompleted = true;
     }
     
@@ -162,10 +146,10 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
 
 -(BOOL) loadNextLevel {
     BOOL nextLevelLoaded = false;
-    _currentLevel++;
-    if (_currentLevel <= [_levelConfig getLevelsCount]) {
+    g.currentLevel++;
+    if (g.currentLevel <= [_levelConfig getLevelsCount]) {
         // If there are more levels, load next level
-        [self loadLevel:_currentLevel];
+        [self loadLevel:g.currentLevel];
         nextLevelLoaded = true;
     }
     return nextLevelLoaded;
@@ -173,9 +157,8 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
 
 /* Load the level passed as argument. Loading the level implies: spawning the enemies, spawning power ups and spawning other objects defined in the LevelConfiguration.m file */
 - (void) loadLevel:(NSInteger)level {
-
     // Reset the number of enemies killed per level
-    _numberOfKillsInLevel = 0;
+    g.numberOfKillsInLevel = 0;
     
     // Load the first step of the level
     [self loadNextStepOfLevel:level isFirstStep:YES];
@@ -184,18 +167,17 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
 // A new step of the level is loaded when the user kills all the enemies in the current step
 -(void) loadNextStepOfLevel:(NSInteger)level isFirstStep:(BOOL)isFirstStep {
     NSLog(@"nextStepOfLevel: %ld, isFirstStep %d", level, isFirstStep);
-    
     // Spawn heroes
     if (isFirstStep) {
         // Heroes are spawned only at the beginning of each level (in the first step)
-        NSInteger heroesToSpawn = [[_levelConfig get:KEY_START_HEROES_SPAWNED forLevel:_currentLevel] integerValue];
+        NSInteger heroesToSpawn = [[_levelConfig get:KEY_START_HEROES_SPAWNED forLevel:g.currentLevel] integerValue];
         for (int i = 0; i < heroesToSpawn; i++) {
             [self spawnHero];
         }
     }
 
     // Spawn enemies
-    NSInteger basicEnemiesToSpawn = [[_levelConfig get:KEY_STEP_BASIC_ENEMIES_SPAWNED forLevel:_currentLevel] integerValue];
+    NSInteger basicEnemiesToSpawn = [[_levelConfig get:KEY_STEP_BASIC_ENEMIES_SPAWNED forLevel:g.currentLevel] integerValue];
     for (int i = 0; i < basicEnemiesToSpawn; i++) {
         [self spawnEnemyOfType:@"EnemyBasic"];
     }
@@ -206,7 +188,7 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
 
 -(void) spawnHero {
     Hero *hero = (Hero *) [CCBReader load:@"Hero"];
-    [_heroes addObject:hero];
+    [g.heroes addObject:hero];
     [_physicsNode addChild:hero];
     
     hero.position = [_pathGenerator getRandomPosition];
@@ -214,7 +196,7 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
 
 -(void) spawnEnemyOfType:(NSString*)enemyType {
     Enemy *enemy = (Enemy *) [CCBReader load:enemyType];
-    [_enemies addObject:enemy];
+    [g.enemies addObject:enemy];
     [_physicsNode addChild:enemy];
     
     enemy.position = [_pathGenerator getRandomPosition];
@@ -222,7 +204,7 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
 }
 
 -(void) impulseHeroesToPoint:(CGPoint)point withImpulse:(double)impulse {
-    for (Hero *hero in _heroes) {
+    for (Hero *hero in g.heroes) {
         // Determine direction of the impulse
         double impulseX = point.x - hero.position.x;
         double impulseY = point.y - hero.position.y;
@@ -234,14 +216,14 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
         
         [hero.physicsBody  applyImpulse:ccp(impulseX, impulseY)];
     }
-    _heroesAreMoving = TRUE;
+    g.heroesAreMoving = TRUE;
 }
 
 -(void) reduceHeroesVelocityByAmount:(double)totalReductionInVelocity {
     int stoppedHeroesCounter = 0;
     
     // Reduce the velocity of each hero
-    for (Hero *hero in _heroes) {
+    for (Hero *hero in g.heroes) {
         // Get the x and y components of the reduction in velocity
         CGPoint normalizedVelocity = ccpNormalize(hero.physicsBody.velocity);
         double reductionInX = normalizedVelocity.x * totalReductionInVelocity;
@@ -270,32 +252,32 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
         }
     }
     
-    if (stoppedHeroesCounter == [_heroes count]) {
-        _heroesAreMoving = FALSE;
+    if (stoppedHeroesCounter == [g.heroes count]) {
+        g.heroesAreMoving = FALSE;
     }
 
 }
 
 -(void) stopAllHeroes {
-    for (Hero *hero in _heroes) {
+    for (Hero *hero in g.heroes) {
         hero.physicsBody.velocity = ccp(0, 0);
     }
-    _heroesAreMoving = FALSE;
+    g.heroesAreMoving = FALSE;
 }
 
 #pragma mark HandleEnemy Delegate
 
 -(void) removeEnemy:(Enemy *)enemy {
     [enemy removeFromParent];
-    [_enemies removeObject:enemy];
+    [g.enemies removeObject:enemy];
     
     // Increment enemies killed counters
-    _numberOfKillsInTouch++;
-    _numberOfKillsInLevel++;
-    _numberOfKillsInTotal++;
+    g.numberOfKillsInTouch++;
+    g.numberOfKillsInLevel++;
+    g.numberOfKillsInTotal++;
     
     // Calculate obtained score for killing this enemy
-    NSInteger scoreObtained = enemy.damageLimit * _numberOfKillsInTouch;
+    NSInteger scoreObtained = enemy.damageLimit * g.numberOfKillsInTouch;
     
     [self showMessage:scoreObtained forEnemyWithPosition:enemy.position];
     
@@ -310,7 +292,7 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
 }
 
 -(BOOL)ccPhysicsCollisionSeparate:(CCPhysicsCollisionPair*)pair hero:(CCSprite*)hero enemy:(CCNode*)enemy {
-    if (_gameState == GameRunning) {
+    if (g.gameState == GameRunning) {
         // After the physics engine step ends, remove the enemy and increment the score
         [[_physicsNode space] addPostStepBlock:^{
             [(Enemy*)enemy applyDamage:((Hero*)hero).damage];
@@ -339,8 +321,8 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
 }
 
 -(void) incrementScoreBy:(NSInteger)amount {
-    _score += amount;
-    _lblScore.string = [NSString stringWithFormat:@"%ld", _score];
+    g.score += amount;
+    _lblScore.string = [NSString stringWithFormat:@"%ld", g.score];
 }
 
 -(NSArray*) getUpdatedTopScores {
@@ -353,14 +335,14 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
     NSMutableArray *newTopScores = [NSMutableArray arrayWithArray:topScores];
     if ([newTopScores count] == 0) {
         // Add the score if we don't have previous top score
-        newTopScores[0] = [NSNumber numberWithInteger:_score];
+        newTopScores[0] = [NSNumber numberWithInteger:g.score];
     } else {
         BOOL scoreAdded = FALSE;
         
         // If the _score is greater than a previously saved top score, we add it
         for (int i = 0; i < MAX_TOP_SCORES; i++) {
-            if (_score >= [(NSNumber*)newTopScores[i] integerValue]) {
-                [newTopScores insertObject:[NSNumber numberWithInteger:_score] atIndex:i];
+            if (g.score >= [(NSNumber*)newTopScores[i] integerValue]) {
+                [newTopScores insertObject:[NSNumber numberWithInteger:g.score] atIndex:i];
                 scoreAdded = TRUE;
                 break;
             }
@@ -368,7 +350,7 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
         
         // If we still don't have the MAX_TOP_SCORES amount, and the score wasn't added, we add it
         if (!scoreAdded && [newTopScores count] < MAX_TOP_SCORES) {
-            [newTopScores addObject:[NSNumber numberWithInteger:_score]];
+            [newTopScores addObject:[NSNumber numberWithInteger:g.score]];
         }
     }
     
@@ -405,7 +387,7 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
 
 // Method called from the MainScene.ccb file
 -(void) pause {
-    [self setGameState:GamePaused];
+    [self setGameStateLabel:GamePaused];
     
     [self loadOverlay:@"Pause"];
     
@@ -415,7 +397,7 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
 
 // Method called from the Pause.ccb file
 -(void) resume {
-    [self setGameState:GameRunning];
+    [self setGameStateLabel:GameRunning];
     [self removeChildByName:@"Pause"];
     // Resume the game
     [[CCDirector sharedDirector] resume];
@@ -424,7 +406,7 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
 // Method called from the Score.ccb file
 // Method called from the Pause.ccb file
 -(void) playAgain {
-    [self setGameState:GameRunningAgain];
+    [self setGameStateLabel:GameRunningAgain];
     
     // This check is necessary because this method can be called from a paused state
     if ([CCDirector sharedDirector].paused) {
@@ -438,7 +420,7 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
 // Method called from the Score.ccb file
 // Method called from the Pause.ccb file
 -(void) home {
-    [self setGameState:GameNotStarted];
+    [self setGameStateLabel:GameNotStarted];
     
     // This check is necessary because this method can be called from a paused state
     if ([CCDirector sharedDirector].paused) {
@@ -451,19 +433,19 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
 
 #pragma mark Game State Handling
 
--(GameState) getGameStateFromUserDefaults {
-    GameState state = [[NSUserDefaults standardUserDefaults] integerForKey:KEY_GAME_STATE];
+-(GameStateLabel) getGameStateLabelFromUserDefaults {
+    GameStateLabel state = [[NSUserDefaults standardUserDefaults] integerForKey:KEY_GAME_STATE];
     return state;
 }
 
--(void) setGameState:(GameState)state {
-    _gameState = state;
-    NSLog(@"setGameState() gameState: @%ld", _gameState);
+-(void) setGameStateLabel:(GameStateLabel)state {
+    g.gameState = state;
+    NSLog(@"setGameState() gameState: @%ld", g.gameState);
     
-    [[NSUserDefaults standardUserDefaults] setInteger:_gameState forKey:KEY_GAME_STATE];
+    [[NSUserDefaults standardUserDefaults] setInteger:g.gameState forKey:KEY_GAME_STATE];
     
     // If the game state is different from GameRunning, we should disable some stuff
-    if (_gameState != GameRunning) {
+    if (g.gameState != GameRunning) {
         self.userInteractionEnabled = FALSE;
         _btnPause.visible = FALSE;
         _lblScore.visible = FALSE;
@@ -478,18 +460,18 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
 
 -(void) startGame {
     // Load the first level
-    [self loadLevel:_currentLevel];
+    [self loadLevel:g.currentLevel];
     
-    [self setGameState:GameRunning];
+    [self setGameStateLabel:GameRunning];
 }
 
 -(void) endGame {
-    [self setGameState:GameNotStarted];
+    [self setGameStateLabel:GameNotStarted];
     
     [self loadOverlay:@"Score"];
     
     // Show the player's score
-    _lblYourFinalScore.string = [NSString stringWithFormat:@"%ld", _score];
+    _lblYourFinalScore.string = [NSString stringWithFormat:@"%ld", g.score];
     
     // Show the top scores
     NSArray *topScores = [self getUpdatedTopScores];

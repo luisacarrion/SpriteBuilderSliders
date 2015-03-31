@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0D30549E1ABF756B0049FF1D /* LevelConfiguration.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0D30549D1ABF756B0049FF1D /* LevelConfiguration.plist */; };
 		0D6E91371A98A8D200E350D1 /* PositionGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D6E91361A98A8D200E350D1 /* PositionGenerator.m */; };
+		0DA2CD681ACA1D0E006CF797 /* GameState.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DA2CD671ACA1D0E006CF797 /* GameState.m */; };
 		0DE8D28D1A9986CC00614CBF /* LevelConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DE8D28C1A9986CC00614CBF /* LevelConfiguration.m */; };
 		0DFE3CCD1A988112008E66D9 /* Hero.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DFE3CCC1A988112008E66D9 /* Hero.m */; };
 		0DFE3CD71A9881CD008E66D9 /* Enemy.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DFE3CD61A9881CD008E66D9 /* Enemy.m */; };
@@ -150,6 +151,8 @@
 		0D30549D1ABF756B0049FF1D /* LevelConfiguration.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = LevelConfiguration.plist; sourceTree = "<group>"; };
 		0D6E91351A98A8D200E350D1 /* PositionGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PositionGenerator.h; path = Source/PositionGenerator.h; sourceTree = "<group>"; };
 		0D6E91361A98A8D200E350D1 /* PositionGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PositionGenerator.m; path = Source/PositionGenerator.m; sourceTree = "<group>"; };
+		0DA2CD661ACA1D0E006CF797 /* GameState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GameState.h; path = Source/GameState.h; sourceTree = "<group>"; };
+		0DA2CD671ACA1D0E006CF797 /* GameState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GameState.m; path = Source/GameState.m; sourceTree = "<group>"; };
 		0DB557CE1AA716DA000337E3 /* HandleEnemy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HandleEnemy.h; path = Source/HandleEnemy.h; sourceTree = "<group>"; };
 		0DE8D28B1A9986CC00614CBF /* LevelConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LevelConfiguration.h; path = Source/LevelConfiguration.h; sourceTree = "<group>"; };
 		0DE8D28C1A9986CC00614CBF /* LevelConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LevelConfiguration.m; path = Source/LevelConfiguration.m; sourceTree = "<group>"; };
@@ -448,6 +451,8 @@
 				0DB557CE1AA716DA000337E3 /* HandleEnemy.h */,
 				B7378992180767190076A88C /* MainScene.h */,
 				B7378993180767190076A88C /* MainScene.m */,
+				0DA2CD661ACA1D0E006CF797 /* GameState.h */,
+				0DA2CD671ACA1D0E006CF797 /* GameState.m */,
 				0DE8D28B1A9986CC00614CBF /* LevelConfiguration.h */,
 				0DE8D28C1A9986CC00614CBF /* LevelConfiguration.m */,
 				0D6E91351A98A8D200E350D1 /* PositionGenerator.h */,
@@ -828,6 +833,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B73789871807631A0076A88C /* main.m in Sources */,
+				0DA2CD681ACA1D0E006CF797 /* GameState.m in Sources */,
 				0DFE3CD71A9881CD008E66D9 /* Enemy.m in Sources */,
 				7A046D8C19E8A20E004C4763 /* MainScene.m in Sources */,
 				0D6E91371A98A8D200E350D1 /* PositionGenerator.m in Sources */,
