@@ -136,11 +136,6 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
 
 #pragma mark Level loading
 
-- (NSInteger) getCurrentLevel {
-    // TODO: Add logic to check from the NSUserDefaults if there is a level saved
-    return 1;
-}
-
 -(BOOL) isLevelCompleted {
     BOOL levelCompleted = false;
     
