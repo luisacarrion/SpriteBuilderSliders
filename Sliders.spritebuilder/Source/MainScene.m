@@ -10,7 +10,7 @@
 // Game constants
 static const NSInteger CHARACTER_WIDTH = 100;
 static const NSInteger CHARACTER_HEIGHT = 100;
-static const NSString *KEY_GAME_STATE = @"keyGameState";
+static const NSString *KEY_GAME_STATE_LABEL = @"keyGameStateLabel";
 static const NSString *KEY_TOP_SCORES = @"keyTopScores";
 static const NSInteger HERO_IMPULSE = 180;
 static const NSInteger HERO_VEL_REDUCTION_WITH_ENEMIES = 1;
@@ -19,6 +19,7 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
 @implementation MainScene {
     
     // CCNodes - code connections with SpriteBuilder
+    // CCNodes of the MainScene ccb file
     CCPhysicsNode *_physicsNode;
     CCLabelTTF *_lblScore;
     CCButton *_btnPause;
@@ -38,14 +39,10 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
 #pragma mark Node Lifecycle
 
 - (void) didLoadFromCCB {
-    // Initialize game variables
+    // Initialize game state
     g = [GameState sharedInstance];
+    [g loadStateFromUserDefaults];
     
-    g.gameState = [self getGameStateLabelFromUserDefaults];
-    g.currentLevel = [self getCurrentLevel];
-    g.heroes = [NSMutableArray array];
-    g.enemies = [NSMutableArray array];
-
     // Initialize helper objects
     _levelConfig = [[LevelConfiguration alloc] init];
     _pathGenerator = [[PositionGenerator alloc] init];
@@ -57,18 +54,31 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
     // Set collisions delegate
     _physicsNode.collisionDelegate = self;
     
-    // Load appropriate overlay screen depending on game state
-    NSLog(@"gameState: @%ld", g.gameState);
-    if (g.gameState == GameNotStarted) {
-        [self loadOverlay:@"Title"];
-    } else if (g.gameState == GameRunningAgain) {
-        [self startGame];
-    } else if (g.gameState == GamePaused || g.gameState == GameRunning) {
-        [self startGame];
-        [self setGameStateLabel:GamePaused];
-        [self loadOverlay:@"Pause"];
-    }
+    NSLog(@"didLoadFromCCB() gameState: @%ld", g.gameState);
     
+    // Load appropriate overlay screen depending on game state
+    if (g.gameState == GameNotStarted) {
+        
+        // GameNotStarted: means the player just launched the game, so we show the title screen
+        [self loadOverlay:@"Title"];
+        
+    } else if (g.gameState == GameRunningAgain) {
+        
+        // GameRunningAgain: means the player pressed the "play again" button from the pause overlay, therefore we begin the game immediately, withouth showing any overlays
+        [self startGame];
+        
+    } else if (g.gameState == GamePaused || g.gameState == GameRunning) {
+        
+        // If the user left the app when the game was paused or running, we update the game objects with the data saved in the NSUserDefaults and then we load the pause overlay so the player can resume the game
+        [self updateScoreLabel];
+        
+        // Recreate the CCSprite objects that couldn't be serialized completely and saved into NSUserDefaults
+        [self recreateHeroes];
+        [self recreateEnemies];
+        
+        // Simulate pressing the pause button
+        [self pause];
+    }
     
     //_physicsNode.debugDraw = true;
     
@@ -170,16 +180,11 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
     NSLog(@"nextStepOfLevel: %ld, isFirstStep %d", level, isFirstStep);
     // Spawn heroes
     if (isFirstStep) {
-        // The first step is step 0
-        g.currentStep = 0;
         // Heroes are spawned only at the beginning of each level (in the first step)
         NSInteger heroesToSpawn = [[_levelConfig get:KEY_START_HEROES_SPAWNED forLevel:g.currentLevel] integerValue];
         for (int i = 0; i < heroesToSpawn; i++) {
             [self spawnHero];
         }
-    } else {
-        // Update the game state with the current step of the level being loaded
-        g.currentStep++;
     }
 
     // Spawn enemies
@@ -197,6 +202,7 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
     [g.heroes addObject:hero];
     [_physicsNode addChild:hero];
     
+    hero.ccbFileName = @"Hero";
     hero.position = [_pathGenerator getRandomPosition];
 }
 
@@ -205,8 +211,42 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
     [g.enemies addObject:enemy];
     [_physicsNode addChild:enemy];
     
+    enemy.ccbFileName = enemyType;
     enemy.position = [_pathGenerator getRandomPosition];
     enemy.handleEnemyDelegate = self;
+}
+
+-(void) recreateHeroes {
+    // Recreate heroes with the data obtained from the NSUserDefaults when the gameState was loaded
+    NSMutableArray *recreatedHeroes = [NSMutableArray array];
+    for (Hero *tempHero in g.heroes) {
+        Hero *hero = (Hero *) [CCBReader load:tempHero.ccbFileName];
+        hero.position = tempHero.position;
+        hero.physicsBody.velocity = tempHero.savedVelocity;
+        hero.ccbFileName = tempHero.ccbFileName;
+        hero.damage = tempHero.damage;
+        
+        [_physicsNode addChild:hero];
+        [recreatedHeroes addObject:hero];
+    }
+    g.heroes = recreatedHeroes;
+}
+
+-(void) recreateEnemies {
+    // Recreate enemies with the data obtained from the NSUserDefaults when the gameState was loaded
+    NSMutableArray *recreatedEnemies = [NSMutableArray array];
+    for (Enemy *tempEnemy in g.enemies) {
+        Enemy *enemy = (Enemy *) [CCBReader load:tempEnemy.ccbFileName];
+        enemy.position = tempEnemy.position;
+        enemy.ccbFileName = tempEnemy.ccbFileName;
+        enemy.damageReceived = tempEnemy.damageReceived;
+        enemy.handleEnemyDelegate = self;
+        
+        [_physicsNode addChild:enemy];
+        [recreatedEnemies addObject:enemy];
+        
+    }
+    g.enemies = recreatedEnemies;
 }
 
 -(void) impulseHeroesToPoint:(CGPoint)point withImpulse:(double)impulse {
@@ -328,6 +368,10 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
 
 -(void) incrementScoreBy:(NSInteger)amount {
     g.score += amount;
+    [self updateScoreLabel];
+}
+
+-(void) updateScoreLabel {
     _lblScore.string = [NSString stringWithFormat:@"%ld", g.score];
 }
 
@@ -399,6 +443,7 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
     
     // Pause the game
     [[CCDirector sharedDirector] pause];
+    _physicsNode.paused = true;
 }
 
 // Method called from the Pause.ccb file
@@ -407,6 +452,7 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
     [self removeChildByName:@"Pause"];
     // Resume the game
     [[CCDirector sharedDirector] resume];
+    _physicsNode.paused = false;
 }
 
 // Method called from the Score.ccb file
@@ -439,19 +485,11 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
 
 #pragma mark Game State Handling
 
--(GameStateLabel) getGameStateLabelFromUserDefaults {
-    GameStateLabel state = [[NSUserDefaults standardUserDefaults] integerForKey:KEY_GAME_STATE];
-    return state;
-}
-
 -(void) setGameStateLabel:(GameStateLabel)state {
-    g.gameState = state;
     NSLog(@"setGameState() gameState: @%ld", g.gameState);
     
-    [[NSUserDefaults standardUserDefaults] setInteger:g.gameState forKey:KEY_GAME_STATE];
-    
     // If the game state is different from GameRunning, we should disable some stuff
-    if (g.gameState != GameRunning) {
+    if (state != GameRunning) {
         self.userInteractionEnabled = FALSE;
         _btnPause.visible = FALSE;
         _lblScore.visible = FALSE;
@@ -461,7 +499,16 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
         _lblScore.visible = TRUE;
 
     }
-        
+    
+    if (state == GameNotStarted || state == GameRunningAgain) {
+        // Reset the game state: the game is ready to be reloaded
+        [g resetState];
+        [g saveStateInUserDefaults];
+    }
+
+    // Always save the game state that was passed to the method, because the resetState method could have overwritten it
+    g.gameState = state;
+    [[NSUserDefaults standardUserDefaults] setInteger:g.gameState forKey:KEY_GAME_STATE_LABEL];
 }
 
 -(void) startGame {
@@ -472,8 +519,6 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
 }
 
 -(void) endGame {
-    [self setGameStateLabel:GameNotStarted];
-    
     [self loadOverlay:@"Score"];
     
     // Show the player's score
@@ -486,6 +531,8 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
         [topScoresString appendString: [NSString stringWithFormat:@"%ld\n", [topScore integerValue]]];
     }
     _lblTopScores.string = topScoresString;
+    
+    [self setGameStateLabel:GameNotStarted];
 }
 
 @end

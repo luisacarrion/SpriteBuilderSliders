@@ -53,6 +53,16 @@
 				<key>value</key>
 				<string>1</string>
 			</dict>
+			<dict>
+				<key>name</key>
+				<string>ccbFileName</string>
+				<key>optimized</key>
+				<false/>
+				<key>type</key>
+				<integer>3</integer>
+				<key>value</key>
+				<string>EnemyBasic</string>
+			</dict>
 		</array>
 		<key>displayName</key>
 		<string>CCSprite</string>

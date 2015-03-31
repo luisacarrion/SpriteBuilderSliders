@@ -22,7 +22,6 @@ typedef NS_ENUM(NSInteger, GameStateLabel) {
 
 @property (nonatomic, assign) GameStateLabel gameState;
 @property (nonatomic, assign) NSInteger currentLevel;
-@property (nonatomic, assign) NSInteger currentStep;
 // Holds all the heroes in the level
 @property (nonatomic, retain) NSMutableArray *heroes;
 @property (nonatomic, assign) BOOL heroesAreMoving;
@@ -37,5 +36,8 @@ typedef NS_ENUM(NSInteger, GameStateLabel) {
 @property (nonatomic, assign) NSInteger score;
 
 +(id)sharedInstance;
+-(void)saveStateInUserDefaults;
+-(void)loadStateFromUserDefaults;
+-(void)resetState;
 
 @end

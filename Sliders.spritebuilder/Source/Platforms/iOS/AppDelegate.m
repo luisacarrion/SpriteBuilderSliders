@@ -27,6 +27,7 @@
 
 #import "AppDelegate.h"
 #import "CCBuilderReader.h"
+#import "GameState.h"
 
 @implementation AppController
 
@@ -60,6 +61,10 @@
 - (CCScene*) startScene
 {
     return [CCBReader loadAsScene:@"MainScene"];
+}
+
+-(void) applicationWillTerminate:(UIApplication *)application {
+    [[GameState sharedInstance] saveStateInUserDefaults];
 }
 
 @end

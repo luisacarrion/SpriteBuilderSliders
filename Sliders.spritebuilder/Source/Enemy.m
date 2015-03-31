@@ -12,6 +12,29 @@
 @implementation Enemy {
 }
 
+-(id)initWithCoder:(NSCoder *)decoder {
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    
+    // Variables from CCSprite class
+    self.position = [decoder decodeCGPointForKey:@"position"];
+    // Variables from Enemy class
+    self.ccbFileName = [decoder decodeObjectForKey:@"ccbFileName"];
+    self.damageReceived = [decoder decodeIntegerForKey:@"damageReceived"];
+    
+    return self;
+}
+
+-(void) encodeWithCoder:(NSCoder *)encoder {
+    // Variables from CCSprite class
+    [encoder encodeCGPoint:self.position forKey:@"position"];
+    // Variables from Enemy class
+    [encoder encodeObject:self.ccbFileName forKey:@"ccbFileName"];
+    [encoder encodeInteger:self.damageReceived forKey:@"damageReceived"];
+}
+
 - (void) didLoadFromCCB {
     // Set physics properties
     self.physicsBody.collisionType = @"enemy";
