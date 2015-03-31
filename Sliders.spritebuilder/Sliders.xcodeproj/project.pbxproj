@@ -153,6 +153,7 @@
 		0D6E91361A98A8D200E350D1 /* PositionGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PositionGenerator.m; path = Source/PositionGenerator.m; sourceTree = "<group>"; };
 		0DA2CD661ACA1D0E006CF797 /* GameState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GameState.h; path = Source/GameState.h; sourceTree = "<group>"; };
 		0DA2CD671ACA1D0E006CF797 /* GameState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GameState.m; path = Source/GameState.m; sourceTree = "<group>"; };
+		0DA916221ACB472C008D46C8 /* HandleHero.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HandleHero.h; path = Source/HandleHero.h; sourceTree = "<group>"; };
 		0DB557CE1AA716DA000337E3 /* HandleEnemy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HandleEnemy.h; path = Source/HandleEnemy.h; sourceTree = "<group>"; };
 		0DE8D28B1A9986CC00614CBF /* LevelConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LevelConfiguration.h; path = Source/LevelConfiguration.h; sourceTree = "<group>"; };
 		0DE8D28C1A9986CC00614CBF /* LevelConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LevelConfiguration.m; path = Source/LevelConfiguration.m; sourceTree = "<group>"; };
@@ -459,6 +460,7 @@
 				0D6E91361A98A8D200E350D1 /* PositionGenerator.m */,
 				0DFE3CCB1A988112008E66D9 /* Hero.h */,
 				0DFE3CCC1A988112008E66D9 /* Hero.m */,
+				0DA916221ACB472C008D46C8 /* HandleHero.h */,
 				7A40362019DDEF0D007B6E8F /* Platforms */,
 				D352B48019EC608A00829775 /* MetalShaders */,
 			);

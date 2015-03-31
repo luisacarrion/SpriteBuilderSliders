@@ -7,6 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "Enemy.h"
+#import "Hero.h"
 
 // Enum type = NSInteger
 // Enum name = GameState
@@ -20,6 +22,7 @@ typedef NS_ENUM(NSInteger, GameStateLabel) {
 
 @interface GameState : NSObject
 
+// Properties to save when the game is finished
 @property (nonatomic, assign) GameStateLabel gameState;
 @property (nonatomic, assign) NSInteger currentLevel;
 // Holds all the heroes in the level
@@ -35,9 +38,15 @@ typedef NS_ENUM(NSInteger, GameStateLabel) {
 @property (nonatomic, assign) NSInteger numberOfKillsInTouch;
 @property (nonatomic, assign) NSInteger score;
 
+// Properties that don't need to be saved when the game is finished
+@property (nonatomic, assign) CCTime secondsSinceHeroKilledEnemy;
+@property (nonatomic, assign) BOOL enemiesAreAttacking;
+
 +(id)sharedInstance;
 -(void)saveStateInUserDefaults;
 -(void)loadStateFromUserDefaults;
 -(void)resetState;
+-(Hero*)getRandomHero;
+-(Enemy*)getRandomEnemy;
 
 @end

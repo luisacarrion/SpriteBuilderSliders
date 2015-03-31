@@ -9,8 +9,6 @@
 #import "Hero.h"
 #import "MainScene.h"
 
-static const NSInteger INITIAL_DAMAGE = 1;
-
 @implementation Hero
 
 - (void) didLoadFromCCB {
@@ -19,10 +17,19 @@ static const NSInteger INITIAL_DAMAGE = 1;
     
     // Set drawing order
     self.zOrder = DrawingOrderHero;
-    
-    // Set initial damage
-    self.damage = INITIAL_DAMAGE;
 }
+
+-(void) applyDamage:(NSInteger)damage {
+    self.damageReceived += damage;
+    if (self.damageReceived >= self.health) {
+        [self die];
+    }
+}
+
+-(void) die {
+    [self.handleHeroDelegate removeHero:self];
+}
+
 
 #pragma mark NSCoding Delegates
 
@@ -37,7 +44,9 @@ static const NSInteger INITIAL_DAMAGE = 1;
     // Variables from Hero class
     self.savedVelocity = [decoder decodeCGPointForKey:@"velocity"];
     self.ccbFileName = [decoder decodeObjectForKey:@"ccbFileName"];
-    self.damage = [decoder decodeIntegerForKey:@"damage"];
+    self.health = [decoder decodeIntegerForKey:@"health"];
+    self.damageReceived = [decoder decodeIntegerForKey:@"damageReceived"];
+    self.attackPower = [decoder decodeIntegerForKey:@"attackPower"];
     
     return self;
 }
@@ -49,7 +58,9 @@ static const NSInteger INITIAL_DAMAGE = 1;
     self.savedVelocity = self.physicsBody.velocity;
     [encoder encodeCGPoint:self.savedVelocity forKey:@"velocity"];
     [encoder encodeObject:self.ccbFileName forKey:@"ccbFileName"];
-    [encoder encodeInteger:self.damage forKey:@"damage"];
+    [encoder encodeInteger:self.health forKey:@"health"];
+    [encoder encodeInteger:self.damageReceived forKey:@"damageReceived"];
+    [encoder encodeInteger:self.attackPower forKey:@"attackPower"];
 }
 
 @end

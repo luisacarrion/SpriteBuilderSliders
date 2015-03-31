@@ -40,40 +40,7 @@
 		<key>children</key>
 		<array/>
 		<key>customClass</key>
-		<string>Hero</string>
-		<key>customProperties</key>
-		<array>
-			<dict>
-				<key>name</key>
-				<string>ccbFileName</string>
-				<key>optimized</key>
-				<false/>
-				<key>type</key>
-				<integer>3</integer>
-				<key>value</key>
-				<string>Hero</string>
-			</dict>
-			<dict>
-				<key>name</key>
-				<string>attackPower</string>
-				<key>optimized</key>
-				<false/>
-				<key>type</key>
-				<integer>0</integer>
-				<key>value</key>
-				<string>1</string>
-			</dict>
-			<dict>
-				<key>name</key>
-				<string>health</string>
-				<key>optimized</key>
-				<false/>
-				<key>type</key>
-				<integer>0</integer>
-				<key>value</key>
-				<string>2</string>
-			</dict>
-		</array>
+		<string></string>
 		<key>displayName</key>
 		<string>CCSprite</string>
 		<key>memberVarAssignmentName</key>
@@ -87,32 +54,63 @@
 			<key>allowsRotation</key>
 			<false/>
 			<key>bodyShape</key>
-			<integer>1</integer>
+			<integer>0</integer>
 			<key>collisionCategories</key>
 			<array/>
 			<key>collisionMask</key>
 			<array/>
 			<key>collisionType</key>
-			<string></string>
+			<string>bullet</string>
 			<key>cornerRadius</key>
-			<real>11</real>
+			<real>0.0</real>
 			<key>density</key>
 			<real>1</real>
 			<key>dynamic</key>
 			<true/>
 			<key>elasticity</key>
-			<real>0.80000001192092896</real>
+			<real>0.30000001192092896</real>
 			<key>friction</key>
-			<real>0.5</real>
+			<real>0.30000001192092896</real>
 			<key>points</key>
 			<array>
 				<array>
-					<real>12</real>
-					<real>12</real>
+					<real>0.0</real>
+					<real>0.0</real>
+				</array>
+				<array>
+					<real>0.0</real>
+					<real>4</real>
+				</array>
+				<array>
+					<real>4</real>
+					<real>4</real>
+				</array>
+				<array>
+					<real>4</real>
+					<real>0.0</real>
 				</array>
 			</array>
 			<key>polygons</key>
-			<array/>
+			<array>
+				<array>
+					<array>
+						<real>4</real>
+						<real>0.0</real>
+					</array>
+					<array>
+						<real>4</real>
+						<real>4</real>
+					</array>
+					<array>
+						<real>0.0</real>
+						<real>4</real>
+					</array>
+					<array>
+						<real>0.0</real>
+						<real>0.0</real>
+					</array>
+				</array>
+			</array>
 		</dict>
 		<key>properties</key>
 		<array>
@@ -122,7 +120,7 @@
 				<key>type</key>
 				<string>StringSimple</string>
 				<key>value</key>
-				<string></string>
+				<string>bullet</string>
 			</dict>
 			<dict>
 				<key>name</key>
@@ -170,7 +168,7 @@
 				<key>value</key>
 				<array>
 					<string></string>
-					<string>assets/hero100x100.png</string>
+					<string>assets/bullet18x18.png</string>
 				</array>
 			</dict>
 			<dict>

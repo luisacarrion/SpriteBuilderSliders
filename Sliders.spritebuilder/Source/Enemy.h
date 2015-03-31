@@ -11,10 +11,10 @@
 @interface Enemy : CCSprite <NSCoding>
 
 @property (nonatomic, copy) NSString *ccbFileName;
+// Maximum amount of damage a type of enemy can received. This value is fixed and never changes.
+@property (nonatomic, assign) NSInteger health;
 // Amount of damage received. Once it is equal to the damageLimit, this enemy dies.
 @property (nonatomic, assign) NSInteger damageReceived;
-// Maximum amount of damage a type of enemy can received. This value is fixed and never changes.
-@property (nonatomic, assign) NSInteger damageLimit;
 @property (nonatomic, weak) id <HandleEnemy> handleEnemyDelegate;
 
 -(void) applyDamage:(NSInteger) damage;

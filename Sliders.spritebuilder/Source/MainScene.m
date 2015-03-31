@@ -13,8 +13,15 @@ static const NSInteger CHARACTER_HEIGHT = 100;
 static const NSString *KEY_GAME_STATE_LABEL = @"keyGameStateLabel";
 static const NSString *KEY_TOP_SCORES = @"keyTopScores";
 static const NSInteger HERO_IMPULSE = 180;
+static const NSInteger BULLET_IMPULSE = 10;
+// Units the velocity of the heroes is reduced per frame when there are enemies in the field
 static const NSInteger HERO_VEL_REDUCTION_WITH_ENEMIES = 1;
+// Units the velocity of the heroes is reduced per frame when there are no enemies in the field
 static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
+// Time to wait before firing the first shot to kill the heroes
+static const NSInteger SECONDS_FOR_FIRST_ENEMY_SHOT = 5;
+// Time to wait after firing the first shot to kill the heroes, in order to shoot again. The time resets to MSECONDS_FOR_FIRST_ENEMY_SHOT when a hero kills an enemy
+static const NSInteger SECONDS_FOR_NEXT_ENEMY_SHOT = 2;
 
 @implementation MainScene {
     
@@ -86,22 +93,43 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
 
 -(void) update:(CCTime)delta {
     if (g.gameState == GameRunning) {
-        // Load next levels when heroes stop moving
-        if (!g.heroesAreMoving) {
-            if ([self isLevelCompleted]) {
-                // Load next level
-                if (![self loadNextLevel]) {
-                    // If the next level couldn't be loaded (because there were no more levels), end the game
-                    [self endGame];
+        
+        if (![self isGameOver]) {
+            
+            // If there are enemies and some time has passed, enemies shoot at the heroes
+            if ([g.enemies count] > 0) {
+                g.secondsSinceHeroKilledEnemy += delta;
+                if (g.secondsSinceHeroKilledEnemy >= SECONDS_FOR_FIRST_ENEMY_SHOT && !g.enemiesAreAttacking) {
+                    [self enemy:g.getRandomEnemy shootsAtHero:g.getRandomHero];
+                    g.enemiesAreAttacking = TRUE;
+                } else if (g.secondsSinceHeroKilledEnemy >= SECONDS_FOR_FIRST_ENEMY_SHOT + SECONDS_FOR_NEXT_ENEMY_SHOT) {
+                    [self enemy:g.getRandomEnemy shootsAtHero:g.getRandomHero];
+                    // Reset the counter of seconds, so it always waits the amount of SECONDS_FOR_NEXT_ENEMY_SHOT until an enemy is killed
+                    g.secondsSinceHeroKilledEnemy = SECONDS_FOR_FIRST_ENEMY_SHOT;
                 }
-            } else {
-                // If level is not completed but there are not more enemies to kill, load the next step of the level
-                if ([g.enemies count] == 0) {
+            }
+            
+            // If heroes stopped moving and there are no more enemies, Load next level or next step of current level
+            if (!g.heroesAreMoving) {
+                if ([self isLevelCompleted]) {
+                    // Load next level
+                    if (![self loadNextLevel]) {
+                        // If the next level couldn't be loaded (because there were no more levels), end the game
+                        [self endGame];
+                    }
+                } else if ([self isStepOfCurrentLevelCompleted]) {
+                    // If level is not completed but there are no more enemies to kill, load the next step of the level (to load more enemies for the current level)
+                    
                     // The next step of the level will spawn new enemies
                     [self loadNextStepOfLevel:g.currentLevel isFirstStep:NO];
                 }
             }
+            
+        } else {
+            // Game is over
+            [self endGame];
         }
+        
     }
 }
 
@@ -170,6 +198,17 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
     [self loadNextStepOfLevel:level isFirstStep:YES];
 }
 
+-(BOOL) isStepOfCurrentLevelCompleted {
+    BOOL stepCompleted = false;
+    
+    // Step is completed when the player has eliminated all the enemies in the current step
+    if ([g.enemies count] == 0) {
+        stepCompleted = true;
+    }
+    
+    return stepCompleted;
+}
+
 // A new step of the level is loaded when the user kills all the enemies in the current step
 -(void) loadNextStepOfLevel:(NSInteger)level isFirstStep:(BOOL)isFirstStep {
     NSLog(@"nextStepOfLevel: %ld, isFirstStep %d", level, isFirstStep);
@@ -199,6 +238,7 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
     
     hero.ccbFileName = @"Hero";
     hero.position = [_pathGenerator getRandomPosition];
+    hero.handleHeroDelegate = self;
 }
 
 -(void) spawnEnemyOfType:(NSString*)enemyType {
@@ -219,7 +259,10 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
         hero.position = tempHero.position;
         hero.physicsBody.velocity = tempHero.savedVelocity;
         hero.ccbFileName = tempHero.ccbFileName;
-        hero.damage = tempHero.damage;
+        hero.health = tempHero.health;
+        hero.damageReceived = tempHero.damageReceived;
+        hero.attackPower = tempHero.attackPower;
+        hero.handleHeroDelegate = self;
         
         [_physicsNode addChild:hero];
         [recreatedHeroes addObject:hero];
@@ -234,6 +277,7 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
         Enemy *enemy = (Enemy *) [CCBReader load:tempEnemy.ccbFileName];
         enemy.position = tempEnemy.position;
         enemy.ccbFileName = tempEnemy.ccbFileName;
+        enemy.health = tempEnemy.health;
         enemy.damageReceived = tempEnemy.damageReceived;
         enemy.handleEnemyDelegate = self;
         
@@ -246,18 +290,23 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
 
 -(void) impulseHeroesToPoint:(CGPoint)point withImpulse:(double)impulse {
     for (Hero *hero in g.heroes) {
-        // Determine direction of the impulse
-        double impulseX = point.x - hero.position.x;
-        double impulseY = point.y - hero.position.y;
-        
-        // Get the x and y components of the impulse
-        CGPoint normalizedImpulse = ccpNormalize(ccp(impulseX, impulseY));
-        impulseX = normalizedImpulse.x * impulse;
-        impulseY = normalizedImpulse.y * impulse;
-        
-        [hero.physicsBody  applyImpulse:ccp(impulseX, impulseY)];
+        CGPoint impulseVector = [self getVectorToMoveFromPoint:hero.position ToPoint:point withImpulse:impulse];
+        [hero.physicsBody  applyImpulse:impulseVector];
     }
     g.heroesAreMoving = TRUE;
+}
+
+-(CGPoint) getVectorToMoveFromPoint:(CGPoint)origin ToPoint:(CGPoint)target withImpulse:(NSInteger)impulse {
+    // Determine direction of the impulse
+    double impulseX = target.x - origin.x;
+    double impulseY = target.y - origin.y;
+    
+    // Get the x and y components of the impulse
+    CGPoint normalizedImpulse = ccpNormalize(ccp(impulseX, impulseY));
+    impulseX = normalizedImpulse.x * impulse;
+    impulseY = normalizedImpulse.y * impulse;
+    
+    return ccp(impulseX, impulseY);
 }
 
 -(void) reduceHeroesVelocityByAmount:(double)totalReductionInVelocity {
@@ -306,6 +355,22 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
     g.heroesAreMoving = FALSE;
 }
 
+-(void) enemy:(Enemy*)enemy shootsAtHero:(Hero*)hero {
+    CCSprite *bullet = (CCSprite*) [CCBReader load:@"Bullet"];
+    
+    [_physicsNode addChild:bullet];
+    
+    bullet.position = enemy.position;
+    
+    CGPoint impulseVector = [self getVectorToMoveFromPoint:enemy.position ToPoint:hero.position withImpulse:BULLET_IMPULSE];
+    [bullet.physicsBody  applyImpulse:impulseVector];
+    
+}
+
+-(void) removeBullet:(CCSprite*)bullet {
+    [bullet removeFromParent];
+}
+
 #pragma mark HandleEnemy Delegate
 
 -(void) removeEnemy:(Enemy *)enemy {
@@ -317,12 +382,23 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
     g.numberOfKillsInLevel++;
     g.numberOfKillsInTotal++;
     
+    // Enemies stop attacking
+    g.secondsSinceHeroKilledEnemy = 0;
+    g.enemiesAreAttacking = FALSE;
+    
     // Calculate obtained score for killing this enemy
-    NSInteger scoreObtained = enemy.damageLimit * g.numberOfKillsInTouch;
+    NSInteger scoreObtained = enemy.health * g.numberOfKillsInTouch;
     
     [self showMessage:scoreObtained forEnemyWithPosition:enemy.position];
     
     [self incrementScoreBy:scoreObtained];
+}
+
+#pragma mark HandleHero Delegate
+
+-(void) removeHero:(Hero*)hero {
+    [hero removeFromParent];
+    [g.heroes removeObject:hero];
 }
 
 #pragma mark Collision Delegates
@@ -336,11 +412,24 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
     if (g.gameState == GameRunning) {
         // After the physics engine step ends, remove the enemy and increment the score
         [[_physicsNode space] addPostStepBlock:^{
-            [(Enemy*)enemy applyDamage:((Hero*)hero).damage];
+            [(Enemy*)enemy applyDamage:((Hero*)hero).attackPower];
         }key:enemy];
         
     }
     return YES;
+}
+
+-(void)ccPhysicsCollisionPostSolve:(CCPhysicsCollisionPair *)pair bullet:(CCNode *)bullet wall:(CCNode *)wall {
+    [[_physicsNode space] addPostStepBlock:^{
+        [self removeBullet:(CCSprite*)bullet];
+    }key:bullet];
+}
+
+-(void)ccPhysicsCollisionPostSolve:(CCPhysicsCollisionPair *)pair bullet:(CCNode *)bullet hero:(CCNode *)hero {
+    [[_physicsNode space] addPostStepBlock:^{
+        [self removeBullet:(CCSprite*)bullet];
+        [(Hero*)hero applyDamage:1];
+    }key:bullet];
 }
 
 #pragma mark Score Calculation and Presentation
@@ -511,6 +600,16 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
     [self loadLevel:g.currentLevel];
     
     [self setGameStateLabel:GameRunning];
+}
+
+-(BOOL) isGameOver {
+    BOOL gameOver = FALSE;
+    
+    if ([g.heroes count] == 0) {
+        gameOver = TRUE;
+    }
+    
+    return gameOver;
 }
 
 -(void) endGame {

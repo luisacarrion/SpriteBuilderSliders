@@ -14,7 +14,6 @@
 
 - (void) didLoadFromCCB {
     // Set physics properties
-    self.physicsBody.collisionType = @"enemy";
     self.physicsBody.sensor = YES;
     
     // Set drawing order
@@ -23,7 +22,7 @@
 
 -(void) applyDamage:(NSInteger)damage {
     self.damageReceived += damage;
-    if (self.damageReceived >= self.damageLimit) {
+    if (self.damageReceived >= self.health) {
         [self die];
     }
 }
@@ -44,6 +43,7 @@
     self.position = [decoder decodeCGPointForKey:@"position"];
     // Variables from Enemy class
     self.ccbFileName = [decoder decodeObjectForKey:@"ccbFileName"];
+    self.health = [decoder decodeIntegerForKey:@"health"];
     self.damageReceived = [decoder decodeIntegerForKey:@"damageReceived"];
     
     return self;
@@ -54,6 +54,7 @@
     [encoder encodeCGPoint:self.position forKey:@"position"];
     // Variables from Enemy class
     [encoder encodeObject:self.ccbFileName forKey:@"ccbFileName"];
+    [encoder encodeInteger:self.health forKey:@"health"];
     [encoder encodeInteger:self.damageReceived forKey:@"damageReceived"];
 }
 

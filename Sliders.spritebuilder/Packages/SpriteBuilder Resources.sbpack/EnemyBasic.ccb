@@ -45,7 +45,7 @@
 		<array>
 			<dict>
 				<key>name</key>
-				<string>damageLimit</string>
+				<string>health</string>
 				<key>optimized</key>
 				<false/>
 				<key>type</key>
@@ -83,7 +83,7 @@
 			<key>collisionMask</key>
 			<array/>
 			<key>collisionType</key>
-			<string></string>
+			<string>enemy</string>
 			<key>cornerRadius</key>
 			<real>11</real>
 			<key>density</key>

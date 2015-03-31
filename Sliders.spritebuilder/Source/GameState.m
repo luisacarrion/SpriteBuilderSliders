@@ -22,6 +22,8 @@ static NSString *KEY_SCORE = @"keyScore";
 
 @implementation GameState
 
+#pragma mark Sharing and Saving game state
+
 +(id)sharedInstance {
     static dispatch_once_t pred = 0;
     __strong static id _sharedObject = nil;
@@ -95,6 +97,18 @@ static NSString *KEY_SCORE = @"keyScore";
     self.numberOfKillsInTotal = 0;
     self.numberOfKillsInTouch = 0;
     self.score = 0;
+}
+
+#pragma mark Manipulate game state variables
+
+-(Hero*)getRandomHero {
+    NSInteger index = arc4random() % [self.heroes count];
+    return self.heroes[index];
+}
+
+-(Enemy*)getRandomEnemy {
+    NSInteger index = arc4random() % [self.enemies count];
+    return self.enemies[index];
 }
 
 @end

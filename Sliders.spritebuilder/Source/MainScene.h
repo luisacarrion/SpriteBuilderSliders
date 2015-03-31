@@ -1,5 +1,6 @@
 
 #import "HandleEnemy.h"
+#import "HandleHero.h"
 
 // Enum type = NSInteger
 // Enum name = DrawingOrder
@@ -8,6 +9,6 @@ typedef NS_ENUM(NSInteger, DrawingOrder) {
     DrawingOrderHero
 };
 
-@interface MainScene : CCNode <CCPhysicsCollisionDelegate, HandleEnemy>
+@interface MainScene : CCNode <CCPhysicsCollisionDelegate, HandleEnemy, HandleHero>
 
 @end
