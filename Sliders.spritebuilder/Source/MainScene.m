@@ -194,6 +194,11 @@ static const NSInteger SECONDS_FOR_NEXT_ENEMY_SHOT = 2;
     // Reset the number of enemies killed per level
     g.numberOfKillsInLevel = 0;
     
+    // Show a message indicating the new level
+    NSString *message = [NSString stringWithFormat:@"Level %ld", level];
+    CGPoint position = ccp(_pathGenerator.screenWidth/2, _pathGenerator.screenHeight - 20);
+    [self showMessage:message atPosition:position];
+    
     // Load the first step of the level
     [self loadNextStepOfLevel:level isFirstStep:YES];
 }
@@ -388,8 +393,8 @@ static const NSInteger SECONDS_FOR_NEXT_ENEMY_SHOT = 2;
     
     // Calculate obtained score for killing this enemy
     NSInteger scoreObtained = enemy.health * g.numberOfKillsInTouch;
-    
-    [self showMessage:scoreObtained forEnemyWithPosition:enemy.position];
+    NSString *scoreObtainedAsString = [NSString stringWithFormat:@"+%ld", scoreObtained];
+    [self showMessage:scoreObtainedAsString atPosition:enemy.position];
     
     [self incrementScoreBy:scoreObtained];
 }
@@ -434,11 +439,11 @@ static const NSInteger SECONDS_FOR_NEXT_ENEMY_SHOT = 2;
 
 #pragma mark Score Calculation and Presentation
 
--(void) showMessage:(NSInteger)scoreObtained forEnemyWithPosition:(CGPoint)position {
-    CCLabelTTF *lblScoreObtained = [CCLabelTTF labelWithString:[NSString stringWithFormat:@"+%ld", scoreObtained] fontName:@"Helvetica" fontSize:16];
+-(void) showMessage:(NSString*)message atPosition:(CGPoint)position {
+    CCLabelTTF *lblForMessage = [CCLabelTTF labelWithString:message fontName:@"Helvetica" fontSize:16];
     
-    lblScoreObtained.position = position;
-    [self addChild:lblScoreObtained];
+    lblForMessage.position = position;
+    [self addChild:lblForMessage];
     
     CCActionFadeOut *fadeAction = [CCActionFadeOut actionWithDuration:0.75];
     CCActionMoveBy *moveUpAction = [CCActionMoveBy actionWithDuration:0.75 position:ccp(0, 10)];
@@ -447,7 +452,7 @@ static const NSInteger SECONDS_FOR_NEXT_ENEMY_SHOT = 2;
     CCActionSpawn *spawnAction = [CCActionSpawn actionWithArray:@[fadeAction, moveUpAction]];
     CCActionSequence *sequenceAction = [CCActionSequence actionWithArray:@[spawnAction, removeAction]];
     
-    [lblScoreObtained runAction:sequenceAction];
+    [lblForMessage runAction:sequenceAction];
 }
 
 -(void) incrementScoreBy:(NSInteger)amount {
