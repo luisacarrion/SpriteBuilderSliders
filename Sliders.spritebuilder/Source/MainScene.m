@@ -136,7 +136,8 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
     
     NSInteger enemiesForNextLevel =
             [[_levelConfig get:KEY_TOTAL_ENEMIES forLevel:g.currentLevel] integerValue];
-    
+
+    // Level is completed when the amount of enemies killed so far is equal or greater than the amount of enemies needed for next level
     if (g.numberOfKillsInLevel >= enemiesForNextLevel) {
         levelCompleted = true;
     }
@@ -169,11 +170,16 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
     NSLog(@"nextStepOfLevel: %ld, isFirstStep %d", level, isFirstStep);
     // Spawn heroes
     if (isFirstStep) {
+        // The first step is step 0
+        g.currentStep = 0;
         // Heroes are spawned only at the beginning of each level (in the first step)
         NSInteger heroesToSpawn = [[_levelConfig get:KEY_START_HEROES_SPAWNED forLevel:g.currentLevel] integerValue];
         for (int i = 0; i < heroesToSpawn; i++) {
             [self spawnHero];
         }
+    } else {
+        // Update the game state with the current step of the level being loaded
+        g.currentStep++;
     }
 
     // Spawn enemies
