@@ -89,10 +89,12 @@ static NSString *KEY_SCORE = @"keyScore";
     self.currentLevel = 1;
     
     self.heroes = [NSMutableArray array];
-    
     self.heroesAreMoving = FALSE;
     
     self.enemies = [NSMutableArray array];
+    self.secondsSinceHeroKilledEnemy = 0;
+    self.enemiesAreAttacking = FALSE;
+    
     self.numberOfKillsInLevel = 0;
     self.numberOfKillsInTotal = 0;
     self.numberOfKillsInTouch = 0;

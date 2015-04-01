@@ -19,9 +19,9 @@ static const NSInteger HERO_VEL_REDUCTION_WITH_ENEMIES = 1;
 // Units the velocity of the heroes is reduced per frame when there are no enemies in the field
 static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
 // Time to wait before firing the first shot to kill the heroes
-static const NSInteger SECONDS_FOR_FIRST_ENEMY_SHOT = 5;
+//static const NSInteger SECONDS_FOR_FIRST_ENEMY_SHOT = 5;
 // Time to wait after firing the first shot to kill the heroes, in order to shoot again. The time resets to MSECONDS_FOR_FIRST_ENEMY_SHOT when a hero kills an enemy
-static const NSInteger SECONDS_FOR_NEXT_ENEMY_SHOT = 2;
+//static const NSInteger SECONDS_FOR_NEXT_ENEMY_SHOT = 2;
 
 @implementation MainScene {
     
@@ -99,13 +99,18 @@ static const NSInteger SECONDS_FOR_NEXT_ENEMY_SHOT = 2;
             // If there are enemies and some time has passed, enemies shoot at the heroes
             if ([g.enemies count] > 0) {
                 g.secondsSinceHeroKilledEnemy += delta;
-                if (g.secondsSinceHeroKilledEnemy >= SECONDS_FOR_FIRST_ENEMY_SHOT && !g.enemiesAreAttacking) {
+                
+                NSInteger secondsForFirstEnemyShot = [[_levelConfig get:KEY_SECONDS_FOR_FIRST_ENEMY_SHOT forLevel:g.currentLevel] integerValue];
+                
+                NSInteger secondsForNextEnemyShot = [[_levelConfig get:KEY_SECONDS_FOR_NEXT_ENEMY_SHOT forLevel:g.currentLevel] integerValue];
+                
+                if (g.secondsSinceHeroKilledEnemy >= secondsForFirstEnemyShot && !g.enemiesAreAttacking) {
                     [self enemy:g.getRandomEnemy shootsAtHero:g.getRandomHero];
                     g.enemiesAreAttacking = TRUE;
-                } else if (g.secondsSinceHeroKilledEnemy >= SECONDS_FOR_FIRST_ENEMY_SHOT + SECONDS_FOR_NEXT_ENEMY_SHOT) {
+                } else if (g.secondsSinceHeroKilledEnemy >= secondsForFirstEnemyShot + secondsForNextEnemyShot) {
                     [self enemy:g.getRandomEnemy shootsAtHero:g.getRandomHero];
                     // Reset the counter of seconds, so it always waits the amount of SECONDS_FOR_NEXT_ENEMY_SHOT until an enemy is killed
-                    g.secondsSinceHeroKilledEnemy = SECONDS_FOR_FIRST_ENEMY_SHOT;
+                    g.secondsSinceHeroKilledEnemy = secondsForFirstEnemyShot;
                 }
             }
             
@@ -230,6 +235,11 @@ static const NSInteger SECONDS_FOR_NEXT_ENEMY_SHOT = 2;
     NSInteger basicEnemiesToSpawn = [[_levelConfig get:KEY_STEP_BASIC_ENEMIES_SPAWNED forLevel:g.currentLevel] integerValue];
     for (int i = 0; i < basicEnemiesToSpawn; i++) {
         [self spawnEnemyOfType:@"EnemyBasic"];
+    }
+    
+    NSInteger tankEnemiesToSpawn = [[_levelConfig get:KEY_STEP_TANK_ENEMIES_SPAWNED forLevel:g.currentLevel] integerValue];
+    for (int i = 0; i < tankEnemiesToSpawn; i++) {
+        [self spawnEnemyOfType:@"EnemyTank"];
     }
 
 }

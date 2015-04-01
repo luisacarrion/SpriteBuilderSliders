@@ -11,6 +11,9 @@
 extern NSString * const KEY_START_HEROES_SPAWNED;
 extern NSString * const KEY_TOTAL_ENEMIES;
 extern NSString * const KEY_STEP_BASIC_ENEMIES_SPAWNED;
+extern NSString * const KEY_STEP_TANK_ENEMIES_SPAWNED;
+extern NSString * const KEY_SECONDS_FOR_FIRST_ENEMY_SHOT;
+extern NSString * const KEY_SECONDS_FOR_NEXT_ENEMY_SHOT;
 
 @interface LevelConfiguration : NSObject
 
