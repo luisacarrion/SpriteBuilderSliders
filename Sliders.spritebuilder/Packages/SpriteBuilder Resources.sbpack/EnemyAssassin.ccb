@@ -51,7 +51,7 @@
 				<key>type</key>
 				<integer>0</integer>
 				<key>value</key>
-				<string>2</string>
+				<string>1</string>
 			</dict>
 			<dict>
 				<key>name</key>
@@ -61,7 +61,7 @@
 				<key>type</key>
 				<integer>3</integer>
 				<key>value</key>
-				<string>EnemyTank</string>
+				<string>EnemyAssassin</string>
 			</dict>
 			<dict>
 				<key>name</key>
@@ -71,7 +71,7 @@
 				<key>type</key>
 				<integer>0</integer>
 				<key>value</key>
-				<string>1</string>
+				<string>2</string>
 			</dict>
 		</array>
 		<key>displayName</key>
@@ -170,7 +170,7 @@
 				<key>value</key>
 				<array>
 					<string></string>
-					<string>assets/EnemyTank100x100.png</string>
+					<string>assets/EnemyAssassin100x100.png</string>
 				</array>
 			</dict>
 			<dict>

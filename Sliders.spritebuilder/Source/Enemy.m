@@ -45,6 +45,7 @@
     self.ccbFileName = [decoder decodeObjectForKey:@"ccbFileName"];
     self.health = [decoder decodeIntegerForKey:@"health"];
     self.damageReceived = [decoder decodeIntegerForKey:@"damageReceived"];
+    self.attackPower = [decoder decodeIntegerForKey:@"attackPower"];
     
     return self;
 }
@@ -56,6 +57,7 @@
     [encoder encodeObject:self.ccbFileName forKey:@"ccbFileName"];
     [encoder encodeInteger:self.health forKey:@"health"];
     [encoder encodeInteger:self.damageReceived forKey:@"damageReceived"];
+    [encoder encodeInteger:self.attackPower forKey:@"attackPower"];
 }
 
 @end

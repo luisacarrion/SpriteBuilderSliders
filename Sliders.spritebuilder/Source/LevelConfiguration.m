@@ -11,6 +11,7 @@
 NSString * const KEY_TOTAL_ENEMIES = @"total_Enemies";
 NSString * const KEY_STEP_BASIC_ENEMIES_SPAWNED = @"step_BasicEnemiesSpawned";
 NSString * const KEY_STEP_TANK_ENEMIES_SPAWNED = @"step_TankEnemiesSpawned";
+NSString * const KEY_STEP_ASSASSIN_ENEMIES_SPAWNED = @"step_AssassinEnemiesSpawned";
 NSString * const KEY_START_HEROES_SPAWNED = @"start_HeroesSpawned";
 NSString * const KEY_SECONDS_FOR_FIRST_ENEMY_SHOT = @"secondsForFirstEnemyShot";
 NSString * const KEY_SECONDS_FOR_NEXT_ENEMY_SHOT = @"secondsForNextEnemyShot";

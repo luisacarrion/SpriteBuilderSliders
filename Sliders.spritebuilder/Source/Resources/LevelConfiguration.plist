@@ -38,5 +38,17 @@
 		<key>secondsForNextEnemyShot</key>
 		<integer>2</integer>
 	</dict>
+	<dict>
+		<key>start_HeroesSpawned</key>
+		<integer>0</integer>
+		<key>step_AssassinEnemiesSpawned</key>
+		<integer>2</integer>
+		<key>total_Enemies</key>
+		<integer>4</integer>
+		<key>secondsForFirstEnemyShot</key>
+		<integer>5</integer>
+		<key>secondsForNextEnemyShot</key>
+		<integer>2</integer>
+	</dict>
 </array>
 </plist>

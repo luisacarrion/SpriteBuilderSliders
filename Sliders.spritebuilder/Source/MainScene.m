@@ -1,6 +1,7 @@
 #import "GameState.h"
 #import "Enemy.h"
 #import "Hero.h"
+#import "Bullet.h"
 #import "PositionGenerator.h"
 #import "LevelConfiguration.h"
 #import "CCPhysics+ObjectiveChipmunk.h"
@@ -241,6 +242,11 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
     for (int i = 0; i < tankEnemiesToSpawn; i++) {
         [self spawnEnemyOfType:@"EnemyTank"];
     }
+    
+    NSInteger assassinEnemiesToSpawn = [[_levelConfig get:KEY_STEP_ASSASSIN_ENEMIES_SPAWNED forLevel:g.currentLevel] integerValue];
+    for (int i = 0; i < assassinEnemiesToSpawn; i++) {
+        [self spawnEnemyOfType:@"EnemyAssassin"];
+    }
 
 }
 
@@ -371,11 +377,12 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
 }
 
 -(void) enemy:(Enemy*)enemy shootsAtHero:(Hero*)hero {
-    CCSprite *bullet = (CCSprite*) [CCBReader load:@"Bullet"];
+    Bullet *bullet = (Bullet*) [CCBReader load:@"Bullet"];
     
     [_physicsNode addChild:bullet];
     
     bullet.position = enemy.position;
+    bullet.attackPower = enemy.attackPower;
     
     CGPoint impulseVector = [self getVectorToMoveFromPoint:enemy.position ToPoint:hero.position withImpulse:BULLET_IMPULSE];
     [bullet.physicsBody  applyImpulse:impulseVector];
@@ -442,8 +449,8 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
 
 -(void)ccPhysicsCollisionPostSolve:(CCPhysicsCollisionPair *)pair bullet:(CCNode *)bullet hero:(CCNode *)hero {
     [[_physicsNode space] addPostStepBlock:^{
-        [self removeBullet:(CCSprite*)bullet];
-        [(Hero*)hero applyDamage:1];
+        [(Hero*)hero applyDamage:((Bullet*)bullet).attackPower];
+        [self removeBullet:(Bullet*)bullet];
     }key:bullet];
 }
 
