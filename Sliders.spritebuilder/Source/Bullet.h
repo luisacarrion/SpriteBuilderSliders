@@ -7,9 +7,14 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "Hero.h"
 
 @interface Bullet : CCSprite
 
 @property (nonatomic, assign) NSInteger attackPower;
+@property (nonatomic, assign) NSInteger impulse;
+@property (nonatomic, retain) Hero* targetHero;
+
+-(void)impulseToTarget;
 
 @end

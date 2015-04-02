@@ -18,6 +18,7 @@ static NSString *KEY_ENEMIES_ARRAY = @"keyEnemiesArray";
 static NSString *KEY_NUMBER_OF_KILLS_IN_LEVEL = @"keyNumberOfKillsInLevel";
 static NSString *KEY_NUMBER_OF_KILLS_IN_TOTAL = @"keyNumberOfKillsInTotal";
 static NSString *KEY_NUMBER_OF_KILLS_IN_TOUCH = @"keyNumberOfKillsInTouch";
+static NSString *KEY_NUMBER_OF_COLLISIONS_WITH_ENEMIES_IN_TOUCH = @"numberOfCollisionsWithEnemiesInTouch";
 static NSString *KEY_SCORE = @"keyScore";
 
 @implementation GameState
@@ -50,6 +51,7 @@ static NSString *KEY_SCORE = @"keyScore";
     [u setInteger:self.numberOfKillsInLevel forKey:KEY_NUMBER_OF_KILLS_IN_LEVEL];
     [u setInteger:self.numberOfKillsInTotal forKey:KEY_NUMBER_OF_KILLS_IN_TOTAL];
     [u setInteger:self.numberOfKillsInTouch forKey:KEY_NUMBER_OF_KILLS_IN_TOUCH];
+    [u setInteger:self.numberOfCollisionsWithEnemiesInTouch forKey:KEY_NUMBER_OF_COLLISIONS_WITH_ENEMIES_IN_TOUCH];
     [u setInteger:self.score forKey:KEY_SCORE];
 }
 
@@ -80,6 +82,7 @@ static NSString *KEY_SCORE = @"keyScore";
     self.numberOfKillsInLevel = [u integerForKey:KEY_NUMBER_OF_KILLS_IN_LEVEL];
     self.numberOfKillsInTotal = [u integerForKey:KEY_NUMBER_OF_KILLS_IN_TOTAL];
     self.numberOfKillsInTouch = [u integerForKey:KEY_NUMBER_OF_KILLS_IN_TOUCH];
+    self.numberOfCollisionsWithEnemiesInTouch = [u integerForKey:KEY_NUMBER_OF_COLLISIONS_WITH_ENEMIES_IN_TOUCH];
     self.score = [u integerForKey:KEY_SCORE];
 }
 
@@ -98,6 +101,7 @@ static NSString *KEY_SCORE = @"keyScore";
     self.numberOfKillsInLevel = 0;
     self.numberOfKillsInTotal = 0;
     self.numberOfKillsInTouch = 0;
+    self.numberOfCollisionsWithEnemiesInTouch = 0;
     self.score = 0;
 }
 
@@ -111,6 +115,25 @@ static NSString *KEY_SCORE = @"keyScore";
 -(Enemy*)getRandomEnemy {
     NSInteger index = arc4random() % [self.enemies count];
     return self.enemies[index];
+}
+
+/*
+ Focus mode: during focus mode, a hero keeps moving in the set direction and user input will not be processed.
+ Heroes enter focus mode once they have hit an enemy. This means the heroes will keep moving in the set direction until they stop. The user can only modify the direction to which heroes are moving if the heroes haven't hit an enemy yet.
+ */
+-(BOOL)areHeroesOnFocusMode {
+    return self.heroesAreMoving && self.numberOfCollisionsWithEnemiesInTouch > 0;
+}
+
+/*
+ Revenge mode: when a hero kills an enemy, enemies enter in revenge mode. Revenge mode means that when the heroes stop moving, if there are enemies still alive, one of thouse enemies will shoot at one of the heroes and then the revenge mode will end.
+ */
+-(BOOL)areEnemiesOnRevengeMode {
+    return [self.enemies count] && self.numberOfKillsInTouch > 0;
+}
+
+-(void)endEnemiesRevengeMode {
+    self.numberOfKillsInTouch = 0;
 }
 
 @end

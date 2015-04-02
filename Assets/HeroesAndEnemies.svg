@@ -27,7 +27,7 @@
      inkscape:pageshadow="2"
      inkscape:zoom="0.7"
      inkscape:cx="375"
-     inkscape:cy="634.28571"
+     inkscape:cy="520"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -76,5 +76,21 @@
        cx="361.75577"
        id="circle3343"
        style="fill:#d45500;fill-rule:evenodd;stroke:none;stroke-width:0.94014806px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    <circle
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       cy="302.39215"
+       cx="532.82721"
+       id="circle3345"
+       style="fill:#5a2ca0;fill-rule:evenodd;stroke:none;stroke-width:0.94014806px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       r="50" />
+    <circle
+       r="50"
+       style="fill:#217821;fill-rule:evenodd;stroke:none;stroke-width:0.94014806px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       id="circle3347"
+       cx="535.68433"
+       cy="456.67786"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
   </g>
 </svg>

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0D30549E1ABF756B0049FF1D /* LevelConfiguration.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0D30549D1ABF756B0049FF1D /* LevelConfiguration.plist */; };
+		0D44746D1ACCE99C00C32643 /* Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D44746C1ACCE99C00C32643 /* Utils.m */; };
 		0D6E91371A98A8D200E350D1 /* PositionGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D6E91361A98A8D200E350D1 /* PositionGenerator.m */; };
 		0DA2CD681ACA1D0E006CF797 /* GameState.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DA2CD671ACA1D0E006CF797 /* GameState.m */; };
 		0DA916261ACBA5E4008D46C8 /* Bullet.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DA916251ACBA5E4008D46C8 /* Bullet.m */; };
@@ -150,6 +151,8 @@
 
 /* Begin PBXFileReference section */
 		0D30549D1ABF756B0049FF1D /* LevelConfiguration.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = LevelConfiguration.plist; sourceTree = "<group>"; };
+		0D44746B1ACCE99C00C32643 /* Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Utils.h; path = Source/Utils.h; sourceTree = "<group>"; };
+		0D44746C1ACCE99C00C32643 /* Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Utils.m; path = Source/Utils.m; sourceTree = "<group>"; };
 		0D6E91351A98A8D200E350D1 /* PositionGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PositionGenerator.h; path = Source/PositionGenerator.h; sourceTree = "<group>"; };
 		0D6E91361A98A8D200E350D1 /* PositionGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PositionGenerator.m; path = Source/PositionGenerator.m; sourceTree = "<group>"; };
 		0DA2CD661ACA1D0E006CF797 /* GameState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GameState.h; path = Source/GameState.h; sourceTree = "<group>"; };
@@ -457,6 +460,8 @@
 				B7378993180767190076A88C /* MainScene.m */,
 				0DA916241ACBA5E4008D46C8 /* Bullet.h */,
 				0DA916251ACBA5E4008D46C8 /* Bullet.m */,
+				0D44746B1ACCE99C00C32643 /* Utils.h */,
+				0D44746C1ACCE99C00C32643 /* Utils.m */,
 				0DA2CD661ACA1D0E006CF797 /* GameState.h */,
 				0DA2CD671ACA1D0E006CF797 /* GameState.m */,
 				0DE8D28B1A9986CC00614CBF /* LevelConfiguration.h */,
@@ -842,6 +847,7 @@
 				B73789871807631A0076A88C /* main.m in Sources */,
 				0DA2CD681ACA1D0E006CF797 /* GameState.m in Sources */,
 				0DFE3CD71A9881CD008E66D9 /* Enemy.m in Sources */,
+				0D44746D1ACCE99C00C32643 /* Utils.m in Sources */,
 				7A046D8C19E8A20E004C4763 /* MainScene.m in Sources */,
 				0D6E91371A98A8D200E350D1 /* PositionGenerator.m in Sources */,
 				0DA916261ACBA5E4008D46C8 /* Bullet.m in Sources */,

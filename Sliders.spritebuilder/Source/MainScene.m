@@ -5,6 +5,7 @@
 #import "PositionGenerator.h"
 #import "LevelConfiguration.h"
 #import "CCPhysics+ObjectiveChipmunk.h"
+#import "Utils.h"
 #import "MainScene.h"
 
 
@@ -96,7 +97,7 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
     if (g.gameState == GameRunning) {
         
         if (![self isGameOver]) {
-            
+            /*
             // If there are enemies and some time has passed, enemies shoot at the heroes
             if ([g.enemies count] > 0) {
                 g.secondsSinceHeroKilledEnemy += delta;
@@ -114,9 +115,17 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
                     g.secondsSinceHeroKilledEnemy = secondsForFirstEnemyShot;
                 }
             }
-            
+            */
             // If heroes stopped moving and there are no more enemies, Load next level or next step of current level
             if (!g.heroesAreMoving) {
+                // If heroes made a move, killed an enemy, and left enemies alive, one of those enemies will fire back because they are in rage mode
+                // TODO: finish implementation of card
+                if ([g areEnemiesOnRevengeMode]) {
+                    [self enemy:g.getRandomEnemy shootsAtHero:g.getRandomHero];
+                    // When enemies have their revenge, they calm down
+                    [g endEnemiesRevengeMode];
+                }
+                
                 if ([self isLevelCompleted]) {
                     // Load next level
                     if (![self loadNextLevel]) {
@@ -155,9 +164,12 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
 #pragma mark User Input Events
 
 -(void) touchBegan:(CCTouch *)touch withEvent:(CCTouchEvent *)event {
-    if (g.gameState == GameRunning) {
+    
+    // If the heroes are in focus mode, user touches won't be processed
+    if (g.gameState == GameRunning && ![g areHeroesOnFocusMode]) {
         CGPoint touchLocation = [touch locationInNode: self];
         g.numberOfKillsInTouch = 0;
+        g.numberOfCollisionsWithEnemiesInTouch = 0;
 
         // Stop heroes that are moving, so they are moved in the new direction
         for (Hero *hero in g.heroes) {
@@ -223,6 +235,10 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
 // A new step of the level is loaded when the user kills all the enemies in the current step
 -(void) loadNextStepOfLevel:(NSInteger)level isFirstStep:(BOOL)isFirstStep {
     NSLog(@"nextStepOfLevel: %ld, isFirstStep %d", level, isFirstStep);
+    
+    // If all enemies in a step were killed, then there is no more revenge mode
+    [g endEnemiesRevengeMode];
+    
     // Spawn heroes
     if (isFirstStep) {
         // Heroes are spawned only at the beginning of each level (in the first step)
@@ -311,23 +327,10 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
 
 -(void) impulseHeroesToPoint:(CGPoint)point withImpulse:(double)impulse {
     for (Hero *hero in g.heroes) {
-        CGPoint impulseVector = [self getVectorToMoveFromPoint:hero.position ToPoint:point withImpulse:impulse];
+        CGPoint impulseVector = [Utils getVectorToMoveFromPoint:hero.position ToPoint:point withImpulse:impulse];
         [hero.physicsBody  applyImpulse:impulseVector];
     }
     g.heroesAreMoving = TRUE;
-}
-
--(CGPoint) getVectorToMoveFromPoint:(CGPoint)origin ToPoint:(CGPoint)target withImpulse:(NSInteger)impulse {
-    // Determine direction of the impulse
-    double impulseX = target.x - origin.x;
-    double impulseY = target.y - origin.y;
-    
-    // Get the x and y components of the impulse
-    CGPoint normalizedImpulse = ccpNormalize(ccp(impulseX, impulseY));
-    impulseX = normalizedImpulse.x * impulse;
-    impulseY = normalizedImpulse.y * impulse;
-    
-    return ccp(impulseX, impulseY);
 }
 
 -(void) reduceHeroesVelocityByAmount:(double)totalReductionInVelocity {
@@ -383,10 +386,10 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
     
     bullet.position = enemy.position;
     bullet.attackPower = enemy.attackPower;
+    bullet.targetHero = hero;
+    bullet.impulse = BULLET_IMPULSE;
     
-    CGPoint impulseVector = [self getVectorToMoveFromPoint:enemy.position ToPoint:hero.position withImpulse:BULLET_IMPULSE];
-    [bullet.physicsBody  applyImpulse:impulseVector];
-    
+    [bullet impulseToTarget];
 }
 
 -(void) removeBullet:(CCSprite*)bullet {
@@ -432,6 +435,7 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
 
 -(BOOL)ccPhysicsCollisionSeparate:(CCPhysicsCollisionPair*)pair hero:(CCSprite*)hero enemy:(CCNode*)enemy {
     if (g.gameState == GameRunning) {
+        g.numberOfCollisionsWithEnemiesInTouch++;
         // After the physics engine step ends, remove the enemy and increment the score
         [[_physicsNode space] addPostStepBlock:^{
             [(Enemy*)enemy applyDamage:((Hero*)hero).attackPower];
