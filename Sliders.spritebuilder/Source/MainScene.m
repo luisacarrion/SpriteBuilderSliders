@@ -435,6 +435,7 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
 
 -(BOOL)ccPhysicsCollisionBegin:(CCPhysicsCollisionPair *)pair hero:(CCNode *)hero enemy:(CCNode *)enemy {
     if (g.gameState == GameRunning) {
+        g.numberOfCollisionsWithEnemiesInTouch++;
         // After the physics engine step ends, remove the enemy and increment the score
         [[_physicsNode space] addPostStepBlock:^{
             [(Enemy*)enemy applyDamage:((Hero*)hero).attackPower];
