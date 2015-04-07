@@ -202,8 +202,8 @@
 						<string>Position</string>
 						<key>value</key>
 						<array>
+							<real>0.20000000298023224</real>
 							<real>0.5</real>
-							<real>0.30000001192092896</real>
 							<integer>0</integer>
 							<integer>2</integer>
 							<integer>2</integer>
@@ -251,8 +251,8 @@
 						<string>Size</string>
 						<key>value</key>
 						<array>
-							<real>40</real>
-							<real>40</real>
+							<real>33</real>
+							<real>33</real>
 							<integer>0</integer>
 							<integer>0</integer>
 						</array>
@@ -285,9 +285,17 @@
 						<string>String</string>
 						<key>value</key>
 						<array>
-							<string>H</string>
+							<string></string>
 							<false/>
 						</array>
+					</dict>
+					<dict>
+						<key>name</key>
+						<string>zoomWhenHighlighted</string>
+						<key>type</key>
+						<string>Check</string>
+						<key>value</key>
+						<true/>
 					</dict>
 					<dict>
 						<key>name</key>
@@ -297,7 +305,7 @@
 						<key>value</key>
 						<array>
 							<string></string>
-							<string>ccbResources/ccbButtonNormal.png</string>
+							<string>assets/home_normal.png</string>
 						</array>
 					</dict>
 					<dict>
@@ -308,7 +316,7 @@
 						<key>value</key>
 						<array>
 							<string></string>
-							<string>ccbResources/ccbButtonHighlighted.png</string>
+							<string>assets/home_pressed.png</string>
 						</array>
 					</dict>
 					<dict>
@@ -332,7 +340,7 @@
 						<key>value</key>
 						<array>
 							<string></string>
-							<string>ccbResources/ccbButtonNormal.png</string>
+							<string>assets/home_pressed.png</string>
 						</array>
 					</dict>
 					<dict>
@@ -351,7 +359,7 @@
 						<key>value</key>
 						<array>
 							<string></string>
-							<string>ccbResources/ccbButtonNormal.png</string>
+							<string>assets/home_pressed.png</string>
 						</array>
 					</dict>
 					<dict>
@@ -528,7 +536,7 @@
 						<string>Position</string>
 						<key>value</key>
 						<array>
-							<real>0.50357145071029663</real>
+							<real>0.5</real>
 							<real>0.5</real>
 							<integer>0</integer>
 							<integer>2</integer>
@@ -577,8 +585,8 @@
 						<string>Size</string>
 						<key>value</key>
 						<array>
-							<real>40</real>
-							<real>40</real>
+							<real>33</real>
+							<real>33</real>
 							<integer>0</integer>
 							<integer>0</integer>
 						</array>
@@ -611,9 +619,17 @@
 						<string>String</string>
 						<key>value</key>
 						<array>
-							<string>&gt; Reload</string>
+							<string></string>
 							<false/>
 						</array>
+					</dict>
+					<dict>
+						<key>name</key>
+						<string>zoomWhenHighlighted</string>
+						<key>type</key>
+						<string>Check</string>
+						<key>value</key>
+						<true/>
 					</dict>
 					<dict>
 						<key>name</key>
@@ -623,7 +639,7 @@
 						<key>value</key>
 						<array>
 							<string></string>
-							<string>ccbResources/ccbButtonNormal.png</string>
+							<string>assets/reload_normal.png</string>
 						</array>
 					</dict>
 					<dict>
@@ -634,7 +650,7 @@
 						<key>value</key>
 						<array>
 							<string></string>
-							<string>ccbResources/ccbButtonHighlighted.png</string>
+							<string>assets/reload_pressed.png</string>
 						</array>
 					</dict>
 					<dict>
@@ -658,7 +674,7 @@
 						<key>value</key>
 						<array>
 							<string></string>
-							<string>ccbResources/ccbButtonNormal.png</string>
+							<string>assets/reload_pressed.png</string>
 						</array>
 					</dict>
 					<dict>
@@ -677,7 +693,7 @@
 						<key>value</key>
 						<array>
 							<string></string>
-							<string>ccbResources/ccbButtonNormal.png</string>
+							<string>assets/reload_pressed.png</string>
 						</array>
 					</dict>
 					<dict>
@@ -854,8 +870,8 @@
 						<string>Position</string>
 						<key>value</key>
 						<array>
+							<real>0.80000001192092896</real>
 							<real>0.5</real>
-							<real>0.69999998807907104</real>
 							<integer>0</integer>
 							<integer>2</integer>
 							<integer>2</integer>
@@ -903,8 +919,8 @@
 						<string>Size</string>
 						<key>value</key>
 						<array>
-							<real>40</real>
-							<real>40</real>
+							<real>33</real>
+							<real>33</real>
 							<integer>0</integer>
 							<integer>0</integer>
 						</array>
@@ -937,9 +953,17 @@
 						<string>String</string>
 						<key>value</key>
 						<array>
-							<string>&gt; Resume</string>
+							<string></string>
 							<false/>
 						</array>
+					</dict>
+					<dict>
+						<key>name</key>
+						<string>zoomWhenHighlighted</string>
+						<key>type</key>
+						<string>Check</string>
+						<key>value</key>
+						<true/>
 					</dict>
 					<dict>
 						<key>name</key>
@@ -949,7 +973,7 @@
 						<key>value</key>
 						<array>
 							<string></string>
-							<string>ccbResources/ccbButtonNormal.png</string>
+							<string>assets/play_normal.png</string>
 						</array>
 					</dict>
 					<dict>
@@ -960,7 +984,7 @@
 						<key>value</key>
 						<array>
 							<string></string>
-							<string>ccbResources/ccbButtonHighlighted.png</string>
+							<string>assets/play_pressed.png</string>
 						</array>
 					</dict>
 					<dict>
@@ -984,7 +1008,7 @@
 						<key>value</key>
 						<array>
 							<string></string>
-							<string>ccbResources/ccbButtonNormal.png</string>
+							<string>assets/play_pressed.png</string>
 						</array>
 					</dict>
 					<dict>
@@ -1003,7 +1027,7 @@
 						<key>value</key>
 						<array>
 							<string></string>
-							<string>ccbResources/ccbButtonNormal.png</string>
+							<string>assets/play_pressed.png</string>
 						</array>
 					</dict>
 					<dict>
@@ -1219,8 +1243,6 @@
 				</array>
 			</dict>
 		</array>
-		<key>selected</key>
-		<true/>
 	</dict>
 	<key>notes</key>
 	<array/>

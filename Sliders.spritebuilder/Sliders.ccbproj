@@ -89,6 +89,8 @@
 		<dict/>
 		<key>assets/hero100x100.png</key>
 		<dict/>
+		<key>assets/play_normal.png</key>
+		<dict/>
 		<key>ccbResources</key>
 		<dict>
 			<key>previewFolderHidden</key>
