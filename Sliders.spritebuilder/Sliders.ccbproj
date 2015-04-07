@@ -82,8 +82,17 @@
 		<dict/>
 		<key>assets</key>
 		<dict>
+			<key>isDirty</key>
+			<true/>
 			<key>isSmartSpriteSheet</key>
 			<true/>
+		</dict>
+		<key>assets/alien10001.png</key>
+		<dict>
+			<key>isDirty</key>
+			<true/>
+			<key>scaleFrom</key>
+			<integer>2</integer>
 		</dict>
 		<key>assets/enemy100x100.png</key>
 		<dict/>

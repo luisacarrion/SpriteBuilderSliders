@@ -10,7 +10,7 @@
 		<false/>
 	</dict>
 	<key>UUID</key>
-	<integer>1</integer>
+	<integer>7</integer>
 	<key>centeredOrigin</key>
 	<false/>
 	<key>currentResolution</key>
@@ -170,7 +170,7 @@
 				<key>value</key>
 				<array>
 					<string></string>
-					<string>assets/enemy100x100.png</string>
+					<string>assets/alien10001.png</string>
 				</array>
 			</dict>
 			<dict>
@@ -206,8 +206,6 @@
 				<array/>
 			</dict>
 		</array>
-		<key>selected</key>
-		<true/>
 	</dict>
 	<key>notes</key>
 	<array/>
