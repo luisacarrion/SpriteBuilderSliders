@@ -215,7 +215,7 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
     // Show a message indicating the new level
     NSString *message = [NSString stringWithFormat:@"Level %ld", level];
     CGPoint position = ccp(_pathGenerator.screenWidth/2, _pathGenerator.screenHeight - 20);
-    [self showMessage:message atPosition:position];
+    [self showMessage:message atPosition:position withDelay:2];
     
     // Load the first step of the level
     [self loadNextStepOfLevel:level isFirstStep:YES];
@@ -414,7 +414,7 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
     // Calculate obtained score for killing this enemy
     NSInteger scoreObtained = enemy.health * g.numberOfKillsInTouch;
     NSString *scoreObtainedAsString = [NSString stringWithFormat:@"+%ld", scoreObtained];
-    [self showMessage:scoreObtainedAsString atPosition:enemy.position];
+    [self showMessage:scoreObtainedAsString atPosition:enemy.position withDelay:0];
     
     [self incrementScoreBy:scoreObtained];
 }
@@ -460,18 +460,19 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
 
 #pragma mark Score Calculation and Presentation
 
--(void) showMessage:(NSString*)message atPosition:(CGPoint)position {
+-(void) showMessage:(NSString*)message atPosition:(CGPoint)position withDelay:(CCTime)delay {
     CCLabelTTF *lblForMessage = [CCLabelTTF labelWithString:message fontName:@"Helvetica" fontSize:16];
     
     lblForMessage.position = position;
     [self addChild:lblForMessage];
-    
+
+    CCActionDelay *delayAction = [CCActionDelay actionWithDuration:delay];
     CCActionFadeOut *fadeAction = [CCActionFadeOut actionWithDuration:0.75];
     CCActionMoveBy *moveUpAction = [CCActionMoveBy actionWithDuration:0.75 position:ccp(0, 10)];
     CCActionRemove *removeAction = [CCActionRemove action];
     
     CCActionSpawn *spawnAction = [CCActionSpawn actionWithArray:@[fadeAction, moveUpAction]];
-    CCActionSequence *sequenceAction = [CCActionSequence actionWithArray:@[spawnAction, removeAction]];
+    CCActionSequence *sequenceAction = [CCActionSequence actionWithArray:@[delayAction, spawnAction, removeAction]];
     
     [lblForMessage runAction:sequenceAction];
 }
