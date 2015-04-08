@@ -89,15 +89,9 @@
 		</dict>
 		<key>assets/alien10001.png</key>
 		<dict>
-			<key>isDirty</key>
-			<true/>
 			<key>scaleFrom</key>
 			<integer>2</integer>
 		</dict>
-		<key>assets/enemy100x100.png</key>
-		<dict/>
-		<key>assets/hero100x100.png</key>
-		<dict/>
 		<key>assets/play_normal.png</key>
 		<dict/>
 		<key>ccbResources</key>
