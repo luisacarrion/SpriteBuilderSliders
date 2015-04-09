@@ -376,7 +376,6 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
     bullet.targetHero = hero;
     bullet.impulse = BULLET_IMPULSE;
     
-    //[bullet startParticleEffect];
     [bullet impulseToTarget];
 }
 
