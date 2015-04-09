@@ -97,25 +97,6 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
     if (g.gameState == GameRunning) {
         
         if (![self isGameOver]) {
-            /*
-            // If there are enemies and some time has passed, enemies shoot at the heroes
-            if ([g.enemies count] > 0) {
-                g.secondsSinceHeroKilledEnemy += delta;
-                
-                NSInteger secondsForFirstEnemyShot = [[_levelConfig get:KEY_SECONDS_FOR_FIRST_ENEMY_SHOT forLevel:g.currentLevel] integerValue];
-                
-                NSInteger secondsForNextEnemyShot = [[_levelConfig get:KEY_SECONDS_FOR_NEXT_ENEMY_SHOT forLevel:g.currentLevel] integerValue];
-                
-                if (g.secondsSinceHeroKilledEnemy >= secondsForFirstEnemyShot && !g.enemiesAreAttacking) {
-                    [self enemy:g.getRandomEnemy shootsAtHero:g.getRandomHero];
-                    g.enemiesAreAttacking = TRUE;
-                } else if (g.secondsSinceHeroKilledEnemy >= secondsForFirstEnemyShot + secondsForNextEnemyShot) {
-                    [self enemy:g.getRandomEnemy shootsAtHero:g.getRandomHero];
-                    // Reset the counter of seconds, so it always waits the amount of SECONDS_FOR_NEXT_ENEMY_SHOT until an enemy is killed
-                    g.secondsSinceHeroKilledEnemy = secondsForFirstEnemyShot;
-                }
-            }
-            */
             // If heroes stopped moving and there are no more enemies, Load next level or next step of current level
             if (!g.heroesAreMoving) {
                 // If heroes made a move, killed an enemy, and left enemies alive, one of those enemies will fire back because they are in rage mode
@@ -123,7 +104,7 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
                 if ([g areEnemiesOnRevengeMode]) {
                     [self enemy:g.getRandomEnemy shootsAtHero:g.getRandomHero];
                     // When enemies have their revenge, they calm down
-                    [g endEnemiesRevengeMode];
+                    [self endEnemiesRevengeMode];
                 }
                 
                 if ([self isLevelCompleted]) {
@@ -237,7 +218,7 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
     NSLog(@"nextStepOfLevel: %ld, isFirstStep %d", level, isFirstStep);
     
     // If all enemies in a step were killed, then there is no more revenge mode
-    [g endEnemiesRevengeMode];
+    [self endEnemiesRevengeMode];
     
     // Spawn heroes
     if (isFirstStep) {
@@ -318,6 +299,13 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
         enemy.damageReceived = tempEnemy.damageReceived;
         enemy.handleEnemyDelegate = self;
         
+        // If the saved animation is different from Default Timeline, then run the saved animation
+        if (tempEnemy.animationRunning != nil && ![tempEnemy.animationRunning  isEqual: @"Default Timeline"]) {
+            [enemy.animationManager runAnimationsForSequenceNamed:tempEnemy.animationRunning];
+            enemy.animationManager.paused = TRUE;
+        }
+
+        
         [_physicsNode addChild:enemy];
         [recreatedEnemies addObject:enemy];
         
@@ -396,6 +384,19 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
     [bullet removeFromParent];
 }
 
+-(void)startEnemiesRevengeMode {
+    for (Enemy* enemy in g.enemies) {
+        [enemy playRevengeModeAnimation];
+    }
+}
+
+-(void)endEnemiesRevengeMode {
+    g.numberOfKillsInTouch = 0;
+    for (Enemy* enemy in g.enemies) {
+        [enemy stopRevengeModeAnimation];
+    }
+}
+
 #pragma mark HandleEnemy Delegate
 
 -(void) removeEnemy:(Enemy *)enemy {
@@ -417,6 +418,9 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
     [self showMessage:scoreObtainedAsString atPosition:enemy.position withDelay:0];
     
     [self incrementScoreBy:scoreObtained];
+    
+    // All others enemies enter revenge mode for their fallen ally
+    [self startEnemiesRevengeMode];
 }
 
 #pragma mark HandleHero Delegate

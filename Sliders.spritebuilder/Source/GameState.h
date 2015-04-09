@@ -55,6 +55,5 @@ typedef NS_ENUM(NSInteger, GameStateLabel) {
 -(Enemy*)getRandomEnemy;
 -(BOOL)areHeroesOnFocusMode;
 -(BOOL)areEnemiesOnRevengeMode;
--(void)endEnemiesRevengeMode;
 
 @end

@@ -31,6 +31,14 @@
     [self.handleEnemyDelegate removeEnemy:self];
 }
 
+-(void) playRevengeModeAnimation {
+    [self.animationManager runAnimationsForSequenceNamed:@"Revenge Mode"];
+}
+
+-(void) stopRevengeModeAnimation {
+    [self.animationManager runAnimationsForSequenceNamed:@"Default Timeline"];
+}
+
 #pragma mark NSCoding Delegates
 
 -(id)initWithCoder:(NSCoder *)decoder {
@@ -46,6 +54,7 @@
     self.health = [decoder decodeIntegerForKey:@"health"];
     self.damageReceived = [decoder decodeIntegerForKey:@"damageReceived"];
     self.attackPower = [decoder decodeIntegerForKey:@"attackPower"];
+    self.animationRunning = [decoder decodeObjectForKey:@"animationRunning"];
     
     return self;
 }
@@ -58,6 +67,8 @@
     [encoder encodeInteger:self.health forKey:@"health"];
     [encoder encodeInteger:self.damageReceived forKey:@"damageReceived"];
     [encoder encodeInteger:self.attackPower forKey:@"attackPower"];
+    self.animationRunning = [self.animationManager runningSequenceName];
+    [encoder encodeObject:self.animationRunning forKey:@"animationRunning"];
 }
 
 @end

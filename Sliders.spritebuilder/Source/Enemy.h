@@ -18,7 +18,11 @@
 // Amount of damage done to heroes (attack power)
 @property (nonatomic, assign) NSInteger attackPower;
 @property (nonatomic, weak) id <HandleEnemy> handleEnemyDelegate;
+// Save the animation that is running so we can restore it after the game is closed
+@property (nonatomic, copy) NSString *animationRunning;
 
 -(void) applyDamage:(NSInteger) damage;
+-(void) playRevengeModeAnimation;
+-(void) stopRevengeModeAnimation;
 
 @end

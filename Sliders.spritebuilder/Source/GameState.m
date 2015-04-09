@@ -132,8 +132,4 @@ static NSString *KEY_SCORE = @"keyScore";
     return [self.enemies count] && self.numberOfKillsInTouch > 0;
 }
 
--(void)endEnemiesRevengeMode {
-    self.numberOfKillsInTouch = 0;
-}
-
 @end
