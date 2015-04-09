@@ -95,7 +95,6 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
 
 -(void) update:(CCTime)delta {
     if (g.gameState == GameRunning) {
-        
         if (![self isGameOver]) {
             // If heroes stopped moving and there are no more enemies, Load next level or next step of current level
             if (!g.heroesAreMoving) {
@@ -377,6 +376,7 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
     bullet.targetHero = hero;
     bullet.impulse = BULLET_IMPULSE;
     
+    //[bullet startParticleEffect];
     [bullet impulseToTarget];
 }
 

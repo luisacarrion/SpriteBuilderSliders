@@ -836,7 +836,8 @@
      style="display:inline"
      id="g3435"
      inkscape:groupmode="layer"
-     inkscape:label="enemies">
+     inkscape:label="enemies"
+     sodipodi:insensitive="true">
     <circle
        r="50"
        style="fill:#ffffff;fill-rule:evenodd;stroke:none;stroke-width:0.94014806px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"

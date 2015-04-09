@@ -16,5 +16,6 @@
 @property (nonatomic, retain) Hero* targetHero;
 
 -(void)impulseToTarget;
+//-(void)startParticleEffect;
 
 @end
