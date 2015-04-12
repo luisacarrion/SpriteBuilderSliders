@@ -19,6 +19,8 @@
 @property (nonatomic, assign) CGPoint savedVelocity;
 @property (nonatomic, weak) id <HandleHero> handleHeroDelegate;
 
+-(void) displayNormalMode;
+-(void) displayFocusMode;
 -(void) applyDamage:(NSInteger) damage;
 
 @end

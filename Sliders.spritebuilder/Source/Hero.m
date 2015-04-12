@@ -19,8 +19,33 @@
     self.zOrder = DrawingOrderHero;
 }
 
+-(void) displayNormalMode {
+    if (self.damageReceived == 0) {
+        self.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"assets/heroBlackNinja.png"];
+    } else if (self.damageReceived == 1) {
+        self.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"assets/heroBlackNinjaShadowWounded1.png"];
+    } else if (self.damageReceived == 2) {
+        self.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"assets/heroBlackNinjaShadowWounded2.png"];
+    }
+}
+
+-(void) displayFocusMode {
+    if (self.damageReceived == 0) {
+        self.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"assets/heroBlackNinjaFocused2.png"];
+    } else if (self.damageReceived == 1) {
+        self.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"assets/heroBlackNinjaFocusedWounded1.png"];
+    } else if (self.damageReceived == 2) {
+        self.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"assets/heroBlackNinjaFocusedWounded2.png"];
+    }
+}
+
 -(void) applyDamage:(NSInteger)damage {
     self.damageReceived += damage;
+    
+    if (self.damageReceived > 0) {
+        [self displayNormalMode];
+    }
+    
     if (self.damageReceived >= self.health) {
         [self die];
     }

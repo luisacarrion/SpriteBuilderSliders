@@ -391,7 +391,7 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 20;//30;//10;
     if (g.numberOfCollisionsWithEnemiesInTouch == 0) {
         // Only do this the first time a hero touches an enemy
         for (Hero *hero in g.heroes) {
-            hero.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"assets/heroBlackNinjaFocused2.png"];
+            [hero displayFocusMode];
         }
     }
     g.numberOfCollisionsWithEnemiesInTouch++;
@@ -399,7 +399,7 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 20;//30;//10;
 
 -(void)endHeroesFocusMode {
     for (Hero *hero in g.heroes) {
-        hero.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"assets/heroBlackNinja.png"];
+        [hero displayNormalMode];
     }
 }
 
