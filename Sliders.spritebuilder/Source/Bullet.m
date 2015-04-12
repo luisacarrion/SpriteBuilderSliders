@@ -32,7 +32,8 @@
 }
 
 -(void) rotateIndefinitely {
-    CCActionRotateBy *rotateAction = [CCActionRotateBy actionWithDuration:0.3 angle:360];
+    CCTime duration = 0.6;//0.3;
+    CCActionRotateBy *rotateAction = [CCActionRotateBy actionWithDuration:duration angle:360];
     CCActionRepeatForever *forever = [CCActionRepeatForever actionWithAction:rotateAction];
     
     [self runAction:forever];

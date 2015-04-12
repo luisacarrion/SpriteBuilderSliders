@@ -170,7 +170,7 @@
 				<key>value</key>
 				<array>
 					<string></string>
-					<string>assets/heroNinjaWhite.png</string>
+					<string>assets/heroBlackNinjaShadow5.png</string>
 				</array>
 			</dict>
 			<dict>
@@ -206,8 +206,6 @@
 				<array/>
 			</dict>
 		</array>
-		<key>selected</key>
-		<true/>
 	</dict>
 	<key>notes</key>
 	<array/>

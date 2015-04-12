@@ -14,12 +14,12 @@ static const NSInteger CHARACTER_WIDTH = 100;
 static const NSInteger CHARACTER_HEIGHT = 100;
 static const NSString *KEY_GAME_STATE_LABEL = @"keyGameStateLabel";
 static const NSString *KEY_TOP_SCORES = @"keyTopScores";
-static const NSInteger HERO_IMPULSE = 180;
-static const NSInteger BULLET_IMPULSE = 10;
+static const NSInteger HERO_IMPULSE = 250;//300;//180;
+static const NSInteger BULLET_IMPULSE = 20;//10;
 // Units the velocity of the heroes is reduced per frame when there are enemies in the field
-static const NSInteger HERO_VEL_REDUCTION_WITH_ENEMIES = 1;
+static const NSInteger HERO_VEL_REDUCTION_WITH_ENEMIES = 2;//3;//1;
 // Units the velocity of the heroes is reduced per frame when there are no enemies in the field
-static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
+static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 20;//30;//10;
 // Time to wait before firing the first shot to kill the heroes
 //static const NSInteger SECONDS_FOR_FIRST_ENEMY_SHOT = 5;
 // Time to wait after firing the first shot to kill the heroes, in order to shoot again. The time resets to MSECONDS_FOR_FIRST_ENEMY_SHOT when a hero kills an enemy
@@ -383,6 +383,17 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
     [bullet removeFromParent];
 }
 
+-(void)startHeroesFocusMode {
+    if (g.numberOfCollisionsWithEnemiesInTouch == 0) {
+        // Only do this the first time a hero touches an enemy
+        //for (Hero *hero in g.heroes) {
+            //hero.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"assets/heroWhiteRedEyes.png"];
+        //}
+    }
+    g.numberOfCollisionsWithEnemiesInTouch++;
+
+}
+
 -(void)startEnemiesRevengeMode {
     for (Enemy* enemy in g.enemies) {
         [enemy playRevengeModeAnimation];
@@ -438,7 +449,7 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 10;
 
 -(BOOL)ccPhysicsCollisionBegin:(CCPhysicsCollisionPair *)pair hero:(CCNode *)hero enemy:(CCNode *)enemy {
     if (g.gameState == GameRunning) {
-        g.numberOfCollisionsWithEnemiesInTouch++;
+        [self startHeroesFocusMode];
         // After the physics engine step ends, remove the enemy and increment the score
         [[_physicsNode space] addPostStepBlock:^{
             [(Enemy*)enemy applyDamage:((Hero*)hero).attackPower];

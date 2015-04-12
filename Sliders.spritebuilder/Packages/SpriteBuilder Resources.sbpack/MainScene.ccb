@@ -124,9 +124,9 @@
 						<string>Color3</string>
 						<key>value</key>
 						<array>
-							<real>0.0</real>
-							<real>0.0</real>
-							<real>0.0</real>
+							<real>0.065193772315979004</real>
+							<real>0.20325833559036255</real>
+							<real>0.38222900032997131</real>
 							<real>1</real>
 						</array>
 					</dict>
@@ -137,9 +137,9 @@
 						<string>Color3</string>
 						<key>value</key>
 						<array>
-							<real>0.0010835954453796148</real>
-							<real>0.0043964539654552937</real>
-							<real>0.0071317427791655064</real>
+							<real>0.041735041886568069</real>
+							<real>0.12263680249452591</real>
+							<real>0.24585062265396118</real>
 							<real>1</real>
 						</array>
 					</dict>
@@ -227,7 +227,7 @@
 						<key>value</key>
 						<array>
 							<string></string>
-							<string>assets/bgAqua.png</string>
+							<string>assets/bgAquaTenueShadow2.png</string>
 						</array>
 					</dict>
 					<dict>
@@ -263,8 +263,6 @@
 						<array/>
 					</dict>
 				</array>
-				<key>selected</key>
-				<true/>
 			</dict>
 			<dict>
 				<key>UUID</key>

@@ -16,7 +16,7 @@
 	<key>currentResolution</key>
 	<integer>0</integer>
 	<key>currentSequenceId</key>
-	<integer>1</integer>
+	<integer>0</integer>
 	<key>docDimensionsType</key>
 	<integer>1</integer>
 	<key>fileType</key>
@@ -219,7 +219,7 @@
 			<dict>
 				<key>baseValue</key>
 				<array>
-					<string>assets/enemyBlacPurpleLine.png</string>
+					<string>assets/enemyWhiteShadowPurpleLine.png</string>
 					<string>Use regular file</string>
 				</array>
 				<key>name</key>
@@ -229,7 +229,7 @@
 				<key>value</key>
 				<array>
 					<string></string>
-					<string>assets/enemyBlackPurpleLineAnnoyedFlipped.png</string>
+					<string>assets/enemyWhiteShadowPurpleLine.png</string>
 				</array>
 			</dict>
 			<dict>
@@ -265,6 +265,8 @@
 				<array/>
 			</dict>
 		</array>
+		<key>selected</key>
+		<true/>
 		<key>seqExpanded</key>
 		<true/>
 	</dict>

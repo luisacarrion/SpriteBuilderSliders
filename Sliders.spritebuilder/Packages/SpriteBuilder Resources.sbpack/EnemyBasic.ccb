@@ -219,7 +219,7 @@
 			<dict>
 				<key>baseValue</key>
 				<array>
-					<string>assets/enemyBlackRedLine.png</string>
+					<string>assets/enemyWhiteShadowRedLine.png</string>
 					<string>Use regular file</string>
 				</array>
 				<key>name</key>
@@ -229,7 +229,7 @@
 				<key>value</key>
 				<array>
 					<string></string>
-					<string>assets/enemyBlacRedLineAnnoyedFlipped.png</string>
+					<string>assets/enemyWhiteShadowRedLine.png</string>
 				</array>
 			</dict>
 			<dict>
@@ -276,6 +276,8 @@
 				<array/>
 			</dict>
 		</array>
+		<key>selected</key>
+		<true/>
 		<key>seqExpanded</key>
 		<true/>
 	</dict>

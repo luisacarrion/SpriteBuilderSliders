@@ -137,7 +137,7 @@
 				<key>value</key>
 				<array>
 					<string></string>
-					<string>assets/shurikenTerraria.png</string>
+					<string>assets/shurikenfuuma 100x100.png</string>
 				</array>
 			</dict>
 			<dict>
@@ -173,8 +173,6 @@
 				<array/>
 			</dict>
 		</array>
-		<key>selected</key>
-		<true/>
 	</dict>
 	<key>notes</key>
 	<array/>
