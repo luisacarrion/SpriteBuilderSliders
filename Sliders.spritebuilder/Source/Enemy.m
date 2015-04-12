@@ -8,6 +8,7 @@
 
 #import "Enemy.h"
 #import "MainScene.h"
+#import "Utils.h"
 
 @implementation Enemy {
 }
@@ -37,6 +38,42 @@
 
 -(void) stopRevengeModeAnimation {
     [self.animationManager runAnimationsForSequenceNamed:@"Default Timeline"];
+}
+
+-(void) playShootBulletAnimationWithBullet:(Bullet*)bullet {
+    // Animate the enemy to make it look like it's throwing a shuriken
+    // Calculate the coordinates for the move by animation
+    CGPoint towardsHeroCoordinates = [Utils getVectorToMoveFromPoint:self.position ToPoint:bullet.targetHero.position withImpulse:10];
+    
+    // Create the CCActions
+    CCActionMoveBy *moveByAction = [CCActionMoveBy actionWithDuration:0.1 position:towardsHeroCoordinates];
+    CCActionScaleBy *scaleAction = [CCActionScaleBy actionWithDuration:0.1 scaleX:0.9 scaleY:0.9];
+    CCActionSpawn *spawnAction = [CCActionSpawn actionWithArray:@[moveByAction, scaleAction]];
+    id throwBulletAction = [CCActionCallFunc actionWithTarget:bullet selector:@selector(impulseToTarget)];
+    
+    CCActionSequence *sequenceAction = [CCActionSequence actionWithArray:@[spawnAction, throwBulletAction, [spawnAction reverse]]];
+    
+    [self runAction:sequenceAction];
+}
+
+-(void) playDieAnimation {
+    // Display sword slash animation before removing the enemy
+    // Add sword slash sprite
+    CCSprite *swordSlash = [CCSprite spriteWithImageNamed:@"assets/slash2.png"];
+    swordSlash.position = self.position;
+    swordSlash.anchorPoint = ccp(0.5, 0.5);
+    [self.parent addChild:swordSlash];
+    
+    // Play the CCAction animations to fade the sword slash
+    CCActionDelay *delayAction = [CCActionDelay actionWithDuration:0.5];
+    CCActionFadeOut *fadeAction = [CCActionFadeOut actionWithDuration:0.75];
+    CCActionRemove *removeAction = [CCActionRemove action];
+    CCActionSequence *swordSlashSequenceAction = [CCActionSequence actionWithArray:@[delayAction, fadeAction, removeAction]];
+    [swordSlash runAction:swordSlashSequenceAction];
+    
+    // Play the CCAction animations to fade the enemy
+    CCActionSequence *sequenceActionEnemy = [CCActionSequence actionWithArray:@[fadeAction, removeAction]];
+    [self runAction:sequenceActionEnemy];
 }
 
 #pragma mark NSCoding Delegates

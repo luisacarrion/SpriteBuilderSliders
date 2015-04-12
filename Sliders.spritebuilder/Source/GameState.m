@@ -127,7 +127,7 @@ static NSString *KEY_SCORE = @"keyScore";
  Revenge mode: when a hero kills an enemy, enemies enter in revenge mode. Revenge mode means that when the heroes stop moving, if there are enemies still alive, one of thouse enemies will shoot at one of the heroes and then the revenge mode will end.
  */
 -(BOOL)areEnemiesOnRevengeMode {
-    return [self.enemies count] && self.numberOfKillsInTouch > 0;
+    return [self.enemies count] > 0 && self.numberOfKillsInTouch > 0;
 }
 
 @end

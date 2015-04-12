@@ -372,16 +372,15 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 20;//30;//10;
 }
 
 -(void) enemy:(Enemy*)enemy shootsAtHero:(Hero*)hero {
+    // Create the bullet/shuriken
     Bullet *bullet = (Bullet*) [CCBReader load:@"Bullet"];
-    
     [_physicsNode addChild:bullet];
-    
     bullet.position = enemy.position;
     bullet.attackPower = enemy.attackPower;
     bullet.targetHero = hero;
     bullet.impulse = BULLET_IMPULSE;
     
-    [bullet impulseToTarget];
+    [enemy playShootBulletAnimationWithBullet:bullet];
 }
 
 -(void) removeBullet:(CCSprite*)bullet {
@@ -396,7 +395,6 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 20;//30;//10;
         }
     }
     g.numberOfCollisionsWithEnemiesInTouch++;
-
 }
 
 -(void)endHeroesFocusMode {
@@ -421,29 +419,13 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 20;//30;//10;
 #pragma mark HandleEnemy Delegate
 
 -(void) removeEnemy:(Enemy *)enemy {
-    // Display sword slash animation before removing the enemy
-    // Add sword slash sprite
-    CCSprite *swordSlash = [CCSprite spriteWithImageNamed:@"assets/slash2.png"];
-    swordSlash.position = enemy.position;
-    swordSlash.anchorPoint = ccp(0.5, 0.5);
-    [self addChild:swordSlash];
-    // Create CCActions for fading the slash
-    CCActionDelay *delayAction = [CCActionDelay actionWithDuration:0.5];
-    CCActionFadeOut *fadeAction = [CCActionFadeOut actionWithDuration:0.75];
-    CCActionRemove *removeAction = [CCActionRemove action];
-    CCActionSequence *swordSlashSequenceAction = [CCActionSequence actionWithArray:@[delayAction, fadeAction, removeAction]];
-    [swordSlash runAction:swordSlashSequenceAction];
-    
-    // Remove the enemy after a fading animation
-    id removeEnemyBlock = [CCActionCallBlock actionWithBlock:^{
-        [enemy removeFromParent];
-        [g.enemies removeObject:enemy];
-    }];
-    CCActionSequence *sequenceActionEnemy = [CCActionSequence actionWithArray:@[fadeAction, removeEnemyBlock]];
-    [enemy runAction:sequenceActionEnemy];
+    // Remove enemy from the array, because it shouldn't be able to do anything else. It's dead
+    [g.enemies removeObject:enemy];
     
     // Remove the enemy collision type, so heroes cannot collide with an enemy once it's fading away
     enemy.physicsBody.collisionType = @"";
+    
+    [enemy playDieAnimation];
     
     // Increment enemies killed counters
     g.numberOfKillsInTouch++;

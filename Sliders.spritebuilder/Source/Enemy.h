@@ -7,6 +7,7 @@
 //
 
 #import "HandleEnemy.h"
+#import "Bullet.h"
 
 @interface Enemy : CCSprite <NSCoding>
 
@@ -24,5 +25,7 @@
 -(void) applyDamage:(NSInteger) damage;
 -(void) playRevengeModeAnimation;
 -(void) stopRevengeModeAnimation;
+-(void) playDieAnimation;
+-(void) playShootBulletAnimationWithBullet:(Bullet*)bullet;
 
 @end
