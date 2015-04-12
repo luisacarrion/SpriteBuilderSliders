@@ -59,7 +59,7 @@
 							<integer>7</integer>
 							<key>value</key>
 							<array>
-								<string>assets/enemyBlacPurpleLineAnnoyed.png</string>
+								<string>assets/enemyWhiteShadowPurpleLineAnnoyed.png</string>
 								<string>Use regular file</string>
 							</array>
 						</dict>
@@ -77,7 +77,7 @@
 							<integer>7</integer>
 							<key>value</key>
 							<array>
-								<string>assets/enemyBlackPurpleLineAnnoyedFlipped.png</string>
+								<string>assets/enemyWhiteShadowPurpleLineAnnoyedFlipped.png</string>
 								<string>Use regular file</string>
 							</array>
 						</dict>
@@ -229,7 +229,7 @@
 				<key>value</key>
 				<array>
 					<string></string>
-					<string>assets/enemyWhiteShadowPurpleLine.png</string>
+					<string>assets/enemyWhiteShadowPurpleLineAnnoyedFlipped.png</string>
 				</array>
 			</dict>
 			<dict>
@@ -265,8 +265,6 @@
 				<array/>
 			</dict>
 		</array>
-		<key>selected</key>
-		<true/>
 		<key>seqExpanded</key>
 		<true/>
 	</dict>
@@ -360,7 +358,7 @@
 			<key>offset</key>
 			<real>0.0</real>
 			<key>position</key>
-			<real>0.26666668057441711</real>
+			<real>0.0</real>
 			<key>resolution</key>
 			<real>30</real>
 			<key>scale</key>

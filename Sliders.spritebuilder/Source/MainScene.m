@@ -354,9 +354,14 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 20;//30;//10;
     }
     
     if (stoppedHeroesCounter == [g.heroes count]) {
-        g.heroesAreMoving = FALSE;
+        [self onHeroesStoppedMoving];
     }
 
+}
+
+-(void) onHeroesStoppedMoving {
+    g.heroesAreMoving = FALSE;
+    [self endHeroesFocusMode];
 }
 
 -(void) stopAllHeroes {
@@ -386,12 +391,18 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 20;//30;//10;
 -(void)startHeroesFocusMode {
     if (g.numberOfCollisionsWithEnemiesInTouch == 0) {
         // Only do this the first time a hero touches an enemy
-        //for (Hero *hero in g.heroes) {
-            //hero.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"assets/heroWhiteRedEyes.png"];
-        //}
+        for (Hero *hero in g.heroes) {
+            hero.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"assets/heroBlackNinjaFocused2.png"];
+        }
     }
     g.numberOfCollisionsWithEnemiesInTouch++;
 
+}
+
+-(void)endHeroesFocusMode {
+    for (Hero *hero in g.heroes) {
+        hero.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"assets/heroBlackNinja.png"];
+    }
 }
 
 -(void)startEnemiesRevengeMode {
@@ -410,17 +421,34 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 20;//30;//10;
 #pragma mark HandleEnemy Delegate
 
 -(void) removeEnemy:(Enemy *)enemy {
-    [enemy removeFromParent];
-    [g.enemies removeObject:enemy];
+    // Display sword slash animation before removing the enemy
+    // Add sword slash sprite
+    CCSprite *swordSlash = [CCSprite spriteWithImageNamed:@"assets/slash2.png"];
+    swordSlash.position = enemy.position;
+    swordSlash.anchorPoint = ccp(0.5, 0.5);
+    [self addChild:swordSlash];
+    // Create CCActions for fading the slash
+    CCActionDelay *delayAction = [CCActionDelay actionWithDuration:0.5];
+    CCActionFadeOut *fadeAction = [CCActionFadeOut actionWithDuration:0.75];
+    CCActionRemove *removeAction = [CCActionRemove action];
+    CCActionSequence *swordSlashSequenceAction = [CCActionSequence actionWithArray:@[delayAction, fadeAction, removeAction]];
+    [swordSlash runAction:swordSlashSequenceAction];
+    
+    // Remove the enemy after a fading animation
+    id removeEnemyBlock = [CCActionCallBlock actionWithBlock:^{
+        [enemy removeFromParent];
+        [g.enemies removeObject:enemy];
+    }];
+    CCActionSequence *sequenceActionEnemy = [CCActionSequence actionWithArray:@[fadeAction, removeEnemyBlock]];
+    [enemy runAction:sequenceActionEnemy];
+    
+    // Remove the enemy collision type, so heroes cannot collide with an enemy once it's fading away
+    enemy.physicsBody.collisionType = @"";
     
     // Increment enemies killed counters
     g.numberOfKillsInTouch++;
     g.numberOfKillsInLevel++;
     g.numberOfKillsInTotal++;
-    
-    // Enemies stop attacking
-    g.secondsSinceHeroKilledEnemy = 0;
-    g.enemiesAreAttacking = FALSE;
     
     // Calculate obtained score for killing this enemy
     NSInteger scoreObtained = enemy.health * g.numberOfKillsInTouch;

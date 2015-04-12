@@ -40,10 +40,6 @@ typedef NS_ENUM(NSInteger, GameStateLabel) {
 @property (nonatomic, assign) NSInteger numberOfCollisionsWithEnemiesInTouch;
 @property (nonatomic, assign) NSInteger score;
 
-// Properties that don't need to be saved when the game is finished
-@property (nonatomic, assign) CCTime secondsSinceHeroKilledEnemy;
-@property (nonatomic, assign) BOOL enemiesAreAttacking;
-
 // Sharing, saving and loadindg the game state
 +(id)sharedInstance;
 -(void)saveStateInUserDefaults;

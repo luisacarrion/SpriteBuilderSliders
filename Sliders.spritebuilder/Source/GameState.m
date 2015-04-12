@@ -95,8 +95,6 @@ static NSString *KEY_SCORE = @"keyScore";
     self.heroesAreMoving = FALSE;
     
     self.enemies = [NSMutableArray array];
-    self.secondsSinceHeroKilledEnemy = 0;
-    self.enemiesAreAttacking = FALSE;
     
     self.numberOfKillsInLevel = 0;
     self.numberOfKillsInTotal = 0;

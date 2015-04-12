@@ -59,7 +59,7 @@
 							<integer>7</integer>
 							<key>value</key>
 							<array>
-								<string>assets/enemyBlackGreenLineAnnoyed.png</string>
+								<string>assets/enemyWhiteShadowGreenLineAnnoyed.png</string>
 								<string>Use regular file</string>
 							</array>
 						</dict>
@@ -77,7 +77,7 @@
 							<integer>7</integer>
 							<key>value</key>
 							<array>
-								<string>assets/enemyBlackGreenLineAnnoyedFlipped.png</string>
+								<string>assets/enemyWhiteShadowGreenLineAnnoyedFlipped.png</string>
 								<string>Use regular file</string>
 							</array>
 						</dict>
@@ -229,7 +229,7 @@
 				<key>value</key>
 				<array>
 					<string></string>
-					<string>assets/enemyWhiteShadowGreenLine.png</string>
+					<string>assets/enemyWhiteShadowGreenLineAnnoyedFlipped.png</string>
 				</array>
 			</dict>
 			<dict>
