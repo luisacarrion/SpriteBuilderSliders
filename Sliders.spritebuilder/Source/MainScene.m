@@ -409,11 +409,6 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 20;//30;//10;
     // Remove enemy from the array, because it shouldn't be able to do anything else. It's dead
     [g.enemies removeObject:enemy];
     
-    // Remove the enemy collision type, so heroes cannot collide with an enemy once it's fading away
-    enemy.physicsBody.collisionType = @"";
-    
-    [enemy playDieAnimation];
-    
     // Increment enemies killed counters
     g.numberOfKillsInTouch++;
     g.numberOfKillsInLevel++;
@@ -433,7 +428,6 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 20;//30;//10;
 #pragma mark HandleHero Delegate
 
 -(void) removeHero:(Hero*)hero {
-    [hero removeFromParent];
     [g.heroes removeObject:hero];
 }
 
@@ -445,7 +439,7 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 20;//30;//10;
 }
 
 -(BOOL)ccPhysicsCollisionBegin:(CCPhysicsCollisionPair *)pair hero:(CCNode *)hero enemy:(CCNode *)enemy {
-    if (g.gameState == GameRunning) {
+    if (g.gameState == GameRunning && ((Hero*)hero).isAlive && ((Enemy*)enemy).isAlive) {
         [self startHeroesFocusMode];
         // After the physics engine step ends, remove the enemy and increment the score
         [[_physicsNode space] addPostStepBlock:^{
@@ -464,7 +458,10 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 20;//30;//10;
 
 -(void)ccPhysicsCollisionPostSolve:(CCPhysicsCollisionPair *)pair bullet:(CCNode *)bullet hero:(CCNode *)hero {
     [[_physicsNode space] addPostStepBlock:^{
-        [(Hero*)hero applyDamage:((Bullet*)bullet).attackPower];
+        if (((Hero*)hero).isAlive) {
+            [(Hero*)hero applyDamage:((Bullet*)bullet).attackPower];
+        }
+        // We need to remove the bullet if the hero was fading away but a bullet was shot at it
         [self removeBullet:(Bullet*)bullet];
     }key:bullet];
 }

@@ -12,6 +12,8 @@
 @implementation Hero
 
 - (void) didLoadFromCCB {
+    self.isAlive = true;
+    
     // Set physics properties
     self.physicsBody.collisionType = @"hero";
     
@@ -26,6 +28,8 @@
         self.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"assets/heroBlackNinjaShadowWounded1.png"];
     } else if (self.damageReceived == 2) {
         self.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"assets/heroBlackNinjaShadowWounded2.png"];
+    } else if (self.damageReceived >= 3) {
+        self.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"assets/heroBlackNinjaShadowWounded3.png"];
     }
 }
 
@@ -36,6 +40,8 @@
         self.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"assets/heroBlackNinjaFocusedWounded1.png"];
     } else if (self.damageReceived == 2) {
         self.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"assets/heroBlackNinjaFocusedWounded2.png"];
+    } else if (self.damageReceived >= 3) {
+        self.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"assets/heroBlackNinjaFocusedWounded3.png"];
     }
 }
 
@@ -52,7 +58,19 @@
 }
 
 -(void) die {
+    self.isAlive = false;
+    [self playDieAnimation];
     [self.handleHeroDelegate removeHero:self];
+}
+
+-(void) playDieAnimation {
+    // Create the CCActions
+    CCActionFadeOut *fadeAction = [CCActionFadeOut actionWithDuration:0.75];
+    CCActionRemove *removeAction = [CCActionRemove action];
+    
+    // Play the CCAction animations to fade the hero
+    CCActionSequence *sequenceAction = [CCActionSequence actionWithArray:@[fadeAction, removeAction]];
+    [self runAction:sequenceAction];
 }
 
 

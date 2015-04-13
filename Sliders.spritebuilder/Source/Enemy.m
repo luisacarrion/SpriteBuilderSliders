@@ -18,6 +18,8 @@ static const NSInteger BULLET_ATTACK_POWER = 1;
 }
 
 - (void) didLoadFromCCB {
+    self.isAlive = true;
+    
     // Set physics properties
     self.physicsBody.sensor = YES;
     
@@ -33,6 +35,9 @@ static const NSInteger BULLET_ATTACK_POWER = 1;
 }
 
 -(void) die {
+    // Remove the enemy collision type, so heroes cannot collide with an enemy once it's fading away
+    self.isAlive = false;
+    [self playDieAnimation];
     [self.handleEnemyDelegate removeEnemy:self];
 }
 
