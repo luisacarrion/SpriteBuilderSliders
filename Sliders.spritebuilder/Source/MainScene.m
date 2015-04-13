@@ -15,9 +15,8 @@ static const NSInteger CHARACTER_HEIGHT = 100;
 static const NSString *KEY_GAME_STATE_LABEL = @"keyGameStateLabel";
 static const NSString *KEY_TOP_SCORES = @"keyTopScores";
 static const NSInteger HERO_IMPULSE = 250;//300;//180;
-static const NSInteger BULLET_IMPULSE = 20;//10;
 // Units the velocity of the heroes is reduced per frame when there are enemies in the field
-static const NSInteger HERO_VEL_REDUCTION_WITH_ENEMIES = 2;//3;//1;
+static const NSInteger HERO_VEL_REDUCTION_WITH_ENEMIES = 3;//3;//1;
 // Units the velocity of the heroes is reduced per frame when there are no enemies in the field
 static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 20;//30;//10;
 // Time to wait before firing the first shot to kill the heroes
@@ -372,15 +371,7 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 20;//30;//10;
 }
 
 -(void) enemy:(Enemy*)enemy shootsAtHero:(Hero*)hero {
-    // Create the bullet/shuriken
-    Bullet *bullet = (Bullet*) [CCBReader load:@"Bullet"];
-    [_physicsNode addChild:bullet];
-    bullet.position = enemy.position;
-    bullet.attackPower = enemy.attackPower;
-    bullet.targetHero = hero;
-    bullet.impulse = BULLET_IMPULSE;
-    
-    [enemy playShootBulletAnimationWithBullet:bullet];
+    [enemy playAnimationShootBulletAtHero:hero];
 }
 
 -(void) removeBullet:(CCSprite*)bullet {

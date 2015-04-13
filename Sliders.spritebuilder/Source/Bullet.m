@@ -10,19 +10,36 @@
 #import "MainScene.h"
 #import "Utils.h"
 
-@implementation Bullet
+@implementation Bullet {
+    bool _fired;
+}
 
 - (void) didLoadFromCCB {
     // Set drawing order
     self.zOrder = DrawingOrderBullet;
 
+    //self.visible = false;
+    
     [self rotateIndefinitely];
 }
 
 -(void) fixedUpdate:(CCTime)delta {
-    // We redirect the bullet to the target hero continuously, becase the hero could have moved while the bullet was flying towards it
-    self.physicsBody.velocity = ccp(0, 0);
-    [self impulseToTarget];
+    // If the target died, remove the bullet (in cases where two bullets are fired and the first bullet already killed the hero
+    if (self.targetHero == nil || self.targetHero.health <= 0) {
+        CCActionRemove *remove = [CCActionRemove action];
+        [self runAction:remove];
+    } else {
+        // We redirect the bullet to the target hero continuously, becase the hero could have moved while the bullet was flying towards it
+        if (_fired) {
+            self.physicsBody.velocity = ccp(0, 0);
+            [self impulseToTarget];
+        }
+    }
+}
+
+-(void) fire {
+    _fired = TRUE;
+    self.visible = true;
 }
 
 -(void)impulseToTarget {

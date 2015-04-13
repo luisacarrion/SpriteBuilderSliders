@@ -13,9 +13,9 @@
 
 @property (nonatomic, assign) NSInteger attackPower;
 @property (nonatomic, assign) NSInteger impulse;
-@property (nonatomic, retain) Hero* targetHero;
+@property (nonatomic, weak) Hero* targetHero;
 
 -(void)impulseToTarget;
-//-(void)startParticleEffect;
+-(void)fire;
 
 @end

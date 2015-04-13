@@ -26,6 +26,6 @@
 -(void) playRevengeModeAnimation;
 -(void) stopRevengeModeAnimation;
 -(void) playDieAnimation;
--(void) playShootBulletAnimationWithBullet:(Bullet*)bullet;
+-(void) playAnimationShootBulletAtHero:(Hero*)hero;
 
 @end

@@ -7,8 +7,12 @@
 //
 
 #import "Enemy.h"
+#import "Hero.h"
 #import "MainScene.h"
 #import "Utils.h"
+
+static const NSInteger BULLET_IMPULSE = 20;//10;
+static const NSInteger BULLET_ATTACK_POWER = 1;
 
 @implementation Enemy {
 }
@@ -40,18 +44,41 @@
     [self.animationManager runAnimationsForSequenceNamed:@"Default Timeline"];
 }
 
--(void) playShootBulletAnimationWithBullet:(Bullet*)bullet {
+-(void) playAnimationShootBulletAtHero:(Hero*)hero {
     // Animate the enemy to make it look like it's throwing a shuriken
     // Calculate the coordinates for the move by animation
-    CGPoint towardsHeroCoordinates = [Utils getVectorToMoveFromPoint:self.position ToPoint:bullet.targetHero.position withImpulse:10];
+    CGPoint towardsHeroCoordinates = [Utils getVectorToMoveFromPoint:self.position ToPoint:hero.position withImpulse:10];
     
     // Create the CCActions
     CCActionMoveBy *moveByAction = [CCActionMoveBy actionWithDuration:0.1 position:towardsHeroCoordinates];
     CCActionScaleBy *scaleAction = [CCActionScaleBy actionWithDuration:0.1 scaleX:0.9 scaleY:0.9];
-    CCActionSpawn *spawnAction = [CCActionSpawn actionWithArray:@[moveByAction, scaleAction]];
-    id throwBulletAction = [CCActionCallFunc actionWithTarget:bullet selector:@selector(impulseToTarget)];
+    CCActionSpawn *spawnActionMove = [CCActionSpawn actionWithArray:@[moveByAction, scaleAction]];
     
-    CCActionSequence *sequenceAction = [CCActionSequence actionWithArray:@[spawnAction, throwBulletAction, [spawnAction reverse]]];
+    Bullet *bullet = (Bullet*) [CCBReader load:@"Bullet"];
+    [self.parent addChild:bullet];
+    bullet.position = self.position;
+    bullet.attackPower = BULLET_ATTACK_POWER;
+    bullet.targetHero = hero;
+    bullet.impulse = BULLET_IMPULSE;
+    
+    CCActionCallFunc *fireBulletAction = [CCActionCallFunc actionWithTarget:bullet selector:@selector(fire)];
+    CCActionSpawn *spawnActionMoveAndFire = [CCActionSpawn actionWithArray:@[spawnActionMove, fireBulletAction]];
+    
+    CCActionSequence *sequenceAction = [CCActionSequence actionWithArray:@[spawnActionMoveAndFire, [spawnActionMove reverse]]];
+    
+    for (int i = 1; i < self.attackPower; i++) {
+        bullet = (Bullet*) [CCBReader load:@"Bullet"];
+        [self.parent addChild:bullet];
+        bullet.position = self.position;
+        bullet.attackPower = BULLET_ATTACK_POWER;
+        bullet.targetHero = hero;
+        bullet.impulse = BULLET_IMPULSE;
+        
+        fireBulletAction = [CCActionCallFunc actionWithTarget:bullet selector:@selector(fire)];
+        spawnActionMoveAndFire = [CCActionSpawn actionWithArray:@[spawnActionMove, fireBulletAction]];
+        
+        sequenceAction = [CCActionSequence actionWithArray:@[sequenceAction, spawnActionMoveAndFire, [spawnActionMove reverse]]];
+    }
     
     [self runAction:sequenceAction];
 }
@@ -65,7 +92,7 @@
     [self.parent addChild:swordSlash];
     
     // Play the CCAction animations to fade the sword slash
-    CCActionDelay *delayAction = [CCActionDelay actionWithDuration:0.5];
+    CCActionDelay *delayAction = [CCActionDelay actionWithDuration:0.1];
     CCActionFadeOut *fadeAction = [CCActionFadeOut actionWithDuration:0.75];
     CCActionRemove *removeAction = [CCActionRemove action];
     CCActionSequence *swordSlashSequenceAction = [CCActionSequence actionWithArray:@[delayAction, fadeAction, removeAction]];
