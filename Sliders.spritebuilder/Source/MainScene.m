@@ -19,10 +19,6 @@ static const NSInteger HERO_IMPULSE = 250;//300;//180;
 static const NSInteger HERO_VEL_REDUCTION_WITH_ENEMIES = 3;//3;//1;
 // Units the velocity of the heroes is reduced per frame when there are no enemies in the field
 static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 20;//30;//10;
-// Time to wait before firing the first shot to kill the heroes
-//static const NSInteger SECONDS_FOR_FIRST_ENEMY_SHOT = 5;
-// Time to wait after firing the first shot to kill the heroes, in order to shoot again. The time resets to MSECONDS_FOR_FIRST_ENEMY_SHOT when a hero kills an enemy
-//static const NSInteger SECONDS_FOR_NEXT_ENEMY_SHOT = 2;
 
 @implementation MainScene {
     

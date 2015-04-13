@@ -46,14 +46,38 @@ static const NSInteger BULLET_ATTACK_POWER = 1;
 
 -(void) playAnimationShootBulletAtHero:(Hero*)hero {
     // Animate the enemy to make it look like it's throwing a shuriken
+    
     // Calculate the coordinates for the move by animation
     CGPoint towardsHeroCoordinates = [Utils getVectorToMoveFromPoint:self.position ToPoint:hero.position withImpulse:10];
     
-    // Create the CCActions
+    // Create the reusable CCActions
     CCActionMoveBy *moveByAction = [CCActionMoveBy actionWithDuration:0.1 position:towardsHeroCoordinates];
     CCActionScaleBy *scaleAction = [CCActionScaleBy actionWithDuration:0.1 scaleX:0.9 scaleY:0.9];
     CCActionSpawn *spawnActionMove = [CCActionSpawn actionWithArray:@[moveByAction, scaleAction]];
     
+    // Create the bullet and the CCActions that depend on the bullet
+    Bullet *bullet = [self getNewBulletForHero:hero];
+    CCActionCallFunc *fireBulletAction = [CCActionCallFunc actionWithTarget:bullet selector:@selector(fire)];
+    CCActionSpawn *spawnActionMoveAndFire = [CCActionSpawn actionWithArray:@[spawnActionMove, fireBulletAction]];
+    
+    // Create the sequence of actions that the enemy will execute
+    CCActionSequence *sequenceAction = [CCActionSequence actionWithArray:@[spawnActionMoveAndFire, [spawnActionMove reverse]]];
+    
+    // Create extra bullets (and the animations to fire them) for every point of this enemy's attack power
+    for (int i = 1; i < self.attackPower; i++) {
+        bullet = [self getNewBulletForHero:hero];
+        fireBulletAction = [CCActionCallFunc actionWithTarget:bullet selector:@selector(fire)];
+        spawnActionMoveAndFire = [CCActionSpawn actionWithArray:@[spawnActionMove, fireBulletAction]];
+        
+        // Concatenate the previous sequenceAction with the new actions to fire the new bullet
+        sequenceAction = [CCActionSequence actionWithArray:@[sequenceAction, spawnActionMoveAndFire, [spawnActionMove reverse]]];
+    }
+    
+    // Run all the sequenceAction to fire all the bullets created
+    [self runAction:sequenceAction];
+}
+
+-(Bullet*) getNewBulletForHero:(Hero*) hero {
     Bullet *bullet = (Bullet*) [CCBReader load:@"Bullet"];
     [self.parent addChild:bullet];
     bullet.position = self.position;
@@ -61,26 +85,7 @@ static const NSInteger BULLET_ATTACK_POWER = 1;
     bullet.targetHero = hero;
     bullet.impulse = BULLET_IMPULSE;
     
-    CCActionCallFunc *fireBulletAction = [CCActionCallFunc actionWithTarget:bullet selector:@selector(fire)];
-    CCActionSpawn *spawnActionMoveAndFire = [CCActionSpawn actionWithArray:@[spawnActionMove, fireBulletAction]];
-    
-    CCActionSequence *sequenceAction = [CCActionSequence actionWithArray:@[spawnActionMoveAndFire, [spawnActionMove reverse]]];
-    
-    for (int i = 1; i < self.attackPower; i++) {
-        bullet = (Bullet*) [CCBReader load:@"Bullet"];
-        [self.parent addChild:bullet];
-        bullet.position = self.position;
-        bullet.attackPower = BULLET_ATTACK_POWER;
-        bullet.targetHero = hero;
-        bullet.impulse = BULLET_IMPULSE;
-        
-        fireBulletAction = [CCActionCallFunc actionWithTarget:bullet selector:@selector(fire)];
-        spawnActionMoveAndFire = [CCActionSpawn actionWithArray:@[spawnActionMove, fireBulletAction]];
-        
-        sequenceAction = [CCActionSequence actionWithArray:@[sequenceAction, spawnActionMoveAndFire, [spawnActionMove reverse]]];
-    }
-    
-    [self runAction:sequenceAction];
+    return bullet;
 }
 
 -(void) playDieAnimation {
