@@ -23,25 +23,25 @@
 
 -(void) displayNormalMode {
     if (self.damageReceived == 0) {
-        self.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"assets/heroBlackNinja.png"];
+        self.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"assets/hero.png"];
     } else if (self.damageReceived == 1) {
-        self.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"assets/heroBlackNinjaShadowWounded1.png"];
+        self.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"assets/heroWounded1.png"];
     } else if (self.damageReceived == 2) {
-        self.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"assets/heroBlackNinjaShadowWounded2.png"];
+        self.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"assets/heroWounded2.png"];
     } else if (self.damageReceived >= 3) {
-        self.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"assets/heroBlackNinjaShadowWounded3.png"];
+        self.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"assets/heroWounded3.png"];
     }
 }
 
 -(void) displayFocusMode {
     if (self.damageReceived == 0) {
-        self.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"assets/heroBlackNinjaFocused2.png"];
+        self.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"assets/heroFocused.png"];
     } else if (self.damageReceived == 1) {
-        self.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"assets/heroBlackNinjaFocusedWounded1.png"];
+        self.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"assets/heroFocusedWounded1.png"];
     } else if (self.damageReceived == 2) {
-        self.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"assets/heroBlackNinjaFocusedWounded2.png"];
+        self.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"assets/heroFocusedWounded2.png"];
     } else if (self.damageReceived >= 3) {
-        self.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"assets/heroBlackNinjaFocusedWounded3.png"];
+        self.spriteFrame = [CCSpriteFrame frameWithImageNamed:@"assets/heroFocusedWounded3.png"];
     }
 }
 

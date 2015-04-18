@@ -29,6 +29,13 @@ static const NSInteger BULLET_ATTACK_POWER = 1;
 
 -(void) applyDamage:(NSInteger)damage {
     self.damageReceived += damage;
+    
+    if (self.isOnRevengeMode) {
+        [self playRevengeModeAnimation];
+    } else {
+        [self stopRevengeModeAnimation];
+    }
+    
     if (self.damageReceived >= self.health) {
         [self die];
     }
@@ -42,11 +49,46 @@ static const NSInteger BULLET_ATTACK_POWER = 1;
 }
 
 -(void) playRevengeModeAnimation {
-    [self.animationManager runAnimationsForSequenceNamed:@"Revenge Mode"];
+    self.isOnRevengeMode = true;
+    
+    if (self.damageReceived == 0) {
+        [self.animationManager runAnimationsForSequenceNamed:@"Revenge Mode"];
+    } else if (self.damageReceived == 1) {
+        [self.animationManager runAnimationsForSequenceNamed:@"Revenge Mode Wounded 1"];
+    } else if (self.damageReceived >= 2) {
+        [self.animationManager runAnimationsForSequenceNamed:@"Revenge Mode Wounded 2"];
+    }
 }
 
 -(void) stopRevengeModeAnimation {
-    [self.animationManager runAnimationsForSequenceNamed:@"Default Timeline"];
+    self.isOnRevengeMode = false;
+    if (self.damageReceived == 0) {
+        [self.animationManager runAnimationsForSequenceNamed:@"Normal"];
+    } else if (self.damageReceived == 1) {
+        [self.animationManager runAnimationsForSequenceNamed:@"Normal Wounded 1"];
+    } else if (self.damageReceived >= 2) {
+        [self.animationManager runAnimationsForSequenceNamed:@"Normal Wounded 2"];
+    }
+}
+
+-(void) playDieAnimation {
+    // Display sword slash animation before removing the enemy
+    // Add sword slash sprite
+    CCSprite *swordSlash = [CCSprite spriteWithImageNamed:@"assets/slash2.png"];
+    swordSlash.position = self.position;
+    swordSlash.anchorPoint = ccp(0.5, 0.5);
+    [self.parent addChild:swordSlash];
+    
+    // Play the CCAction animations to fade the sword slash
+    CCActionDelay *delayAction = [CCActionDelay actionWithDuration:0.1];
+    CCActionFadeOut *fadeAction = [CCActionFadeOut actionWithDuration:0.75];
+    CCActionRemove *removeAction = [CCActionRemove action];
+    CCActionSequence *swordSlashSequenceAction = [CCActionSequence actionWithArray:@[delayAction, fadeAction, removeAction]];
+    [swordSlash runAction:swordSlashSequenceAction];
+    
+    // Play the CCAction animations to fade the enemy
+    CCActionSequence *sequenceActionEnemy = [CCActionSequence actionWithArray:@[fadeAction, removeAction]];
+    [self runAction:sequenceActionEnemy];
 }
 
 -(void) playAnimationShootBulletAtHero:(Hero*)hero {
@@ -91,26 +133,6 @@ static const NSInteger BULLET_ATTACK_POWER = 1;
     bullet.impulse = BULLET_IMPULSE;
     
     return bullet;
-}
-
--(void) playDieAnimation {
-    // Display sword slash animation before removing the enemy
-    // Add sword slash sprite
-    CCSprite *swordSlash = [CCSprite spriteWithImageNamed:@"assets/slash2.png"];
-    swordSlash.position = self.position;
-    swordSlash.anchorPoint = ccp(0.5, 0.5);
-    [self.parent addChild:swordSlash];
-    
-    // Play the CCAction animations to fade the sword slash
-    CCActionDelay *delayAction = [CCActionDelay actionWithDuration:0.1];
-    CCActionFadeOut *fadeAction = [CCActionFadeOut actionWithDuration:0.75];
-    CCActionRemove *removeAction = [CCActionRemove action];
-    CCActionSequence *swordSlashSequenceAction = [CCActionSequence actionWithArray:@[delayAction, fadeAction, removeAction]];
-    [swordSlash runAction:swordSlashSequenceAction];
-    
-    // Play the CCAction animations to fade the enemy
-    CCActionSequence *sequenceActionEnemy = [CCActionSequence actionWithArray:@[fadeAction, removeAction]];
-    [self runAction:sequenceActionEnemy];
 }
 
 #pragma mark NSCoding Delegates

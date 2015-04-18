@@ -17,6 +17,7 @@
 // Amount of damage received. Once it is equal to the damageLimit, this enemy dies.
 @property (nonatomic, assign) NSInteger damageReceived;
 @property (nonatomic, assign) BOOL isAlive;
+@property (nonatomic, assign) BOOL isOnRevengeMode;
 // Amount of damage done to heroes (attack power)
 @property (nonatomic, assign) NSInteger attackPower;
 @property (nonatomic, weak) id <HandleEnemy> handleEnemyDelegate;

@@ -227,7 +227,7 @@
 						<key>value</key>
 						<array>
 							<string></string>
-							<string>assets/bgAquaTenueShadow2.png</string>
+							<string>assets/bgWhite.png</string>
 						</array>
 					</dict>
 					<dict>
@@ -263,6 +263,8 @@
 						<array/>
 					</dict>
 				</array>
+				<key>selected</key>
+				<true/>
 			</dict>
 			<dict>
 				<key>UUID</key>

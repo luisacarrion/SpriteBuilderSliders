@@ -14,11 +14,16 @@ static const NSInteger CHARACTER_WIDTH = 100;
 static const NSInteger CHARACTER_HEIGHT = 100;
 static const NSString *KEY_GAME_STATE_LABEL = @"keyGameStateLabel";
 static const NSString *KEY_TOP_SCORES = @"keyTopScores";
-static const NSInteger HERO_IMPULSE = 250;//300;//180;
+static const NSInteger HERO_IMPULSE = 640;//250;//300;//180;
 // Units the velocity of the heroes is reduced per frame when there are enemies in the field
 static const NSInteger HERO_VEL_REDUCTION_WITH_ENEMIES = 3;//3;//1;
 // Units the velocity of the heroes is reduced per frame when there are no enemies in the field
 static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 20;//30;//10;
+
+// File names of sounds
+static NSString *SOUND_BUTTON = @"audio/eklee-KeyPressMac01.wav";
+static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-574430706.wav";
+
 
 @implementation MainScene {
     
@@ -441,8 +446,10 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 20;//30;//10;
 -(BOOL)ccPhysicsCollisionBegin:(CCPhysicsCollisionPair *)pair hero:(CCNode *)hero enemy:(CCNode *)enemy {
     if (g.gameState == GameRunning && ((Hero*)hero).isAlive && ((Enemy*)enemy).isAlive) {
         [self startHeroesFocusMode];
+        //[[OALSimpleAudio sharedInstance] playBg:SOUND_ENEMY_HIT_BY_HERO loop:NO];
         // After the physics engine step ends, remove the enemy and increment the score
         [[_physicsNode space] addPostStepBlock:^{
+            
             [(Enemy*)enemy applyDamage:((Hero*)hero).attackPower];
         }key:enemy];
         
@@ -549,6 +556,8 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 20;//30;//10;
 
 // Method called from the Title.ccb file
 -(void) play {
+    [[OALSimpleAudio sharedInstance] playBg:SOUND_BUTTON loop:NO];
+    
     [self startGame];
     
     [self removeChildByName:@"Title"];
@@ -556,6 +565,8 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 20;//30;//10;
 
 // Method called from the MainScene.ccb file
 -(void) pause {
+    [[OALSimpleAudio sharedInstance] playBg:SOUND_BUTTON loop:NO];
+    
     [self setGameStateLabel:GamePaused];
     
     [self loadOverlay:@"Pause"];
@@ -567,6 +578,8 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 20;//30;//10;
 
 // Method called from the Pause.ccb file
 -(void) resume {
+    [[OALSimpleAudio sharedInstance] playBg:SOUND_BUTTON loop:NO];
+    
     [self setGameStateLabel:GameRunning];
     [self removeChildByName:@"Pause"];
     // Resume the game
@@ -577,6 +590,8 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 20;//30;//10;
 // Method called from the Score.ccb file
 // Method called from the Pause.ccb file
 -(void) playAgain {
+    [[OALSimpleAudio sharedInstance] playBg:SOUND_BUTTON loop:NO];
+    
     [self setGameStateLabel:GameRunningAgain];
     
     // This check is necessary because this method can be called from a paused state
@@ -591,6 +606,8 @@ static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 20;//30;//10;
 // Method called from the Score.ccb file
 // Method called from the Pause.ccb file
 -(void) home {
+    [[OALSimpleAudio sharedInstance] playBg:SOUND_BUTTON loop:NO];
+    
     [self setGameStateLabel:GameNotStarted];
     
     // This check is necessary because this method can be called from a paused state

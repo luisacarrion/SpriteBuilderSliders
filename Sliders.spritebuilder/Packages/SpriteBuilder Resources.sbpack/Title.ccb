@@ -114,7 +114,7 @@
 						<string>Text</string>
 						<key>value</key>
 						<array>
-							<string>Shadow
+							<string>Ninja
 Sliders</string>
 							<false/>
 						</array>
@@ -145,6 +145,19 @@ Sliders</string>
 						<string>Check</string>
 						<key>value</key>
 						<false/>
+					</dict>
+					<dict>
+						<key>name</key>
+						<string>color</string>
+						<key>type</key>
+						<string>Color3</string>
+						<key>value</key>
+						<array>
+							<real>0.40945953130722046</real>
+							<real>0.46803835034370422</real>
+							<real>0.54541623592376709</real>
+							<real>1</real>
+						</array>
 					</dict>
 					<dict>
 						<key>name</key>
