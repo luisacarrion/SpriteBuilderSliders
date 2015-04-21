@@ -195,7 +195,7 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
     // Show a message indicating the new level
     NSString *message = [NSString stringWithFormat:@"Level %ld", level];
     CGPoint position = ccp(_pathGenerator.screenWidth/2, _pathGenerator.screenHeight - 20);
-    [self showMessage:message atPosition:position withDelay:2];
+    [self showMessage:message atPosition:position withDelay:3];
     
     // Load the first step of the level
     [self loadNextStepOfLevel:level isFirstStep:YES];
@@ -479,6 +479,7 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
     CCLabelTTF *lblForMessage = [CCLabelTTF labelWithString:message fontName:@"Helvetica" fontSize:16];
     
     lblForMessage.position = position;
+    lblForMessage.fontColor = [CCColor colorWithRed:0.4 green:0.46666666 blue:0.5451];
     [self addChild:lblForMessage];
 
     CCActionDelay *delayAction = [CCActionDelay actionWithDuration:delay];
