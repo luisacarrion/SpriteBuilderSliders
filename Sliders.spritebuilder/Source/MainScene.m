@@ -359,6 +359,7 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
 
 }
 
+
 -(void) onHeroesStoppedMoving {
     g.heroesAreMoving = FALSE;
     [self endHeroesFocusMode];
@@ -408,6 +409,74 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
     }
 }
 
+-(void) separateOverlappingHeroes:(Hero*)hero1 and:(Hero*)hero2 {
+
+    // Determine the quadrant to which we want to impulse a hero to separate the two heroes
+    float targetDirectionX;
+    float targetDirectionY;
+    if (hero1.position.x <= _pathGenerator.screenWidth / 2) {
+        // If the hero is on the left side of the screen, we want to impulse it to the right
+        targetDirectionX = 1;
+    } else {
+        // If the hero is on the right side of the screen, we want to impulse it to the left
+        targetDirectionX = -1;
+    }
+    
+    if (hero1.position.y <= _pathGenerator.screenHeight / 2) {
+        // If the hero is on the upper side of the screen, we want to impulse it to the lower side
+        targetDirectionY = 1;
+    } else {
+        // If the hero is on the lower side of the screen, we want to impulse it to the upper side
+        targetDirectionY = -1;
+    }
+    
+    
+    // Determine the quadrant to where we want to impulse the hero and set targetX and targetY to the quadrant's coordinates
+    float targetX = 0;
+    float targetY = 0;
+    if (targetDirectionX > 0) {
+        if (targetDirectionY > 0) {
+            // Quadrant 1
+            targetX = _pathGenerator.screenWidth;
+            targetY = _pathGenerator.screenHeight;
+        } else if (targetDirectionY < 0) {
+            // Quadrant 4
+            targetX = _pathGenerator.screenWidth;
+            targetY = 0;
+        }
+    } else if (targetDirectionX < 0) {
+        if (targetDirectionY > 0) {
+            // Quadrant 2
+            targetX = 0;
+            targetY = _pathGenerator.screenHeight;
+        } else if (targetDirectionY < 0) {
+            // Quadrant 3
+            targetX = 0;
+            targetY = 0;
+        }
+    }
+    
+    // Determine which one is the hero that is closer to the target point
+    float hero1Closeness;
+    float hero2Closeness;
+    // Calculate closeness with Pitagoras theorem
+    hero1Closeness = sqrtf( (targetX - hero1.position.x)*(targetX - hero1.position.x)
+                           + (targetY - hero1.position.y)*(targetY - hero1.position.y) );
+    hero2Closeness = sqrtf( (targetX - hero2.position.x)*(targetX - hero2.position.x)
+                           + (targetY - hero2.position.y)*(targetY - hero2.position.y) );
+    
+    // To separate the heroes, Impulse the hero that is closer to the target point towards the target point
+    Hero *heroToImpulse;
+    if (hero2Closeness < hero1Closeness) {
+        heroToImpulse = hero2;
+    } else {
+        heroToImpulse = hero1;
+    }
+    CGPoint impulseVector = [Utils getVectorToMoveFromPoint:heroToImpulse.position ToPoint:ccp(targetX, targetY) withImpulse:10];
+    [heroToImpulse.physicsBody  applyImpulse:impulseVector];
+}
+
+
 #pragma mark HandleEnemy Delegate
 
 -(void) removeEnemy:(Enemy *)enemy {
@@ -438,7 +507,11 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
 
 #pragma mark Collision Delegates
 
--(BOOL)ccPhysicsCollisionBegin:(CCPhysicsCollisionPair*)pair hero:(CCSprite*)hero1 hero:(CCNode*)hero2 {
+-(BOOL) ccPhysicsCollisionPreSolve:(CCPhysicsCollisionPair *)pair hero:(CCNode *)hero1 hero:(CCNode *)hero2 {
+    if (g.heroesAreMoving == false && g.gameState == GameRunning) {
+        // If heroes stopped moving and they are overlapping, we separate them
+        [self separateOverlappingHeroes:(Hero*)hero1 and:(Hero*)hero2];
+    }
     // Ignore hero collisions so that they can pass through each other
     return NO;
 }
