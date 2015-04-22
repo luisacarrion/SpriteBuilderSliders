@@ -16,7 +16,7 @@ static const NSString *KEY_GAME_STATE_LABEL = @"keyGameStateLabel";
 static const NSString *KEY_TOP_SCORES = @"keyTopScores";
 static const NSInteger HERO_IMPULSE = 640;//250;//300;//180;
 // Units the velocity of the heroes is reduced per frame when there are enemies in the field
-static const NSInteger HERO_VEL_REDUCTION_WITH_ENEMIES = 3;//3;//1;
+static const NSInteger HERO_VEL_REDUCTION_WITH_ENEMIES = 4;//3;//1;
 // Units the velocity of the heroes is reduced per frame when there are no enemies in the field
 static const NSInteger HERO_VEL_REDUCTION_WITHOUT_ENEMIES = 20;//30;//10;
 
