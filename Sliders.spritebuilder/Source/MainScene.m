@@ -7,7 +7,7 @@
 #import "CCPhysics+ObjectiveChipmunk.h"
 #import "Utils.h"
 #import "MainScene.h"
-
+#import "Mixpanel.h"
 
 // Game constants
 static const NSInteger CHARACTER_WIDTH = 100;
@@ -43,6 +43,8 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
     PositionGenerator *_pathGenerator;  // Generates positions for new enemies and power ups
     LevelConfiguration *_levelConfig;  // Holds configurations of all the levels
     
+    // Game analytics objects
+    Mixpanel *mixpanel;
 }
 
 #pragma mark Node Lifecycle
@@ -88,6 +90,9 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
         // Simulate pressing the pause button
         [self pause];
     }
+    
+    // Initialize game analytics object
+    mixpanel = [Mixpanel sharedInstance];
     
     //_physicsNode.debugDraw = true;
     
@@ -171,6 +176,9 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
     // Level is completed when the amount of enemies killed so far is equal or greater than the amount of enemies needed for next level
     if (g.numberOfKillsInLevel >= enemiesForNextLevel) {
         levelCompleted = true;
+        
+        // End tracking how long the user takes to complete this level
+        [mixpanel track:[NSString stringWithFormat:@"Level %ld", g.currentLevel]];
     }
     
     return levelCompleted;
@@ -199,6 +207,9 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
     
     // Load the first step of the level
     [self loadNextStepOfLevel:level isFirstStep:YES];
+    
+    // Start tracking how long the user takes to complete this level
+    [mixpanel timeEvent:[NSString stringWithFormat:@"Level %ld", level]];
 }
 
 -(BOOL) isStepOfCurrentLevelCompleted {
