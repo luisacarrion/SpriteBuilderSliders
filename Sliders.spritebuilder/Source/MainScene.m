@@ -729,7 +729,6 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
 
     // Always save the game state that was passed to the method, because the resetState method could have overwritten it
     g.gameState = state;
-    [[NSUserDefaults standardUserDefaults] setInteger:g.gameState forKey:KEY_GAME_STATE_LABEL];
 }
 
 -(void) startGame {
