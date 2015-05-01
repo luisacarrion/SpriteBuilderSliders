@@ -32,6 +32,8 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
     CCPhysicsNode *_physicsNode;
     CCLabelTTF *_lblScore;
     CCButton *_btnPause;
+    // Current overlay being displayed
+    CCNode *overlayScreen;
     // CCNodes of the Score ccb file
     CCLabelTTF *_lblYourFinalScore;
     CCLabelTTF *_lblTopScores;
@@ -71,7 +73,7 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
     if (g.gameState == GameNotStarted) {
         
         // GameNotStarted: means the player just launched the game, so we show the title screen
-        [self loadOverlay:@"Title"];
+        overlayScreen = [self loadOverlay:@"Title"];
         
     } else if (g.gameState == GameRunningAgain) {
         
@@ -631,21 +633,63 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
 
 -(CCNode*) loadOverlay:(NSString*)ccbFile {
     CCNode *overlayScreen = [CCBReader load:ccbFile owner:self];
-    overlayScreen.positionType = CCPositionTypeNormalized;
-    overlayScreen.position = ccp(0.5, 0.5);
     overlayScreen.anchorPoint = ccp(0.5, 0.5);
+    //overlayScreen.positionType = CCPositionTypeNormalized;
+    //overlayScreen.position = ccp(0.5, 0.5);
+
     [self addChild:overlayScreen];
+
+    id entranceAction;
+
+    if ([ccbFile isEqualToString:@"Title"]) {
+        overlayScreen.position = ccp(_pathGenerator.screenWidth/2, _pathGenerator.screenHeight/2);
+        
+        //id fadeIn = [CCActionTintBy actionWithDuration:5 red:100 green:10 blue:10];
+        //entranceAction = fadeIn;
+    } else {
+        overlayScreen.position = ccp(_pathGenerator.screenWidth/2, _pathGenerator.screenHeight);
+
+        id move = [CCActionMoveTo actionWithDuration:1 position:ccp(overlayScreen.position.x, _pathGenerator.screenHeight/2)];
+        id easeMove = [CCActionEaseElasticOut actionWithAction:move period:0.5];
+        entranceAction = easeMove;
+        
+        [overlayScreen runAction:entranceAction];
+
+    }
     
     return overlayScreen;
+}
+
+-(void) removeOverlayAndExecute:(CCActionCallBlock*)block {
+    //CCNode *overlayScreen = [self getChildByName:ccbFile recursively:false];
+    id outAction;
+    
+    if ([overlayScreen.name isEqualToString:@"Title"]) {
+        CCActionRemove *removeAction = [CCActionRemove action];
+        CCActionSequence *sequenceAction = [CCActionSequence actionWithArray:@[removeAction, block]];
+        outAction = sequenceAction;
+    } else {
+        id move = [CCActionMoveTo actionWithDuration:0.4 position:ccp(overlayScreen.position.x, _pathGenerator.screenHeight)];
+        id easeMove = [CCActionEaseElasticIn actionWithAction:move period:0.5];
+        CCActionRemove *removeAction = [CCActionRemove action];
+        CCActionSequence *sequenceAction = [CCActionSequence actionWithArray:@[easeMove, removeAction, block]];
+        outAction = sequenceAction;
+    }
+    
+    [overlayScreen runAction:outAction];
+    overlayScreen = nil;
+
 }
 
 // Method called from the Title.ccb file
 -(void) play {
     [[OALSimpleAudio sharedInstance] playBg:SOUND_BUTTON loop:NO];
+
+    CCActionCallBlock *block = [CCActionCallBlock actionWithBlock:^{
+        [self startGame];
+    }];
     
-    [self startGame];
-    
-    [self removeChildByName:@"Title"];
+    [self removeOverlayAndExecute:block];
 }
 
 // Method called from the MainScene.ccb file
@@ -654,10 +698,9 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
     
     [self setGameStateLabel:GamePaused];
     
-    [self loadOverlay:@"Pause"];
+    overlayScreen = [self loadOverlay:@"Pause"];
     
     // Pause the game
-    [[CCDirector sharedDirector] pause];
     _physicsNode.paused = true;
     
     // Save game state, in case the user leaves the app
@@ -668,11 +711,13 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
 -(void) resume {
     [[OALSimpleAudio sharedInstance] playBg:SOUND_BUTTON loop:NO];
     
-    [self setGameStateLabel:GameRunning];
-    [self removeChildByName:@"Pause"];
-    // Resume the game
-    [[CCDirector sharedDirector] resume];
-    _physicsNode.paused = false;
+    CCActionCallBlock *block = [CCActionCallBlock actionWithBlock:^{
+        [self setGameStateLabel:GameRunning];
+        // Resume the game
+        _physicsNode.paused = false;
+    }];
+
+    [self removeOverlayAndExecute:block];
 }
 
 // Method called from the Score.ccb file
@@ -681,17 +726,15 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
     [[OALSimpleAudio sharedInstance] playBg:SOUND_BUTTON loop:NO];
     
     [self setGameStateLabel:GameRunningAgain];
-    
     // Game state label has to be saved so the game is reloaded without entering the title screen
     [[NSUserDefaults standardUserDefaults] setInteger:g.gameState forKey:KEY_GAME_STATE_LABEL];
-        
-    // This check is necessary because this method can be called from a paused state
-    if ([CCDirector sharedDirector].paused) {
-        [[CCDirector sharedDirector] resume];
-    }
     
-    // Reload the game
-    [[CCDirector sharedDirector] replaceScene: [CCBReader loadAsScene:@"MainScene"]];
+    CCActionCallBlock *block = [CCActionCallBlock actionWithBlock:^{
+        // Reload the game
+        [[CCDirector sharedDirector] replaceScene: [CCBReader loadAsScene:@"MainScene"]];
+    }];
+    
+    [self removeOverlayAndExecute:block];
 }
 
 // Method called from the Score.ccb file
@@ -700,14 +743,15 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
     [[OALSimpleAudio sharedInstance] playBg:SOUND_BUTTON loop:NO];
     
     [self setGameStateLabel:GameNotStarted];
+    // Game state label has to be saved so the game is reloaded without entering the title screen
+    [[NSUserDefaults standardUserDefaults] setInteger:g.gameState forKey:KEY_GAME_STATE_LABEL];
     
-    // This check is necessary because this method can be called from a paused state
-    if ([CCDirector sharedDirector].paused) {
-        [[CCDirector sharedDirector] resume];
-    }
+    CCActionCallBlock *block = [CCActionCallBlock actionWithBlock:^{
+        // Reload the game
+        [[CCDirector sharedDirector] replaceScene: [CCBReader loadAsScene:@"MainScene"]];
+    }];
     
-    // Reload the game
-    [[CCDirector sharedDirector] replaceScene: [CCBReader loadAsScene:@"MainScene"]];
+    [self removeOverlayAndExecute:block];
 }
 
 #pragma mark Game State Handling
@@ -755,7 +799,7 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
 }
 
 -(void) endGame {
-    [self loadOverlay:@"Score"];
+    overlayScreen = [self loadOverlay:@"Score"];
     
     // Show the player's score
     _lblYourFinalScore.string = [NSString stringWithFormat:@"%ld", g.score];
