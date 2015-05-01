@@ -659,6 +659,9 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
     // Pause the game
     [[CCDirector sharedDirector] pause];
     _physicsNode.paused = true;
+    
+    // Save game state, in case the user leaves the app
+    [g saveStateInUserDefaults];
 }
 
 // Method called from the Pause.ccb file
@@ -679,6 +682,9 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
     
     [self setGameStateLabel:GameRunningAgain];
     
+    // Game state label has to be saved so the game is reloaded without entering the title screen
+    [[NSUserDefaults standardUserDefaults] setInteger:g.gameState forKey:KEY_GAME_STATE_LABEL];
+        
     // This check is necessary because this method can be called from a paused state
     if ([CCDirector sharedDirector].paused) {
         [[CCDirector sharedDirector] resume];
