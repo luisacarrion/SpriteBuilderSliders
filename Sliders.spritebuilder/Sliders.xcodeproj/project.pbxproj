@@ -78,6 +78,10 @@
 		0D9942C01AEF83D500A03094 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = 0D9942BF1AEF83D500A03094 /* Podfile */; };
 		0DA2CD681ACA1D0E006CF797 /* GameState.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DA2CD671ACA1D0E006CF797 /* GameState.m */; };
 		0DA916261ACBA5E4008D46C8 /* Bullet.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DA916251ACBA5E4008D46C8 /* Bullet.m */; };
+		0DBC1DD61AF38D3F00328987 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DBC1DD51AF38D3F00328987 /* FBSDKCoreKit.framework */; };
+		0DBC1DD91AF3922800328987 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DBC1DD81AF3922800328987 /* FBSDKLoginKit.framework */; };
+		0DBC1DDC1AF3948500328987 /* Title.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DBC1DDB1AF3948500328987 /* Title.m */; };
+		0DBC1DDE1AF3A38200328987 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DBC1DDD1AF3A38200328987 /* FBSDKShareKit.framework */; };
 		0DE8D28D1A9986CC00614CBF /* LevelConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DE8D28C1A9986CC00614CBF /* LevelConfiguration.m */; };
 		0DFE3CCD1A988112008E66D9 /* Hero.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DFE3CCC1A988112008E66D9 /* Hero.m */; };
 		0DFE3CD71A9881CD008E66D9 /* Enemy.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DFE3CD61A9881CD008E66D9 /* Enemy.m */; };
@@ -288,13 +292,18 @@
 		0D746D731AEF886E008012FE /* UIImage+MPImageEffects.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "UIImage+MPImageEffects.m"; path = "Pods/Mixpanel/Mixpanel/UIImage+MPImageEffects.m"; sourceTree = "<group>"; };
 		0D746D751AEF8871008012FE /* _MPTweakBindObserver.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = _MPTweakBindObserver.m; path = Pods/Mixpanel/Mixpanel/_MPTweakBindObserver.m; sourceTree = "<group>"; };
 		0D746D771AEF8964008012FE /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
-		0D9942BF1AEF83D500A03094 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
+		0D9942BF1AEF83D500A03094 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		0DA2CD661ACA1D0E006CF797 /* GameState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GameState.h; path = Source/GameState.h; sourceTree = "<group>"; };
 		0DA2CD671ACA1D0E006CF797 /* GameState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GameState.m; path = Source/GameState.m; sourceTree = "<group>"; };
 		0DA916221ACB472C008D46C8 /* HandleHero.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HandleHero.h; path = Source/HandleHero.h; sourceTree = "<group>"; };
 		0DA916241ACBA5E4008D46C8 /* Bullet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Bullet.h; path = Source/Bullet.h; sourceTree = "<group>"; };
 		0DA916251ACBA5E4008D46C8 /* Bullet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Bullet.m; path = Source/Bullet.m; sourceTree = "<group>"; };
 		0DB557CE1AA716DA000337E3 /* HandleEnemy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HandleEnemy.h; path = Source/HandleEnemy.h; sourceTree = "<group>"; };
+		0DBC1DD51AF38D3F00328987 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = ../../../Documents/FacebookSDK/FBSDKCoreKit.framework; sourceTree = "<group>"; };
+		0DBC1DD81AF3922800328987 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = ../../../Documents/FacebookSDK/FBSDKLoginKit.framework; sourceTree = "<group>"; };
+		0DBC1DDA1AF3948500328987 /* Title.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Title.h; path = Source/Title.h; sourceTree = "<group>"; };
+		0DBC1DDB1AF3948500328987 /* Title.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Title.m; path = Source/Title.m; sourceTree = "<group>"; };
+		0DBC1DDD1AF3A38200328987 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKShareKit.framework; path = ../../../Documents/FacebookSDK/FBSDKShareKit.framework; sourceTree = "<group>"; };
 		0DE8D28B1A9986CC00614CBF /* LevelConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LevelConfiguration.h; path = Source/LevelConfiguration.h; sourceTree = "<group>"; };
 		0DE8D28C1A9986CC00614CBF /* LevelConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LevelConfiguration.m; path = Source/LevelConfiguration.m; sourceTree = "<group>"; };
 		0DFE3CCB1A988112008E66D9 /* Hero.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Hero.h; path = Source/Hero.h; sourceTree = "<group>"; };
@@ -413,15 +422,18 @@
 			files = (
 				0D746D781AEF8964008012FE /* libicucore.dylib in Frameworks */,
 				7A97911819E631CD001FFC4D /* libcocos2d.a in Frameworks */,
+				0DBC1DD91AF3922800328987 /* FBSDKLoginKit.framework in Frameworks */,
 				8392007A18EE8E3300B6C429 /* GLKit.framework in Frameworks */,
 				B77F1B3217B978D7009739AE /* QuartzCore.framework in Frameworks */,
 				B77F1B3417B978D7009739AE /* OpenGLES.framework in Frameworks */,
 				B77F1B3617B978D7009739AE /* OpenAL.framework in Frameworks */,
 				B77F1B3817B978D7009739AE /* AudioToolbox.framework in Frameworks */,
+				0DBC1DDE1AF3A38200328987 /* FBSDKShareKit.framework in Frameworks */,
 				B77F1B3A17B978D7009739AE /* AVFoundation.framework in Frameworks */,
 				B77F1B3C17B978D7009739AE /* UIKit.framework in Frameworks */,
 				B77F1B3E17B978D7009739AE /* Foundation.framework in Frameworks */,
 				B77F1B4017B978D7009739AE /* CoreGraphics.framework in Frameworks */,
+				0DBC1DD61AF38D3F00328987 /* FBSDKCoreKit.framework in Frameworks */,
 				B77F1B4217B978D7009739AE /* CoreText.framework in Frameworks */,
 				0AD18C3FEE637E1C55B0C952 /* libPods.a in Frameworks */,
 			);
@@ -606,6 +618,8 @@
 				0DB557CE1AA716DA000337E3 /* HandleEnemy.h */,
 				B7378992180767190076A88C /* MainScene.h */,
 				B7378993180767190076A88C /* MainScene.m */,
+				0DBC1DDA1AF3948500328987 /* Title.h */,
+				0DBC1DDB1AF3948500328987 /* Title.m */,
 				0DA916241ACBA5E4008D46C8 /* Bullet.h */,
 				0DA916251ACBA5E4008D46C8 /* Bullet.m */,
 				0D44746B1ACCE99C00C32643 /* Utils.h */,
@@ -739,6 +753,9 @@
 		B77F1B3017B978D7009739AE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0DBC1DDD1AF3A38200328987 /* FBSDKShareKit.framework */,
+				0DBC1DD81AF3922800328987 /* FBSDKLoginKit.framework */,
+				0DBC1DD51AF38D3F00328987 /* FBSDKCoreKit.framework */,
 				0D746D771AEF8964008012FE /* libicucore.dylib */,
 				BC5399D31A44DCC90063F482 /* AndroidKit.framework */,
 				BC5399D41A44DCC90063F482 /* CoreJava.framework */,
@@ -1131,6 +1148,7 @@
 				0D746D221AEF8772008012FE /* MPApplicationStateSerializer.m in Sources */,
 				0D746D3C1AEF87FD008012FE /* MPNSAttributedStringToNSDictionaryValueTransformer.m in Sources */,
 				0D746D3E1AEF8800008012FE /* MPNSNumberToCGFloatValueTransformer.m in Sources */,
+				0DBC1DDC1AF3948500328987 /* Title.m in Sources */,
 				0D746D241AEF8776008012FE /* MPBOOLToNSNumberValueTransformer.m in Sources */,
 				0D746CFF1AEF86ED008012FE /* MPEventBinding.m in Sources */,
 				0D746D421AEF880B008012FE /* MPObjectSelector.m in Sources */,
@@ -1454,6 +1472,10 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/marialuisa/Documents/FacebookSDK,
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Source/Prefix.pch;
@@ -1490,6 +1512,10 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/marialuisa/Documents/FacebookSDK,
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Source/Prefix.pch;
 				HEADER_SEARCH_PATHS = (

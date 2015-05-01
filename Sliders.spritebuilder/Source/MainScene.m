@@ -8,6 +8,10 @@
 #import "Utils.h"
 #import "MainScene.h"
 #import "Mixpanel.h"
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <FBSDKLoginKit/FBSDKLoginKit.h>
+#import <FBSDKLoginKit/FBSDKLoginManager.h>
+#import <FBSDKShareKit/FBSDKShareKit.h>
 
 // Game constants
 static const NSInteger CHARACTER_WIDTH = 100;
@@ -34,9 +38,13 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
     CCButton *_btnPause;
     // Current overlay being displayed
     CCNode *overlayScreen;
+    // CCNodes of the Title ccb file
+    CCButton *_btnFbLogin;
+    CCButton *_btnFbLogout;
     // CCNodes of the Score ccb file
     CCLabelTTF *_lblYourFinalScore;
     CCLabelTTF *_lblTopScores;
+    CCButton *_btnFbShare;
     
     // Game variables
     GameState *g;
@@ -645,6 +653,15 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
     if ([ccbFile isEqualToString:@"Title"]) {
         overlayScreen.position = ccp(_pathGenerator.screenWidth/2, _pathGenerator.screenHeight/2);
         
+        // Show appropriate facebook button
+        if ([FBSDKAccessToken currentAccessToken].userID == nil) {
+            _btnFbLogin.visible = true;
+            _btnFbLogout.visible = false;
+        } else {
+            _btnFbLogin.visible = false;
+            _btnFbLogout.visible = true;
+        }
+
         //id fadeIn = [CCActionTintBy actionWithDuration:5 red:100 green:10 blue:10];
         //entranceAction = fadeIn;
     } else {
@@ -684,6 +701,9 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
 
 // Method called from the Title.ccb file
 -(void) play {
+    // Always resume activity when a button is touched, because apparently the CCDirector is paused if the app was put on the background
+    [[CCDirector sharedDirector] resume];
+    
     [[OALSimpleAudio sharedInstance] playBg:SOUND_BUTTON loop:NO];
 
     CCActionCallBlock *block = [CCActionCallBlock actionWithBlock:^{
@@ -695,6 +715,9 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
 
 // Method called from the MainScene.ccb file
 -(void) pause {
+    // Always resume activity when a button is touched, because apparently the CCDirector is paused if the app was put on the background
+    [[CCDirector sharedDirector] resume];
+
     [[OALSimpleAudio sharedInstance] playBg:SOUND_BUTTON loop:NO];
     
     [self setGameStateLabel:GamePaused];
@@ -710,6 +733,9 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
 
 // Method called from the Pause.ccb file
 -(void) resume {
+    // Always resume activity when a button is touched, because apparently the CCDirector is paused if the app was put on the background
+    [[CCDirector sharedDirector] resume];
+
     [[OALSimpleAudio sharedInstance] playBg:SOUND_BUTTON loop:NO];
     
     CCActionCallBlock *block = [CCActionCallBlock actionWithBlock:^{
@@ -724,6 +750,9 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
 // Method called from the Score.ccb file
 // Method called from the Pause.ccb file
 -(void) playAgain {
+    // Always resume activity when a button is touched, because apparently the CCDirector is paused if the app was put on the background
+    [[CCDirector sharedDirector] resume];
+
     [[OALSimpleAudio sharedInstance] playBg:SOUND_BUTTON loop:NO];
     
     [self setGameStateLabel:GameRunningAgain];
@@ -741,6 +770,9 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
 // Method called from the Score.ccb file
 // Method called from the Pause.ccb file
 -(void) home {
+    // Always resume activity when a button is touched, because apparently the CCDirector is paused if the app was put on the background
+    [[CCDirector sharedDirector] resume];
+
     [[OALSimpleAudio sharedInstance] playBg:SOUND_BUTTON loop:NO];
     
     [self setGameStateLabel:GameNotStarted];
@@ -757,6 +789,9 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
 
 // Method called from the Title.ccb file
 -(void) infoButton {
+    // Always resume activity when a button is touched, because apparently the CCDirector is paused if the app was put on the background
+    [[CCDirector sharedDirector] resume];
+
     [[OALSimpleAudio sharedInstance] playBg:SOUND_BUTTON loop:NO];
     
     CCActionCallBlock *block = [CCActionCallBlock actionWithBlock:^{
@@ -766,6 +801,49 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
     [self removeOverlayAndExecute:block];
 }
 
+-(void) facebookLogin {
+    [[OALSimpleAudio sharedInstance] playBg:SOUND_BUTTON loop:NO];
+
+    FBSDKLoginManager *login = [[FBSDKLoginManager alloc] init];
+    [login logInWithReadPermissions:@[@"email"] handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
+        if (error) {
+            // Process error
+        } else if (result.isCancelled) {
+            // Handle cancellations
+        } else {
+            // If you ask for multiple permissions at once, you
+            // should check if specific permissions missing
+            if ([result.grantedPermissions containsObject:@"email"]) {
+                // Do work
+                _btnFbLogin.visible = false;
+                _btnFbLogout.visible = true;
+            }
+        }
+    }];
+}
+
+-(void) facebookLogout {
+    [[OALSimpleAudio sharedInstance] playBg:SOUND_BUTTON loop:NO];
+
+    FBSDKLoginManager *login = [[FBSDKLoginManager alloc] init];
+    [login logOut];
+    _btnFbLogin.visible = true;
+    _btnFbLogout.visible = false;
+}
+
+-(void) facebookShare {
+    [[OALSimpleAudio sharedInstance] playBg:SOUND_BUTTON loop:NO];
+
+    FBSDKShareLinkContent *content = [[FBSDKShareLinkContent alloc] init];
+    content.contentURL = [NSURL URLWithString:@"https://hunt.makeschool.com/posts/104"];
+    content.contentTitle = @"My Ninja Sliders Score";
+    content.contentDescription = [NSString stringWithFormat:@"I got %@ points!", _lblYourFinalScore.string];
+    //content.imageURL = @"assets/slash2.png";
+    
+    [FBSDKShareDialog showFromViewController:[CCDirector sharedDirector]
+                                 withContent:content
+                                    delegate:nil];
+}
 
 #pragma mark Game State Handling
 
@@ -824,6 +902,13 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
         [topScoresString appendString: [NSString stringWithFormat:@"%ld\n", [topScore integerValue]]];
     }
     _lblTopScores.string = topScoresString;
+    
+    // Show share button if user is logged in
+    if ([FBSDKAccessToken currentAccessToken].userID == nil) {
+        _btnFbShare.visible = false;
+    } else {
+        _btnFbShare.visible = true;
+    }
     
     [self setGameStateLabel:GameNotStarted];
 }

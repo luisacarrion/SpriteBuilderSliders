@@ -29,10 +29,15 @@
 #import "CCBuilderReader.h"
 #import "GameState.h"
 #import "Mixpanel.h"
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
 
 #define MIXPANEL_TOKEN @"f3de430f543d04f83967672e13baa429"
 
 @implementation AppController
+
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+    [FBSDKAppEvents activateApp];
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -61,7 +66,16 @@
     // Initialize the Mixpanel library
     [Mixpanel sharedInstanceWithToken:MIXPANEL_TOKEN];
     
-    return YES;
+    //return YES;
+    return [[FBSDKApplicationDelegate sharedInstance] application:application
+                                    didFinishLaunchingWithOptions:launchOptions];
+}
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    return [[FBSDKApplicationDelegate sharedInstance] application:application
+                                                          openURL:url
+                                                sourceApplication:sourceApplication
+                                                       annotation:annotation];
 }
 
 - (CCScene*) startScene
