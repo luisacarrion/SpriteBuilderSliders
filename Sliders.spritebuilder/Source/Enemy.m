@@ -72,6 +72,21 @@ static const NSInteger BULLET_ATTACK_POWER = 1;
 }
 
 -(void) playDieAnimation {
+    // Load particle effect
+    CCParticleSystem *explosion = (CCParticleSystem *)[CCBReader load:@"EnemyExplosion"];
+    
+    // Make the particle effect clean itself up, once it is completed
+    explosion.autoRemoveOnFinish = YES;
+    
+    // Place the particle effect on the enemiy's position
+    explosion.position = self.position;
+    
+    // Add the particle effect to the same node the seal is on
+    [self.parent addChild:explosion];
+    
+    [self removeFromParent];
+    
+    /*
     // Display sword slash animation before removing the enemy
     // Add sword slash sprite
     CCSprite *swordSlash = [CCSprite spriteWithImageNamed:@"assets/slash2.png"];
@@ -89,6 +104,7 @@ static const NSInteger BULLET_ATTACK_POWER = 1;
     // Play the CCAction animations to fade the enemy
     CCActionSequence *sequenceActionEnemy = [CCActionSequence actionWithArray:@[fadeAction, removeAction]];
     [self runAction:sequenceActionEnemy];
+     */
 }
 
 -(void) playAnimationShootBulletAtHero:(Hero*)hero {
