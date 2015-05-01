@@ -26,10 +26,10 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4142136"
-     inkscape:cx="161.58619"
-     inkscape:cy="139.39582"
+     inkscape:cx="83.804446"
+     inkscape:cy="105.26813"
      inkscape:document-units="px"
-     inkscape:current-layer="g3798"
+     inkscape:current-layer="layer2"
      showgrid="false"
      inkscape:window-width="1280"
      inkscape:window-height="683"
@@ -92,7 +92,7 @@
        height="132"
        x="0"
        y="920.32373"
-       inkscape:export-filename="C:\Users\MariaLuisa\Desktop\images\!Inkscape\Sliders\reload_normal.png"
+       inkscape:export-filename="C:\Users\MariaLuisa\Desktop\images\!Inkscape\Sliders\info_normal.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <rect
@@ -200,7 +200,7 @@
        sodipodi:cx="60.104076"
        sodipodi:sides="3"
        id="path3776"
-       style="color:#000000;fill:#e6e6e6;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#e6e6e6;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;enable-background:accumulate"
        sodipodi:type="star" />
   </g>
   <g
@@ -233,10 +233,11 @@
        inkscape:connector-curvature="0" />
   </g>
   <g
-     style="display:inline"
+     style="display:none"
      id="g3798"
      inkscape:groupmode="layer"
-     inkscape:label="reload normal">
+     inkscape:label="reload normal"
+     sodipodi:insensitive="true">
     <path
        style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#68778b;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;enable-background:accumulate"
        d="m 66,920.36218 c -36.450795,0 -66,29.5491 -66,66 0,36.45092 29.549205,66.00002 66,66.00002 17.690472,0 33.712155,-7.044 45.5625,-18.375 L 94.78125,1019.9247 74.0625,1002.4872 c -2.420889,1.2084 -5.172882,1.875 -8.0625,1.875 -9.957633,0 -18,-8.04242 -18,-18.00002 0,-9.9576 8.042367,-18.0936 18,-18.0936 4.291503,0 8.172888,1.5174 11.25,4.0311 l -19.59375,16.5 37.125,6.5625 37.21875,6.56252 0,-37.78112 0,-37.6878 -17.8125,14.9064 c -12.04528,-12.8973 -29.133261,-21 -48.1875,-21 z"
@@ -359,5 +360,57 @@
        inkscape:transform-center-y="-2.7338537"
        transform="matrix(1.0005507,-0.83873477,0.57695736,0.68826894,-378.82777,362.23278)"
        inkscape:transform-center-x="4.1266199" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer6"
+     inkscape:label="info normal"
+     style="display:inline"
+     sodipodi:insensitive="true">
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot4167"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:180px;line-height:125%;font-family:'Luxi Serif';-inkscape-font-specification:'Luxi Serif Bold';letter-spacing:0px;word-spacing:0px;fill:#68778b;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="matrix(0.64064125,0,0,0.64064125,-21.90674,311.14457)"><flowRegion
+         id="flowRegion4169"><rect
+           id="rect4171"
+           width="251.02289"
+           height="206.47519"
+           x="10.606603"
+           y="937.10382"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:180px;font-family:'Luxi Serif';-inkscape-font-specification:'Luxi Serif Bold';fill:#68778b;fill-opacity:1" /></flowRegion><flowPara
+         id="flowPara4173"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:180px;font-family:'Luxi Serif';-inkscape-font-specification:'Luxi Serif Bold';text-align:center;text-anchor:middle;fill:#68778b;fill-opacity:1">i</flowPara></flowRoot>    <circle
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#68778b;stroke-width:4.63720942;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path4195"
+       cx="66"
+       cy="986.32373"
+       r="59.431915" />
+  </g>
+  <g
+     style="display:none"
+     inkscape:label="info pressed"
+     id="g4197"
+     inkscape:groupmode="layer"
+     sodipodi:insensitive="true">
+    <flowRoot
+       transform="matrix(0.64064125,0,0,0.64064125,-21.90674,311.14457)"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:180px;line-height:125%;font-family:'Luxi Serif';-inkscape-font-specification:'Luxi Serif Bold';letter-spacing:0px;word-spacing:0px;fill:#e6e6e6;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       id="flowRoot4199"
+       xml:space="preserve"><flowRegion
+         id="flowRegion4201"><rect
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:180px;font-family:'Luxi Serif';-inkscape-font-specification:'Luxi Serif Bold';fill:#e6e6e6;fill-opacity:1"
+           y="937.10382"
+           x="10.606603"
+           height="206.47519"
+           width="251.02289"
+           id="rect4203" /></flowRegion><flowPara
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:180px;font-family:'Luxi Serif';-inkscape-font-specification:'Luxi Serif Bold';text-align:center;text-anchor:middle;fill:#e6e6e6;fill-opacity:1"
+         id="flowPara4205">i</flowPara></flowRoot>    <circle
+       r="59.431915"
+       cy="986.32373"
+       cx="66"
+       id="circle4207"
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#e6e6e6;stroke-width:4.63720942;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
   </g>
 </svg>

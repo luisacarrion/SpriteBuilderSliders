@@ -754,6 +754,18 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
     [self removeOverlayAndExecute:block];
 }
 
+// Method called from the Title.ccb file
+-(void) infoButton {
+    [[OALSimpleAudio sharedInstance] playBg:SOUND_BUTTON loop:NO];
+    
+    CCActionCallBlock *block = [CCActionCallBlock actionWithBlock:^{
+        overlayScreen = [self loadOverlay:@"Info"];
+    }];
+    
+    [self removeOverlayAndExecute:block];
+}
+
+
 #pragma mark Game State Handling
 
 -(void) setGameStateLabel:(GameStateLabel)state {
