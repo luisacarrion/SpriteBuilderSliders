@@ -27,6 +27,7 @@
 -(void) applyDamage:(NSInteger) damage;
 -(void) playRevengeModeAnimation;
 -(void) stopRevengeModeAnimation;
+-(void) playSpawnAnimation;
 -(void) playDieAnimation;
 -(void) playAnimationShootBulletAtHero:(Hero*)hero;
 

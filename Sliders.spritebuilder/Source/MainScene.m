@@ -276,6 +276,7 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
     [g.enemies addObject:enemy];
     [_physicsNode addChild:enemy];
     
+    [enemy playSpawnAnimation];
     enemy.ccbFileName = enemyType;
     enemy.position = [_pathGenerator getRandomPosition];
     enemy.handleEnemyDelegate = self;

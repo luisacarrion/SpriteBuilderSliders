@@ -71,6 +71,15 @@ static const NSInteger BULLET_ATTACK_POWER = 1;
     }
 }
 
+-(void) playSpawnAnimation {
+    self.scaleY = 0.5;
+    self.scaleX = 0.5;
+    
+    CCAction *growAction = [CCActionScaleTo actionWithDuration:0.05 scaleX:1 scaleY:1];
+    
+    [self runAction:growAction];
+}
+
 -(void) playDieAnimation {
     // Load particle effect
     CCParticleSystem *explosion = (CCParticleSystem *)[CCBReader load:@"EnemyExplosion"];
