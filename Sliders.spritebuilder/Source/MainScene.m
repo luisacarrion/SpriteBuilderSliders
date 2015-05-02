@@ -34,8 +34,14 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
     // CCNodes - code connections with SpriteBuilder
     // CCNodes of the MainScene ccb file
     CCPhysicsNode *_physicsNode;
-    CCLabelTTF *_lblScore;
+    CCSprite *_toolBar;
     CCButton *_btnPause;
+    CCLabelTTF *_lblLevelDescription;
+    CCLabelTTF *_lblLevel;
+    CCSprite *_imgEnemyGeneric;
+    CCLabelTTF *_lblEnemiesKilled;
+    CCLabelTTF *_lblScore;
+    CCLabelTTF *_lblPointsDescription;
     // Current overlay being displayed
     CCNode *overlayScreen;
     // CCNodes of the Title ccb file
@@ -89,13 +95,28 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
         [self startGame];
         
     } else if (g.gameState == GamePaused || g.gameState == GameRunning) {
-        
+                
         // If the user left the app when the game was paused or running, we update the game objects with the data saved in the NSUserDefaults and then we load the pause overlay so the player can resume the game
         [self updateScoreLabel];
+        _lblLevel.string = [NSString stringWithFormat:@"%ld", g.currentLevel];
+        _lblEnemiesKilled.string = [NSString stringWithFormat:@"%ld/%ld", g.numberOfKillsInLevel, g.enemiesForNextLevel];
+        // Show everything, for when it is reloaded in the GamePaused state
+        _toolBar.visible = TRUE;
+        _btnPause.visible = TRUE;
+        _lblLevelDescription.visible = TRUE;
+        _lblLevel.visible = TRUE;
+        _imgEnemyGeneric.visible = TRUE;
+        _lblEnemiesKilled.visible = TRUE;
+        _lblScore.visible = TRUE;
+        _lblPointsDescription.visible = TRUE;
+
         
         // Recreate the CCSprite objects that couldn't be serialized completely and saved into NSUserDefaults
         [self recreateHeroes];
         [self recreateEnemies];
+        
+        // Set it again so that the toolbar is shown
+        [self setGameStateLabel:g.gameState];
         
         // Simulate pressing the pause button
         [self pause];
@@ -180,11 +201,10 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
 -(BOOL) isLevelCompleted {
     BOOL levelCompleted = false;
     
-    NSInteger enemiesForNextLevel =
-            [[_levelConfig get:KEY_TOTAL_ENEMIES forLevel:g.currentLevel] integerValue];
+    //NSInteger enemiesForNextLevel = [[_levelConfig get:KEY_TOTAL_ENEMIES forLevel:g.currentLevel] integerValue];
 
     // Level is completed when the amount of enemies killed so far is equal or greater than the amount of enemies needed for next level
-    if (g.numberOfKillsInLevel >= enemiesForNextLevel) {
+    if (g.numberOfKillsInLevel >= g.enemiesForNextLevel) {
         levelCompleted = true;
         
         // End tracking how long the user takes to complete this level
@@ -210,10 +230,13 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
     // Reset the number of enemies killed per level
     g.numberOfKillsInLevel = 0;
     
-    // Show a message indicating the new level
-    NSString *message = [NSString stringWithFormat:@"Level %ld", level];
-    CGPoint position = ccp(_pathGenerator.screenWidth/2, _pathGenerator.screenHeight - 20);
-    [self showMessage:message atPosition:position withDelay:3];
+    _lblLevel.string = [NSString stringWithFormat:@"%ld", level];
+    //CGPoint position = ccp(_pathGenerator.screenWidth/2, _pathGenerator.screenHeight - 20);
+    //[self showMessage:message atPosition:position withDelay:3];
+    
+    NSInteger enemiesForNextLevel = [[_levelConfig get:KEY_TOTAL_ENEMIES forLevel:level] integerValue];
+    g.enemiesForNextLevel = enemiesForNextLevel;
+    _lblEnemiesKilled.string = [NSString stringWithFormat:@"0/%ld", enemiesForNextLevel];
     
     // Load the first step of the level
     [self loadNextStepOfLevel:level isFirstStep:YES];
@@ -509,6 +532,7 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
     g.numberOfKillsInTouch++;
     g.numberOfKillsInLevel++;
     g.numberOfKillsInTotal++;
+    _lblEnemiesKilled.string = [NSString stringWithFormat:@"%ld/%ld", g.numberOfKillsInLevel, g.enemiesForNextLevel];
     
     // Calculate obtained score for killing this enemy
     NSInteger scoreObtained = enemy.health * g.numberOfKillsInTouch;
@@ -848,12 +872,28 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
     // If the game state is different from GameRunning, we should disable some stuff
     if (state != GameRunning) {
         self.userInteractionEnabled = FALSE;
+        
         _btnPause.visible = FALSE;
-        _lblScore.visible = FALSE;
+        // The score should be visible if the game is paused
+        if (state != GamePaused) {
+            _lblLevelDescription.visible = FALSE;
+            _lblLevel.visible = FALSE;
+            _imgEnemyGeneric.visible = FALSE;
+            _lblEnemiesKilled.visible = FALSE;
+            _toolBar.visible = FALSE;
+            _lblScore.visible = FALSE;
+            _lblPointsDescription.visible = FALSE;
+        }
     } else {
         self.userInteractionEnabled = TRUE;
+        _toolBar.visible = TRUE;
         _btnPause.visible = TRUE;
+        _lblLevelDescription.visible = TRUE;
+        _lblLevel.visible = TRUE;
+        _imgEnemyGeneric.visible = TRUE;
+        _lblEnemiesKilled.visible = TRUE;
         _lblScore.visible = TRUE;
+        _lblPointsDescription.visible = TRUE;
 
     }
     

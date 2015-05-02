@@ -30,6 +30,8 @@ typedef NS_ENUM(NSInteger, GameStateLabel) {
 @property (nonatomic, assign) BOOL heroesAreMoving;
 // Holds all the enemies in the level
 @property (nonatomic, retain) NSMutableArray *enemies;
+// Amount of enemies to kill in order to pass to the next level
+@property (nonatomic, assign) NSInteger enemiesForNextLevel;
 // Amount of enemies eliminated in the current level
 @property (nonatomic, assign) NSInteger numberOfKillsInLevel;
 // Amount of enemies eliminated in total (in all the levels)

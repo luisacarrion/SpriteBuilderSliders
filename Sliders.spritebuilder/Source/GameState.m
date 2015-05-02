@@ -9,6 +9,7 @@
 #import "GameState.h"
 #import "Hero.h"
 #import "Enemy.h"
+#import "LevelConfiguration.h"
 
 static NSString *KEY_GAME_STATE_LABEL = @"keyGameStateLabel";
 static NSString *KEY_CURRENT_LEVEL = @"keyCurrentLevel";
@@ -48,6 +49,7 @@ static NSString *KEY_SCORE = @"keyScore";
     NSData *enemiesData = [NSKeyedArchiver archivedDataWithRootObject:self.enemies];
     [u setObject:enemiesData forKey:KEY_ENEMIES_ARRAY];
     
+    [u setInteger:self.enemiesForNextLevel forKey:KEY_TOTAL_ENEMIES];
     [u setInteger:self.numberOfKillsInLevel forKey:KEY_NUMBER_OF_KILLS_IN_LEVEL];
     [u setInteger:self.numberOfKillsInTotal forKey:KEY_NUMBER_OF_KILLS_IN_TOTAL];
     [u setInteger:self.numberOfKillsInTouch forKey:KEY_NUMBER_OF_KILLS_IN_TOUCH];
@@ -79,6 +81,7 @@ static NSString *KEY_SCORE = @"keyScore";
         self.enemies = [NSMutableArray array];
     }
     
+    self.enemiesForNextLevel = [u integerForKey:KEY_TOTAL_ENEMIES];
     self.numberOfKillsInLevel = [u integerForKey:KEY_NUMBER_OF_KILLS_IN_LEVEL];
     self.numberOfKillsInTotal = [u integerForKey:KEY_NUMBER_OF_KILLS_IN_TOTAL];
     self.numberOfKillsInTouch = [u integerForKey:KEY_NUMBER_OF_KILLS_IN_TOUCH];
