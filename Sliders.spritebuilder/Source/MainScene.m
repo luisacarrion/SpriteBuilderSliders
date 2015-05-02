@@ -276,7 +276,6 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
     
     hero.ccbFileName = @"Hero";
     hero.position = [_pathGenerator getRandomPositionAvoidingHeroes:g.heroes andEnemies:g.enemies];
-    //hero.position = [_pathGenerator getRandomPosition];
     hero.handleHeroDelegate = self;
 }
 
@@ -288,7 +287,6 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
     [enemy playSpawnAnimation];
     enemy.ccbFileName = enemyType;
     enemy.position = [_pathGenerator getRandomPositionAvoidingHeroes:g.heroes andEnemies:g.enemies];
-    //enemy.position = [_pathGenerator getRandomPosition];
     enemy.handleEnemyDelegate = self;
 }
 
@@ -645,8 +643,6 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
 -(CCNode*) loadOverlay:(NSString*)ccbFile {
     CCNode *overlayScreen = [CCBReader load:ccbFile owner:self];
     overlayScreen.anchorPoint = ccp(0.5, 0.5);
-    //overlayScreen.positionType = CCPositionTypeNormalized;
-    //overlayScreen.position = ccp(0.5, 0.5);
 
     [self addChild:overlayScreen];
 
@@ -656,6 +652,7 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
         overlayScreen.position = ccp(_pathGenerator.screenWidth/2, _pathGenerator.screenHeight/2);
         
         // Show appropriate facebook button
+        NSLog(@"fb token: %@", [FBSDKAccessToken currentAccessToken]);
         if ([FBSDKAccessToken currentAccessToken].userID == nil) {
             _btnFbLogin.visible = true;
             _btnFbLogout.visible = false;
@@ -663,9 +660,6 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
             _btnFbLogin.visible = false;
             _btnFbLogout.visible = true;
         }
-
-        //id fadeIn = [CCActionTintBy actionWithDuration:5 red:100 green:10 blue:10];
-        //entranceAction = fadeIn;
     } else {
         overlayScreen.position = ccp(_pathGenerator.screenWidth/2, _pathGenerator.screenHeight);
 
@@ -681,7 +675,6 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
 }
 
 -(void) removeOverlayAndExecute:(CCActionCallBlock*)block {
-    //CCNode *overlayScreen = [self getChildByName:ccbFile recursively:false];
     id outAction;
     
     if ([overlayScreen.name isEqualToString:@"Title"]) {

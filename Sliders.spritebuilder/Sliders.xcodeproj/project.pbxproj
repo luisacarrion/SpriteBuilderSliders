@@ -80,7 +80,6 @@
 		0DA916261ACBA5E4008D46C8 /* Bullet.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DA916251ACBA5E4008D46C8 /* Bullet.m */; };
 		0DBC1DD61AF38D3F00328987 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DBC1DD51AF38D3F00328987 /* FBSDKCoreKit.framework */; };
 		0DBC1DD91AF3922800328987 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DBC1DD81AF3922800328987 /* FBSDKLoginKit.framework */; };
-		0DBC1DDC1AF3948500328987 /* Title.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DBC1DDB1AF3948500328987 /* Title.m */; };
 		0DBC1DDE1AF3A38200328987 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DBC1DDD1AF3A38200328987 /* FBSDKShareKit.framework */; };
 		0DE8D28D1A9986CC00614CBF /* LevelConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DE8D28C1A9986CC00614CBF /* LevelConfiguration.m */; };
 		0DFE3CCD1A988112008E66D9 /* Hero.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DFE3CCC1A988112008E66D9 /* Hero.m */; };
@@ -301,8 +300,6 @@
 		0DB557CE1AA716DA000337E3 /* HandleEnemy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HandleEnemy.h; path = Source/HandleEnemy.h; sourceTree = "<group>"; };
 		0DBC1DD51AF38D3F00328987 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = ../../../Documents/FacebookSDK/FBSDKCoreKit.framework; sourceTree = "<group>"; };
 		0DBC1DD81AF3922800328987 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = ../../../Documents/FacebookSDK/FBSDKLoginKit.framework; sourceTree = "<group>"; };
-		0DBC1DDA1AF3948500328987 /* Title.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Title.h; path = Source/Title.h; sourceTree = "<group>"; };
-		0DBC1DDB1AF3948500328987 /* Title.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Title.m; path = Source/Title.m; sourceTree = "<group>"; };
 		0DBC1DDD1AF3A38200328987 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKShareKit.framework; path = ../../../Documents/FacebookSDK/FBSDKShareKit.framework; sourceTree = "<group>"; };
 		0DE8D28B1A9986CC00614CBF /* LevelConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LevelConfiguration.h; path = Source/LevelConfiguration.h; sourceTree = "<group>"; };
 		0DE8D28C1A9986CC00614CBF /* LevelConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LevelConfiguration.m; path = Source/LevelConfiguration.m; sourceTree = "<group>"; };
@@ -618,8 +615,6 @@
 				0DB557CE1AA716DA000337E3 /* HandleEnemy.h */,
 				B7378992180767190076A88C /* MainScene.h */,
 				B7378993180767190076A88C /* MainScene.m */,
-				0DBC1DDA1AF3948500328987 /* Title.h */,
-				0DBC1DDB1AF3948500328987 /* Title.m */,
 				0DA916241ACBA5E4008D46C8 /* Bullet.h */,
 				0DA916251ACBA5E4008D46C8 /* Bullet.m */,
 				0D44746B1ACCE99C00C32643 /* Utils.h */,
@@ -1148,7 +1143,6 @@
 				0D746D221AEF8772008012FE /* MPApplicationStateSerializer.m in Sources */,
 				0D746D3C1AEF87FD008012FE /* MPNSAttributedStringToNSDictionaryValueTransformer.m in Sources */,
 				0D746D3E1AEF8800008012FE /* MPNSNumberToCGFloatValueTransformer.m in Sources */,
-				0DBC1DDC1AF3948500328987 /* Title.m in Sources */,
 				0D746D241AEF8776008012FE /* MPBOOLToNSNumberValueTransformer.m in Sources */,
 				0D746CFF1AEF86ED008012FE /* MPEventBinding.m in Sources */,
 				0D746D421AEF880B008012FE /* MPObjectSelector.m in Sources */,

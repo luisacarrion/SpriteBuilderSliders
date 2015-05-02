@@ -1645,7 +1645,7 @@ Sliders</string>
 			</dict>
 		</array>
 		<key>customClass</key>
-		<string>Title</string>
+		<string></string>
 		<key>displayName</key>
 		<string>CCNode</string>
 		<key>memberVarAssignmentName</key>

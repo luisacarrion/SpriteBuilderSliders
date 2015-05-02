@@ -17,15 +17,7 @@
 @property (nonatomic, assign) NSInteger screenHeight;
 @property (nonatomic, assign) NSInteger characterWidth;
 @property (nonatomic, assign) NSInteger characterHeight;
-@property (nonatomic, assign) CGPoint intersectionPoint;
-@property (nonatomic, retain) NSMutableArray *heroPositions;
-@property (nonatomic, retain) NSMutableArray *enemyPositions;
 
--(void) generatePaths:(NSInteger)amount;
-
-// Temporary while the other method is developed
--(void) tempGeneratePaths:(NSInteger)amount;
--(CGPoint) getRandomPosition;
 -(CGPoint) getRandomPositionAvoidingHeroes:(NSArray*)heroes andEnemies:(NSArray*)enemies;
 
 @end
