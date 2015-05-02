@@ -47,6 +47,7 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
     // CCNodes of the Title ccb file
     CCButton *_btnFbLogin;
     CCButton *_btnFbLogout;
+    CCLabelTTF *_lblTopScore;
     // CCNodes of the Score ccb file
     CCLabelTTF *_lblYourFinalScore;
     CCLabelTTF *_lblTopScores;
@@ -621,6 +622,18 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
     _lblScore.string = [NSString stringWithFormat:@"%ld", g.score];
 }
 
+-(NSInteger) getTopScore {
+    NSInteger topScore = 0;
+    
+    // Get saved top scores
+    NSArray *topScores =  [[NSUserDefaults standardUserDefaults] objectForKey:KEY_TOP_SCORES];
+    
+    if (topScores != nil && [topScores count] > 0) {
+        topScore = [(NSNumber*)topScores[0] integerValue];
+    }
+    return topScore;
+}
+
 -(NSArray*) getUpdatedTopScores {
     int MAX_TOP_SCORES = 5;
     
@@ -684,6 +697,9 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
             _btnFbLogin.visible = false;
             _btnFbLogout.visible = true;
         }
+        
+        // Show top score
+        _lblTopScore.string = [NSString stringWithFormat:@"%ld", [self getTopScore]];
     } else {
         overlayScreen.position = ccp(_pathGenerator.screenWidth/2, _pathGenerator.screenHeight);
 
