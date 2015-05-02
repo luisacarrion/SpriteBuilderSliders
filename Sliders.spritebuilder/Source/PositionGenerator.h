@@ -26,5 +26,6 @@
 // Temporary while the other method is developed
 -(void) tempGeneratePaths:(NSInteger)amount;
 -(CGPoint) getRandomPosition;
+-(CGPoint) getRandomPositionAvoidingHeroes:(NSArray*)heroes andEnemies:(NSArray*)enemies;
 
 @end

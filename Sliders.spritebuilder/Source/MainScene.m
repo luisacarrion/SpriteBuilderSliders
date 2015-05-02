@@ -275,7 +275,8 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
     [_physicsNode addChild:hero];
     
     hero.ccbFileName = @"Hero";
-    hero.position = [_pathGenerator getRandomPosition];
+    hero.position = [_pathGenerator getRandomPositionAvoidingHeroes:g.heroes andEnemies:g.enemies];
+    //hero.position = [_pathGenerator getRandomPosition];
     hero.handleHeroDelegate = self;
 }
 
@@ -286,7 +287,8 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
     
     [enemy playSpawnAnimation];
     enemy.ccbFileName = enemyType;
-    enemy.position = [_pathGenerator getRandomPosition];
+    enemy.position = [_pathGenerator getRandomPositionAvoidingHeroes:g.heroes andEnemies:g.enemies];
+    //enemy.position = [_pathGenerator getRandomPosition];
     enemy.handleEnemyDelegate = self;
 }
 
