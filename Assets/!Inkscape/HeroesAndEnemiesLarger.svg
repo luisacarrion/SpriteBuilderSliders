@@ -1217,11 +1217,11 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.8"
-     inkscape:cx="1557.3293"
-     inkscape:cy="84.73709"
+     inkscape:zoom="0.24748738"
+     inkscape:cx="910.83168"
+     inkscape:cy="731.23471"
      inkscape:document-units="px"
-     inkscape:current-layer="g4634"
+     inkscape:current-layer="svg2"
      showgrid="false"
      inkscape:window-width="1280"
      inkscape:window-height="683"
@@ -2300,7 +2300,7 @@
      inkscape:label="bgWhite Larger Top Bar White"
      id="g4980"
      inkscape:groupmode="layer"
-     style="display:inline"
+     style="display:none"
      sodipodi:insensitive="true">
     <rect
        inkscape:export-ydpi="90"
@@ -2431,7 +2431,7 @@
      inkscape:label="enemies"
      inkscape:groupmode="layer"
      id="g4634"
-     style="display:inline"
+     style="display:none"
      sodipodi:insensitive="true">
     <circle
        r="62.5"
