@@ -42,6 +42,8 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
     CCLabelTTF *_lblEnemiesKilled;
     CCLabelTTF *_lblScore;
     CCLabelTTF *_lblPointsDescription;
+    NSMutableArray *_killProgressBar;
+    
     // Current overlay being displayed
     CCNode *overlayScreen;
     // CCNodes of the Title ccb file
@@ -70,6 +72,7 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
     // Initialize game state
     g = [GameState sharedInstance];
     [g loadStateFromUserDefaults];
+    _killProgressBar = [NSMutableArray array];
     
     // Initialize helper objects
     _levelConfig = [[LevelConfiguration alloc] init];
@@ -115,6 +118,7 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
         // Recreate the CCSprite objects that couldn't be serialized completely and saved into NSUserDefaults
         [self recreateHeroes];
         [self recreateEnemies];
+        [self recreateKillProgressBar];
         
         // Set it again so that the toolbar is shown
         [self setGameStateLabel:g.gameState];
@@ -141,6 +145,10 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
                     [self enemy:g.getRandomEnemy shootsAtHero:g.getRandomHero];
                     // When enemies have their revenge, they calm down
                     [self endEnemiesRevengeMode];
+                    
+                    // Clear the kill progress bar
+                    // Call it inside this if so it runs once
+                    [self unfillAllBarSections];
                 }
                 
                 if ([self isLevelCompleted]) {
@@ -187,7 +195,7 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
         CGPoint touchLocation = [touch locationInNode: self];
         g.numberOfKillsInTouch = 0;
         g.numberOfCollisionsWithEnemiesInTouch = 0;
-
+        
         // Stop heroes that are moving, so they are moved in the new direction
         for (Hero *hero in g.heroes) {
             hero.physicsBody.velocity = ccp(0, 0);
@@ -287,6 +295,68 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
     NSInteger assassinEnemiesToSpawn = [[_levelConfig get:KEY_STEP_ASSASSIN_ENEMIES_SPAWNED forLevel:g.currentLevel] integerValue];
     for (int i = 0; i < assassinEnemiesToSpawn; i++) {
         [self spawnEnemyOfType:@"EnemyAssassin"];
+    }
+    
+    // Show enemy kill progress bar
+    [self removeKillProgressBar];
+    
+    for (int i = 0; i < basicEnemiesToSpawn+tankEnemiesToSpawn+assassinEnemiesToSpawn; i++) {
+        CCNode *barSection = [CCBReader load:@"killProgressBar"];
+        
+        barSection.anchorPoint = ccp(0, 1);
+        barSection.position = ccp(_pathGenerator.screenWidth/2 + 4 + (i * 18), _pathGenerator.screenHeight - 13);
+        
+        [_killProgressBar addObject:barSection];
+        [self addChild:barSection];
+    }
+
+}
+
+-(void) unfillAllBarSections {
+    for (CCNode *barSection in _killProgressBar) {
+        CCActionScaleBy *scaleAction = [CCActionScaleBy actionWithDuration:0.1 scaleX:0 scaleY:1];
+        CCNode *fillSection = [barSection getChildByName:@"fillSection" recursively:FALSE];
+        [fillSection runAction:scaleAction];
+    }
+}
+
+-(void) fillBarSection:(NSInteger)index {
+    CCActionScaleBy *scaleAction = [CCActionScaleTo actionWithDuration:0.1 scaleX:1 scaleY:1];
+    CCNode *fillSection = [_killProgressBar[index] getChildByName:@"fillSection" recursively:FALSE];
+    
+    [fillSection runAction:scaleAction];
+    
+    if (index == [_killProgressBar count]-1) {
+        // If the last section of the bar was filled, show a message saying Perfect!
+        CGPoint position = ccp(_pathGenerator.screenWidth/2 , _pathGenerator.screenHeight - 60);
+        [self showMessage:@"Perfect!" atPosition:position withDelay:0];
+    }
+}
+
+-(void) removeKillProgressBar {
+    for (CCNode *barSection in _killProgressBar) {
+        [barSection removeFromParent];
+    }
+    _killProgressBar = [NSMutableArray array];
+}
+
+-(void) recreateKillProgressBar {
+    // Show enemy kill progress bar
+    // Spawn enemies
+    NSInteger basicEnemiesToSpawn = [[_levelConfig get:KEY_STEP_BASIC_ENEMIES_SPAWNED forLevel:g.currentLevel] integerValue];
+    
+    NSInteger tankEnemiesToSpawn = [[_levelConfig get:KEY_STEP_TANK_ENEMIES_SPAWNED forLevel:g.currentLevel] integerValue];
+    
+    NSInteger assassinEnemiesToSpawn = [[_levelConfig get:KEY_STEP_ASSASSIN_ENEMIES_SPAWNED forLevel:g.currentLevel] integerValue];
+    
+    for (int i = 0; i < basicEnemiesToSpawn+tankEnemiesToSpawn+assassinEnemiesToSpawn; i++) {
+        CCNode *barSection = [CCBReader load:@"killProgressBar"];
+        
+        barSection.anchorPoint = ccp(0, 1);
+        barSection.position = ccp(_pathGenerator.screenWidth/2 + 4 + (i * 18), _pathGenerator.screenHeight - 13);
+        
+        [_killProgressBar addObject:barSection];
+        [self addChild:barSection];
     }
 
 }
@@ -534,6 +604,7 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
     g.numberOfKillsInLevel++;
     g.numberOfKillsInTotal++;
     _lblEnemiesKilled.string = [NSString stringWithFormat:@"%ld/%ld", g.numberOfKillsInLevel, g.enemiesForNextLevel];
+    [self fillBarSection:g.numberOfKillsInTouch-1];
     
     // Calculate obtained score for killing this enemy
     NSInteger scoreObtained = enemy.health * g.numberOfKillsInTouch;
@@ -599,7 +670,10 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
     CCLabelTTF *lblForMessage = [CCLabelTTF labelWithString:message fontName:@"Helvetica" fontSize:16];
     
     lblForMessage.position = position;
+    lblForMessage.fontSize = 24;
     lblForMessage.fontColor = [CCColor colorWithRed:0.4 green:0.46666666 blue:0.5451];
+    //lblForMessage.fontColor = [CCColor colorWithRed:0.407843 green:0.7 blue:0.8];
+    //lblForMessage.fontColor = [CCColor colorWithRed:0 green:0.5019 blue:0];
     [self addChild:lblForMessage];
 
     CCActionDelay *delayAction = [CCActionDelay actionWithDuration:delay];
@@ -899,6 +973,7 @@ static NSString *SOUND_ENEMY_HIT_BY_HERO = @"audio/Strong_Punch-Mike_Koenig-5744
             _toolBar.visible = FALSE;
             _lblScore.visible = FALSE;
             _lblPointsDescription.visible = FALSE;
+            [self removeKillProgressBar];
         }
     } else {
         self.userInteractionEnabled = TRUE;

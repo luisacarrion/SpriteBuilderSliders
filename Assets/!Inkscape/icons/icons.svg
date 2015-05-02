@@ -25,9 +25,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.4142136"
-     inkscape:cx="227.34712"
-     inkscape:cy="125.26813"
+     inkscape:zoom="0.45706698"
+     inkscape:cx="540.5127"
+     inkscape:cy="526.18109"
      inkscape:document-units="px"
      inkscape:current-layer="layer2"
      showgrid="false"
@@ -114,7 +114,7 @@
      sodipodi:insensitive="true">
     <path
        style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#68778b;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;enable-background:accumulate"
-       d="m 12,932.36218 0,108.00002 48,0 0,-108.00002 -48,0 z m 60,0 0,108.00002 48,0 0,-108.00002 -48,0 z"
+       d="m 39,959.36218 0,54.00002 24,0 0,-54.00001 -24,0 z m 30,0 0,54.00002 24,0 0,-54.00001 -24,0 z"
        id="rect3756"
        inkscape:connector-curvature="0"
        inkscape:export-filename="C:\Users\MariaLuisa\Desktop\images\!Inkscape\Sliders\pause_normal.png"
@@ -125,11 +125,11 @@
      id="g3760"
      inkscape:groupmode="layer"
      inkscape:label="pause pressed"
-     style="display:none"
+     style="display:inline"
      sodipodi:insensitive="true">
     <path
        style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#e6e6e6;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;enable-background:accumulate"
-       d="m 12,932.36218 0,108.00002 48,0 0,-108.00002 -48,0 z m 60,0 0,108.00002 48,0 0,-108.00002 -48,0 z"
+       d="m 39,959.36218 0,54.00002 24,0 0,-54.00001 -24,0 z m 30,0 0,54.00002 24,0 0,-54.00001 -24,0 z"
        id="rect3762"
        inkscape:connector-curvature="0"
        inkscape:export-filename="C:\Users\MariaLuisa\Desktop\images\!Inkscape\Sliders\pause_pressed.png"
@@ -615,7 +615,7 @@
          id="flowPara4218"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Helvetica;-inkscape-font-specification:Helvetica;fill:#68778b;fill-opacity:1">Share</flowPara></flowRoot>  </g>
   <g
-     style="display:inline"
+     style="display:none"
      inkscape:label="fb share pressed"
      id="g4248"
      inkscape:groupmode="layer"
