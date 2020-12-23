@@ -1,6 +1,8 @@
 # SpriteBuilderSliders
 Game developed in SpriteBuilder for the Mobile Game Development class.
 
+I created the visual assets as vector illustrations using InkScape.
+
 Objective (Goal)
 ----------------
 Destroy all enemies by making your soldiers pass through them.
